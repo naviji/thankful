@@ -1,49 +1,84 @@
 import React from "react";
-import { StyleSheet } from 'react-native'
-import { ThemeProvider } from 'react-native-elements'
+import { StyleSheet } from "react-native";
+import { ThemeProvider, Text , Icon} from "react-native-elements";
 
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator } from "@react-navigation/stack";
 
+import {Provider as StoreProvider} from 'react-redux'
+import { createStore } from "redux";
+import reducer from "./reducers/index"
 
 import Home from "./screens/Home";
 import Editor from "./screens/Editor";
 
-const Stack = createStackNavigator();
+import {RootStackParamList} from './types'
+
+import { YellowBox } from 'react-native';
+
+// About: Non-serializable warning.
+// If you don't use state persistence or deep link to the screen
+// which accepts functions in params, 
+// then the warning doesn't affect you and you can safely ignore it.
+
+YellowBox.ignoreWarnings([
+  'Non-serializable values were found in the navigation state',
+]);
+
+const store = createStore(reducer);
+const Stack = createStackNavigator<RootStackParamList>();
+
 
 function MyStack() {
   return (
-    <Stack.Navigator initialRouteName="Editor">
-      <Stack.Screen name="Home" component={Home}
-      options={{
-        title: 'Thankfully',
-        // headerRight: props => <IconButton icon="file-search"/>
-      }} />
-      <Stack.Screen name="Editor" component={Editor}
-      options={{
-        headerShown: false,
-      }}
+    <Stack.Navigator initialRouteName="Home">
+      <Stack.Screen
+        name="Home"
+        component={Home}
+        options={{
+          title: "Thankfully",
+          headerTitle: props => (<Text {...props} style={{fontSize: 28, fontWeight: '700', elevation: 6}}>Thankfully</Text>),
+          // headerRight: props => <IconButton icon="file-search"/>
+          headerRight: props => <Icon
+          raised
+          iconStyle={{
+            // width: 40,
+            // height: 40,
+            // padding: 4,
+          }}
+          onPress={() => console.log('Begin search!')}
+          name='search' />
+          ,
+          headerLeft: props => <Icon
+          raised
+          iconStyle={{
+            // width: 40,
+            // height: 40,
+            // padding: 4,
+          }}
+          onPress={() => console.log('Open menu')}
+          name='menu' />
+        }}
+      />
+      <Stack.Screen
+        name="Editor"
+        component={Editor}
+        options={{
+          headerShown: false,
+        }}
       />
     </Stack.Navigator>
   );
 }
 
-// export default function App() {
-//   return (
-//     <View style={styles.container}>
-//       <Text>Open h on your app!</Text>
-//     </View>
-//   );
-// }
-export default function App() {
-  return <NavigationContainer>{MyStack()}</NavigationContainer>
-}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
+
+export default function App() {
+  return (
+    <StoreProvider store={store}>
+      <ThemeProvider>
+        <NavigationContainer>{MyStack()}</NavigationContainer>
+      </ThemeProvider>
+    </StoreProvider>
+  );
+}
