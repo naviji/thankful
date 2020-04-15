@@ -1,15 +1,19 @@
 
 import React from 'react';
-import { ScrollView ,Dimensions, StyleSheet, Text, View } from 'react-native';
-import { Button } from 'react-native-paper';
+import { ScrollView ,Dimensions, StyleSheet, Text, View, SafeAreaView } from 'react-native';
 
 interface Entry {
     id: number,
-    date: object,
+    date: Date,
     content: string
 }
 
 const entries: Array<Entry> = [
+    {
+        id: 0,
+        date: new Date(),
+        content: "test"
+    },
     {
         id: 1,
         date: new Date(),
@@ -35,13 +39,13 @@ const JournalEntry = (props: any) =>  {
     return (
         <View style={{minHeight: 100,
         backgroundColor: 'white',
-        padding: 5,
+        padding: 10,
         elevation: 4,
         marginBottom: 10,
         marginHorizontal: 7,
         }}>
             <Text style={{fontSize: 20, fontWeight: '700'}}>
-                {entry.date.toLocaleString()}
+                {entry.date.toDateString()}
             </Text>
             <Text>
                 {entry.content}
@@ -54,25 +58,15 @@ export default function Home() {
     const {width, height} = Dimensions.get('window')
     // const windowHeight = useWindowDimensions().height;
   return (
-    <ScrollView style={{flex: 1, backgroundColor: '#eee', width: width}}>
-        {
-            entries.map(entry => <JournalEntry key={entry.id} entry={entry}/> )
-        }
-    </ScrollView>
+      <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView style={{flex: 1, backgroundColor: 'pink', width: width }}>
+            <View style={{ flex: 1, marginTop: 10 }}>
+            {
+                entries.map(entry => <JournalEntry key={entry.id} entry={entry}/> )
+            }
+
+            </View>
+        </ScrollView>
+      </SafeAreaView>
   );
 }
-
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'red',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  visible: {
-      borderColor: 'red',
-      borderWidth: 2,
-    //   flexDirection: 'row',
-  }
-});
