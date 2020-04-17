@@ -28,9 +28,6 @@ YellowBox.ignoreWarnings([
 const store = createStore(reducer);
 const Stack = createStackNavigator<RootStackParamList>();
 
-// TO DO
-// use redux to mainatin state.
-// use sqlite for persistence
 
 function MyStack() {
   return (

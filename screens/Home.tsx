@@ -7,15 +7,18 @@ import {
   TouchableOpacity,
   View,
   SafeAreaView,
+  FlatListProps,
+  ListRenderItem
 } from "react-native";
 import Carousel from "react-native-snap-carousel";
-
-import { Entry } from "../types";
+import {  } from "react-native-snap-carousel"
 
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import { loadEntries } from "../reducers/entries";
+import { loadEntries, createEntry } from "../reducers/entries";
+
+import { Entry, HomeProps, IAppState } from "../types";
 
 const data: Array<Entry> = [
   // {
@@ -106,37 +109,53 @@ const JournalEntry = (props: any) => {
           : entry.date.toDateString()}
       </Text>
       {entry.type != null ? (
-        <Text style={{ flex:1 ,fontSize: 38, marginBottom: 60 , textAlign: 'center' ,textAlignVertical: 'center'}}>What are you grateful for today?</Text>
+        <Text
+          style={{
+            flex: 1,
+            fontSize: 38,
+            marginBottom: 60,
+            textAlign: "center",
+            textAlignVertical: "center",
+          }}
+        >
+          What are you thankful for today?
+        </Text>
       ) : (
-        <Text style={{ fontSize: 20, marginTop: 10 }}>{entry.content.length > 600 ? entry.content.slice(0, 600) + '...' : entry.content}</Text>
+        <Text style={{ fontSize: 20, marginTop: 10 }}>
+          {entry.content.length > 600
+            ? entry.content.slice(0, 600) + "..."
+            : entry.content}
+        </Text>
       )}
     </View>
   );
 };
 
-export default function Home({ navigation }) {
+export default function Home({ navigation }: HomeProps) {
   // const [entries, setEntires] = useState(data);
-  const { width, height } = Dimensions.get("window");
   //   const entries: Array<Entry> = useSelector(state => state.entries);
   // const windowHeight = useWindowDimensions().height;
-
+  let entries = useSelector((state: IAppState) => state.entries);
+  console.log("Home was rendered")
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(loadEntries(data));
   }, []);
 
-  let entries = useSelector((state) => state.entries).sort(
-    (a, b) => b.date - a.date
-  );
+  // get sorted entries by default;
 
   if (entries.length && !isToday(entries[0].date)) {
-    entries = [
-      { id: entries.length + 1, date: Date.now(), type: "today" },
-      ...entries,
-    ];
+    const today = new Date();
+    const entryForToday: Entry = {
+      id: entries.length + 1,
+      content: "",
+      date: today,
+      type: "today",
+    };
+    dispatch(createEntry(entryForToday));
   }
 
-  const _renderItem = ({ item }) => {
+  const _renderItem : ListRenderItem<Entry> = ({ item }) => {
     return (
       <TouchableOpacity
         onPress={() =>
@@ -155,81 +174,17 @@ export default function Home({ navigation }) {
     );
   };
 
-  // const sliderWidth = width;
-  // const itemWidth = width - 30;
+  const { width, height } = Dimensions.get("window");
+
   return (
     <View style={{ flex: 1, backgroundColor: "steelblue" }}>
       <Carousel
         data={entries}
         renderItem={_renderItem}
-        sliderWidth={width/1 }
-        itemWidth={width/1.2 }
+        sliderWidth={width / 1}
+        itemWidth={width / 1.2}
         // layout={'stack'}
       />
     </View>
-  );
-
-  return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView style={{ flex: 1, backgroundColor: "pink", width: width }}>
-        {entries.length && !isToday(entries[0].date) ? (
-          <View style={{ flex: 1, marginTop: 10 }}>
-            <View
-              style={{
-                flex: 1,
-                minHeight: 40,
-                backgroundColor: "#fafafafa",
-                // padding: 16,
-                // borderWidth: 3,
-                alignItems: "center",
-                elevation: 4,
-                // marginBottom: 10,
-                marginHorizontal: 7,
-                borderRadius: 30,
-              }}
-            >
-              <Text style={{ fontSize: 20, padding: 8 }}>
-                What are you grateful for today?
-              </Text>
-
-              <Icon
-                raised
-                iconStyle={
-                  {
-                    // width: 40,
-                    // height: 40,
-                    // padding: 4,
-                  }
-                }
-                onPress={() =>
-                  navigation.navigate("Editor", {
-                    entryId: entries.length + 1,
-                    entryDate: Date.now(),
-                  })
-                }
-                name="create"
-              />
-            </View>
-          </View>
-        ) : null}
-        <View style={{ flex: 1, marginTop: 10 }}>
-          {entries.map((entry) => {
-            return (
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("Editor", {
-                    entryId: entry.id,
-                    entryDate: entry.date,
-                  })
-                }
-                key={entry.id}
-              >
-                <JournalEntry entry={entry} />
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-      </ScrollView>
-    </SafeAreaView>
   );
 }

@@ -1,35 +1,26 @@
 
 import React from 'react';
-import { SafeAreaView ,StyleSheet, Text, View, Dimensions } from 'react-native';
+import { SafeAreaView ,StyleSheet, Text, View, Dimensions, AppState } from 'react-native';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import { Button, colors } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { useSelector, useDispatch } from "react-redux";
 import {updateEntry, createEntry, removeEntry } from '../reducers/entries'
+import { EditorProps, IAppState, Entry } from '../types'
 
-export default function Editor({route, navigation}) {
+export default function Editor({route, navigation}: EditorProps) {
     // const {width, height} = Dimensions.get('window')
   const {entryId, entryDate} = route.params;
   const dispatch = useDispatch();
 //   console.log("")
   console.log(entryId)
-  let entry = useSelector(state => state.entries.find(x => x.id===entryId))
 
-  console.log("Entry Id matched ", entry)
-
-  if (!entry) {
-      entry = {
-          id: entryId,
-          content: '',
-          date: entryDate
-      }
-      dispatch(createEntry(entry));
-  }
-//   console.log(entry);
-  if (entry.content === '') {
-    // dispatch(removeEntry(entry.id));
-    console.log("remove entry")
+  let entries = useSelector((state: IAppState) => state.entries)
+  
+  const entry: Entry | undefined = entries.find(x => x.id === entryId)
+  if (entry === undefined) {
+    throw new Error("Entry not found!");
   }
 
   return (
