@@ -20,4 +20,5 @@
 - [ ] Enhancement - Style cards to look pretty!
 - [ ] Enhancement - Make app stylish :) 
 - [ ] Enhancement - Better typography
+- [ ] Enhancement - Icon and splash screen
 
