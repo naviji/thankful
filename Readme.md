@@ -29,6 +29,12 @@ git checkout -b feature-name
 
 This will create a branch named 'feature-name' and switch to that branch.
 
+Just to make sure type
+```
+git branch
+```
+to make sure you are in the feature branch.
+
 Now make your modifications.
 
 Once finished and tested, commit changes to the upstream branch like this.
