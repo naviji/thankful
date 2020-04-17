@@ -22,4 +22,4 @@
 - [ ] Enhancement - Better typography
 - [ ] Enhancement - Icon and splash screen
 
-copy that!!
+copy that!! Roger :)
