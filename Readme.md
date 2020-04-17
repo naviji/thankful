@@ -21,3 +21,4 @@
 - [ ] Enhancement - Make app stylish :) 
 - [ ] Enhancement - Better typography
 
+copy that!!
