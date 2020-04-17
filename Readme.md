@@ -42,3 +42,5 @@ Once confident to merge into master, do this
 git checkout master
 git merge feature-name
 ```
+
+Now your feature is available on the master branch. Hurrah!.
