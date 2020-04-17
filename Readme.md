@@ -22,4 +22,14 @@
 - [ ] Enhancement - Better typography
 - [ ] Enhancement - Icon and splash screen
 
-copy that!! Roger :)
+# How to add a new feature
+```
+git checkout -b feature-name
+```
+
+This will create a branch named 'feature-name' and switch to that branch.
+
+Now make your modifications.
+
+Once finished and tested, commit changes to the upstream branch like this.
+
