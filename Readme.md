@@ -33,3 +33,6 @@ Now make your modifications.
 
 Once finished and tested, commit changes to the upstream branch like this.
 
+```
+git push upstream feature-name
+```
