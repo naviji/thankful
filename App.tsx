@@ -5,21 +5,29 @@ import { ThemeProvider, Text , Icon} from "react-native-elements";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
+import {Provider as StoreProvider} from 'react-redux'
+import { createStore } from "redux";
+import reducer from "./reducers/index"
+
 import Home from "./screens/Home";
 import Editor from "./screens/Editor";
 
+const store = createStore(reducer);
 const Stack = createStackNavigator();
 
+// TO DO
+// use redux to mainatin state.
+// use sqlite for persistence
 
 function MyStack() {
   return (
-    <Stack.Navigator initialRouteName="Editor">
+    <Stack.Navigator initialRouteName="Home">
       <Stack.Screen
         name="Home"
         component={Home}
         options={{
           title: "Thankfully",
-          // headerTitle: props => (<Text {...props} style={{fontSize: 24, fontWeight: '700', elevation: 6, marginBottom: 10}}></Text>)
+          headerTitle: props => (<Text {...props} style={{fontSize: 28, fontWeight: '700', elevation: 6}}>Thankfully</Text>),
           // headerRight: props => <IconButton icon="file-search"/>
           headerRight: props => <Icon
           raised
@@ -53,17 +61,14 @@ function MyStack() {
   );
 }
 
-// export default function App() {
-//   return (
-//     <View style={styles.container}>
-//       <Text>Open h on your app!</Text>
-//     </View>
-//   );
-// }
+
+
 export default function App() {
   return (
-    <ThemeProvider>
-      <NavigationContainer>{MyStack()}</NavigationContainer>
-    </ThemeProvider>
+    <StoreProvider store={store}>
+      <ThemeProvider>
+        <NavigationContainer>{MyStack()}</NavigationContainer>
+      </ThemeProvider>
+    </StoreProvider>
   );
 }
