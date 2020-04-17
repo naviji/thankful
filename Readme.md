@@ -4,7 +4,7 @@
 3. yarn install
 4. expo start --android
 
-# Thing to do:
+# Things to do:
 - [ ] Support import from other journal apps
 - [ ] Writing prompts as default text input value
 - [ ] Add a tomorrow card with a motivational quote

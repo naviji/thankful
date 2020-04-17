@@ -12,8 +12,21 @@ import reducer from "./reducers/index"
 import Home from "./screens/Home";
 import Editor from "./screens/Editor";
 
+import {RootStackParamList} from './types'
+
+import { YellowBox } from 'react-native';
+
+// About: Non-serializable warning.
+// If you don't use state persistence or deep link to the screen
+// which accepts functions in params, 
+// then the warning doesn't affect you and you can safely ignore it.
+
+YellowBox.ignoreWarnings([
+  'Non-serializable values were found in the navigation state',
+]);
+
 const store = createStore(reducer);
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<RootStackParamList>();
 
 // TO DO
 // use redux to mainatin state.
