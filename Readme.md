@@ -12,6 +12,9 @@
 - [ ] Feature - google sync
 - [ ] Feature - Lockable (PIN or Biometric)
 - [ ] Feature - Export journal entries
+- [ ] Feature - Add calendar
+- [ ] Feature - Entry deletion
+- [ ] Feature - Persistance using SQLite database
 - [ ] Enhancement - Dark mode
 - [ ] Enhancement - Reward system
 - [ ] Enhancement - Style cards to look pretty!
