@@ -36,3 +36,9 @@ Once finished and tested, commit changes to the upstream branch like this.
 ```
 git push upstream feature-name
 ```
+
+Once confident to merge into master, do this
+```
+git checkout master
+git merge feature-name
+```
