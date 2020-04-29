@@ -16,6 +16,9 @@ import {RootStackParamList} from './types'
 
 import { YellowBox } from 'react-native';
 
+import * as SQLite from 'expo-sqlite'
+const db = SQLite.openDatabase("paperNote.db")
+
 // About: Non-serializable warning.
 // If you don't use state persistence or deep link to the screen
 // which accepts functions in params, 
@@ -38,7 +41,6 @@ function MyStack() {
         options={{
           title: "Thankfully",
           headerTitle: props => (<Text {...props} style={{fontSize: 28, fontWeight: '700', elevation: 6}}>Thankfully</Text>),
-          // headerRight: props => <IconButton icon="file-search"/>
           headerRight: props => <Icon
           raised
           iconStyle={{
@@ -70,8 +72,6 @@ function MyStack() {
     </Stack.Navigator>
   );
 }
-
-
 
 export default function App() {
   return (
