@@ -5,6 +5,9 @@ const LOAD = 'entries/LOAD';
 const UPDATE = 'entries/UPDATE';
 const CREATE = 'entries/CREATE';
 const REMOVE = 'entries/REMOVE';
+const IMAGE_ADD = 'image/ADD';
+const IMAGE_DELETE = 'image/DELETE';
+
 
 export interface LoadEntryAction extends Action<'entries/LOAD'> {
     entries: Entry[];
@@ -32,6 +35,8 @@ export const loadEntries = (entries: Array<Entry>) => ({type: LOAD, entries})
 export const createEntry = (entry: Entry) => ({type: CREATE, entry})
 export const updateEntry = (entry: Entry) => ({type: UPDATE, entry})
 export const removeEntry = (entryId: number) => ({type: UPDATE, entryId})
+export const addImage = (entry: Entry) => ({type: IMAGE_ADD, entry})
+export const deleteImage = (entryId: number) => ({type: IMAGE_DELETE, entryId})
 
 const _dateSort = (a: Entry, b: Entry) => b.date.valueOf() - a.date.valueOf()
 
