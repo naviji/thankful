@@ -1,13 +1,18 @@
 import React from "react";
+import Icons from 'react-native-vector-icons/MaterialIcons';
+import * as ImagePicker from 'expo-image-picker';
+import * as Permissions from 'expo-permissions';
 import {
+  StatusBar,
   SafeAreaView,
   StyleSheet,
+  Image,
   Text,
   View,
   Dimensions,
   AppState,
 } from "react-native";
-import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
+import { TextInput, TouchableOpacity, ScrollView } from "react-native-gesture-handler";
 import { Button, colors } from "react-native-elements";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -17,7 +22,9 @@ import { EditorProps, IAppState, Entry } from "../types";
 import * as SQLite from 'expo-sqlite'
 const db = SQLite.openDatabase("paperNote.db")
 
+
 export default function Editor({ route, navigation }: EditorProps) {
+
   // const {width, height} = Dimensions.get('window')
   const { entryId } = route.params;
   const dispatch = useDispatch();
@@ -32,37 +39,83 @@ export default function Editor({ route, navigation }: EditorProps) {
     console.log("Success loading database");
   };
 
-  let entries = useSelector((state: IAppState) => state.entries);
+  const getPhotoPermission=async ()=>{
+    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      if (status !== 'granted') {
+        getPhotoPermission()
+      }
 
-  const entry: Entry | undefined = entries.find((x) => x.id === entryId);
-  if (entry === undefined) {
-    throw new Error("Entry not found!");
   }
+  
 
+  
+  let entries = useSelector((state: IAppState) => {return(state.entries)});
+
+  let item: Entry | undefined = entries.find((x) => x.id === entryId);
+  const entry: Entry = item ? item : {id: -1, content: '', date: new Date()}
+  // if (entry === undefined) {
+  //   // throw new Error("Entry not found!");
+  //   entry = {
+  //     id: -1,
+  //     content: '',
+  //     date: new Date(),
+  //   }
+  //   // console.log("...here...")
+  //   navigation.navigate('Home')
+  // }
+
+  const pickImage= async ()=>{
+    let result  = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing:true,
+      aspect:[4,3],
+    })
+    if(!result.cancelled){     
+      // dispatch(updateEntry({...entry, image: result.uri}))
+      dispatch(updateEntry({...entry, image: result.uri}))
+    }
+  }
   return (
     <SafeAreaView style={{ flex: 1, marginTop: 30 }}>
-      <View
-        style={{
-          flex: 0,
-          backgroundColor: "steelblue",
-          paddingHorizontal: 20,
-          minHeight: 40,
-          borderBottomColor: "black",
-          borderBottomWidth: 3,
-        }}
-      >
-        <Text style={{ fontSize: 30, fontWeight: "700", color: "white" }}>
-          Today
-        </Text>
-        <Text style={{ fontSize: 30, fontWeight: "700", color: "white" }}>
-          I am thankful for
-        </Text>
+      <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
+      {entry &&
+        <View style={{
+            justifyContent:"space-between",
+            paddingTop:23.5,
+            flex: 0,
+            flexDirection:"row",
+            paddingHorizontal: 20,
+            alignItems:"center",}}>
+        <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+          <Icons name={'arrow-back'} size={30} color='#3377ff'/>
+        </TouchableOpacity>
+        <View style={{justifyContent:"flex-end", flexDirection:"row"}}>
+          <TouchableOpacity onPress={() => { getPhotoPermission(); pickImage();}}>
+          <Icons name={'attach-file'} size={30} color='#3377ff' style={{marginLeft:10}}/>
+
+          </TouchableOpacity>
+          {/* <TouchableOpacity onPress={()=>{dispatch(removeEntry(entry.id))}}>
+          <Icons name={'delete'} size={30} color='red' style={{marginLeft:10}}/>
+
+          </TouchableOpacity> */}
+        </View>
       </View>
-      <View style={{ flex: 1 }}>
+}
+
+      {entry &&
+        
+        <ScrollView>
+      {entry.image &&<View style={{ marginTop:20, marginHorizontal:20 }}>
+        <Image source={{uri:entry.image}} style={{height:200,width:100, borderRadius:10,borderWidth:2, borderColor:"#3377ff"}}></Image>
+
+      </View>}
+      
+
+       
+      <View style={{ flex: 1,padding:20 }}>
         <TextInput
           defaultValue={entry.content}
           value={entry.content}
-          // onChange={(e) => dispatch(updateEntry({...entry, content: e.nativeEvent.text}))}
           onChange={(e) => {
             const updatedEntry = { ...entry, content: e.nativeEvent.text };
 
@@ -75,15 +128,12 @@ export default function Editor({ route, navigation }: EditorProps) {
 
             dispatch(updateEntry(updatedEntry));
           }}
+          placeholder="Your note here"
           multiline
-          //    textBreakStrategy="balanced"
           style={{
             flex: 6,
-            // alignItems: 'stretch',
             textAlignVertical: "top",
-            // backgroundColor: 'pink',
-            padding: 10,
-            fontSize: 20,
+            fontSize: 17.5,
             fontWeight: "300",
           }}
         />
@@ -91,7 +141,8 @@ export default function Editor({ route, navigation }: EditorProps) {
         <View
           style={{ flex: 0, flexDirection: "row", justifyContent: "flex-end" }}
         >
-          <Button
+          
+          {/* <Button
             onPress={() => navigation.navigate("Home")}
             buttonStyle={{
               width: 100,
@@ -102,22 +153,25 @@ export default function Editor({ route, navigation }: EditorProps) {
               // position: 'absolute',
             }}
             title="Save"
-          />
+          /> */}
         </View>
       </View>
 
-      <View
+      </ScrollView>
+      }
+      {/* <View
         style={{
           flex: 0,
-          padding: 20,
-          borderTopColor: "black",
-          borderTopWidth: 3,
+          paddingHorizontal: 20,
+          paddingVertical:15,
+          borderTopColor: "#3377ff",
+          borderTopWidth: 8,
         }}
       >
-        <Text style={{ fontSize: 20, fontWeight: "200", textAlign: "center" }}>
+        <Text style={{fontSize: 20, fontWeight: "bold", textAlign: "center" }}>
           "Gratitude is the quickest way to happiness"
         </Text>
-      </View>
+      </View> */}
     </SafeAreaView>
   );
 }
