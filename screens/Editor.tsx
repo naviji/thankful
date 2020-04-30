@@ -1,7 +1,12 @@
 import React from "react";
+import Icons from 'react-native-vector-icons/MaterialIcons';
+import * as ImagePicker from 'expo-image-picker';
+import * as Permissions from 'expo-permissions';
 import {
+  StatusBar,
   SafeAreaView,
   StyleSheet,
+  Image,
   Text,
   View,
   Dimensions,
@@ -17,7 +22,11 @@ import { EditorProps, IAppState, Entry } from "../types";
 import * as SQLite from 'expo-sqlite'
 const db = SQLite.openDatabase("paperNote.db")
 
+
 export default function Editor({ route, navigation }: EditorProps) {
+
+
+  
   // const {width, height} = Dimensions.get('window')
   const { entryId } = route.params;
   const dispatch = useDispatch();
@@ -32,7 +41,34 @@ export default function Editor({ route, navigation }: EditorProps) {
     console.log("Success loading database");
   };
 
-  let entries = useSelector((state: IAppState) => state.entries);
+  const getPhotoPermission=async ()=>{
+    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      if (status !== 'granted') {
+        getPhotoPermission()
+      }
+
+  }
+
+  let a="hi";
+  const pickImage= async ()=>{
+    let result  = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing:true,
+      aspect:[4,3],
+      base64:true
+
+    })
+    if(!result.cancelled){
+      a=(result.uri)
+
+      console.log(a)
+    
+    }
+
+
+  }
+  
+  let entries = useSelector((state: IAppState) => {getPhotoPermission(); return(state.entries)});
 
   const entry: Entry | undefined = entries.find((x) => x.id === entryId);
   if (entry === undefined) {
@@ -41,28 +77,35 @@ export default function Editor({ route, navigation }: EditorProps) {
 
   return (
     <SafeAreaView style={{ flex: 1, marginTop: 30 }}>
-      <View
-        style={{
-          flex: 0,
-          backgroundColor: "steelblue",
-          paddingHorizontal: 20,
-          minHeight: 40,
-          borderBottomColor: "black",
-          borderBottomWidth: 3,
-        }}
-      >
-        <Text style={{ fontSize: 30, fontWeight: "700", color: "white" }}>
-          Today
-        </Text>
-        <Text style={{ fontSize: 30, fontWeight: "700", color: "white" }}>
-          I am thankful for
-        </Text>
+      <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
+      <View style={{
+            justifyContent:"space-between",
+            paddingTop:23.5,
+            flex: 0,
+            flexDirection:"row",
+            paddingHorizontal: 20,
+            alignItems:"center",}}>
+        <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+          <Icons name={'arrow-back'} size={30} color='#3377ff'/>
+        </TouchableOpacity>
+        <View style={{justifyContent:"flex-end", flexDirection:"row"}}>
+          <TouchableOpacity onPress={pickImage}>
+          <Icons name={'broken-image'} size={30} color='#3377ff' style={{marginLeft:10}}/>
+
+          </TouchableOpacity>
+          <TouchableOpacity onPress={()=>{}}>
+          <Icons name={'delete'} size={30} color='red' style={{marginLeft:10}}/>
+
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={{ flex: 1 }}>
+      {a!=="hi" && <View>
+        <Image source={{uri:a}} style={{ width: 100, height: 150, borderColor:"blue", borderWidth:2, shadowColor:"blue", borderRadius:10 }}></Image>
+      </View>}
+      <View style={{ flex: 1,padding:20 }}>
         <TextInput
           defaultValue={entry.content}
           value={entry.content}
-          // onChange={(e) => dispatch(updateEntry({...entry, content: e.nativeEvent.text}))}
           onChange={(e) => {
             const updatedEntry = { ...entry, content: e.nativeEvent.text };
 
@@ -75,15 +118,12 @@ export default function Editor({ route, navigation }: EditorProps) {
 
             dispatch(updateEntry(updatedEntry));
           }}
+          placeholder="Your note here"
           multiline
-          //    textBreakStrategy="balanced"
           style={{
             flex: 6,
-            // alignItems: 'stretch',
             textAlignVertical: "top",
-            // backgroundColor: 'pink',
-            padding: 10,
-            fontSize: 20,
+            fontSize: 17.5,
             fontWeight: "300",
           }}
         />
@@ -91,7 +131,7 @@ export default function Editor({ route, navigation }: EditorProps) {
         <View
           style={{ flex: 0, flexDirection: "row", justifyContent: "flex-end" }}
         >
-          <Button
+          {/* <Button
             onPress={() => navigation.navigate("Home")}
             buttonStyle={{
               width: 100,
@@ -102,19 +142,20 @@ export default function Editor({ route, navigation }: EditorProps) {
               // position: 'absolute',
             }}
             title="Save"
-          />
+          /> */}
         </View>
       </View>
 
       <View
         style={{
           flex: 0,
-          padding: 20,
-          borderTopColor: "black",
-          borderTopWidth: 3,
+          paddingHorizontal: 20,
+          paddingVertical:15,
+          borderTopColor: "#3377ff",
+          borderTopWidth: 8,
         }}
       >
-        <Text style={{ fontSize: 20, fontWeight: "200", textAlign: "center" }}>
+        <Text style={{fontSize: 20, fontWeight: "bold", textAlign: "center" }}>
           "Gratitude is the quickest way to happiness"
         </Text>
       </View>

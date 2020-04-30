@@ -9,13 +9,14 @@ import {
   SafeAreaView,
   FlatListProps,
   ListRenderItem,
+  StatusBar,
 } from "react-native";
 import Carousel from "react-native-snap-carousel";
 
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import { loadEntries, createEntry } from "../reducers/entries";
+import { loadEntries, createEntry, removeEntry } from "../reducers/entries";
 
 import { Entry, HomeProps, IAppState } from "../types";
 
@@ -80,7 +81,8 @@ const JournalEntry = (props: any) => {
   const entry: Entry = props.entry;
   // const { width, height } = Dimensions.get("window");
   return (
-    <View
+      
+      <View
       style={{
         flex: 1,
         // minHeight: height/1.23, // replace with dimensions
@@ -153,7 +155,7 @@ export default function Home({ navigation }: HomeProps) {
         [],
         (_, { rows }) => {
           let result = rows._array.map(x => ({...x, date: new Date(x.created_time)}));
-          console.log(result);
+          // console.log(result);
           dispatch(loadEntries(result)) ; 
         }
       );
@@ -170,9 +172,11 @@ export default function Home({ navigation }: HomeProps) {
   //   dispatch(createEntry(entryForToday));
   // }
 
+
   const _renderItem: ListRenderItem<Entry> = ({ item }) => {
-    return (
-      <TouchableOpacity
+      return (
+          <TouchableOpacity
+          onLongPress={()=>{dispatch(removeEntry(item.id))}}
         onPress={() =>
           navigation.navigate("Editor", {
             entryId: item.id,
@@ -183,17 +187,20 @@ export default function Home({ navigation }: HomeProps) {
           flex: 1,
         }}
       >
+        
         <JournalEntry entry={item} />
       </TouchableOpacity>
+      
     );
   };
 
   const { width, height } = Dimensions.get("window");
 
   return (
-    <View style={{ flex: 1, backgroundColor: "steelblue" }}>
+    <View style={{ flex: 1, backgroundColor: "#3377ff" }}>
       <Carousel
-        data={entries}
+      swipeThreshold={20}
+        data={entries.filter(x=>(x.content!==''))}
         renderItem={_renderItem}
         sliderWidth={width / 1}
         itemWidth={width / 1.2}

@@ -22,7 +22,7 @@ export interface CreateEntryAction extends Action<'entries/CREATE'> {
 }
 
 export interface RemoveEntryAction extends Action<'entries/REMOVE'> {
-    entryId: Entry;
+    entryId: Number;
 }
 
 export type EntryActions = 
@@ -34,7 +34,7 @@ export type EntryActions =
 export const loadEntries = (entries: Array<Entry>) => ({type: LOAD, entries})
 export const createEntry = (entry: Entry) => ({type: CREATE, entry})
 export const updateEntry = (entry: Entry) => ({type: UPDATE, entry})
-export const removeEntry = (entryId: number) => ({type: UPDATE, entryId})
+export const removeEntry = (entryId: Number) => ({type: REMOVE, entryId})
 export const addImage = (entry: Entry) => ({type: IMAGE_ADD, entry})
 export const deleteImage = (entryId: number) => ({type: IMAGE_DELETE, entryId})
 
@@ -51,7 +51,9 @@ const reducer = (entries:Array<Entry>=[], action: EntryActions) => {
             return entries.map(x => x.id === action.entry.id ? 
                 action.entry : x).sort(_dateSort)
         case REMOVE:
-            return entries.filter(x => x !== action.entryId)
+            console.log(action.entryId)
+            
+            return entries.filter(x =>( x.id !== action.entryId))
         default:
             console.log("Unknown action!")
             return entries;
