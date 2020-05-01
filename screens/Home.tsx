@@ -10,6 +10,7 @@ import {
   FlatListProps,
   ListRenderItem,
   StatusBar,
+  Button,
 } from "react-native";
 import Carousel from "react-native-snap-carousel";
 
@@ -175,21 +176,25 @@ export default function Home({ navigation }: HomeProps) {
 
   const _renderItem: ListRenderItem<Entry> = ({ item }) => {
       return (
-          <TouchableOpacity
-          onLongPress={()=>{dispatch(removeEntry(item.id))}}
-        onPress={() =>
-          navigation.navigate("Editor", {
-            entryId: item.id,
-          })
-        }
-        key={item.id}
-        style={{
+        <View  style={{
           flex: 1,
-        }}
-      >
-        
-        <JournalEntry entry={item} />
-      </TouchableOpacity>
+        }}>
+          <TouchableOpacity
+      onPress={() =>
+        navigation.navigate("Editor", {
+          entryId: item.id,
+        })
+      }
+      key={item.id}
+      style={{
+        flex: 1,
+      }}
+    >
+      
+      <JournalEntry entry={item} />
+        <Button title="Delete" color="red" onPress={()=>{dispatch(removeEntry(item.id))}}></Button>
+    </TouchableOpacity></View>
+          
       
     );
   };
@@ -197,7 +202,7 @@ export default function Home({ navigation }: HomeProps) {
   const { width, height } = Dimensions.get("window");
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#3377ff" }}>
+    <View style={{ flex: 1, backgroundColor: "#ededed" }}>
       <Carousel
       swipeThreshold={20}
         data={entries.filter(x=>(x.content!==''))}

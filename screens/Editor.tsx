@@ -48,6 +48,7 @@ export default function Editor({ route, navigation }: EditorProps) {
       }
 
   }
+  
 
   let a="hi";
   const pickImage= async ()=>{
