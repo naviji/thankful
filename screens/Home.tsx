@@ -27,7 +27,7 @@ import { Entry, HomeProps, IAppState } from "../types";
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("paperNote.db");
 
-// edit from test1
+// edit from test1 this one edited
 
 //edit from test1 after first merge
 
