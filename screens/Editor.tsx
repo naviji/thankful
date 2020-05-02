@@ -102,7 +102,7 @@ export default function Editor({ route, navigation }: EditorProps) {
         </View>
       </View>
       {entry.image &&<View>
-        <Image source={require("../assets/icon.png")}></Image>
+        <Image source={{uri:entry.image}} style={{height:200,width:100}}></Image>
 
       </View>}
       

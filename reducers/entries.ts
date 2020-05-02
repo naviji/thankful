@@ -57,12 +57,7 @@ const reducer = (entries:Array<Entry>=[], action: EntryActions) => {
             console.log(action.entryId)
             return entries.filter(x =>( x.id !== action.entryId))
         case IMAGE_ADD:
-            entries.map(x => {if(x.id === action.entryId){
-                console.log(action.image);
-                x.image.uri=action.image}
-            }  )
-        
-            
+            return entries.map(entry => (entry.id === action.entryId) ? {...entry, image: action.image} : entry)
         default:
             console.log("Unknown action!")
             return entries;
