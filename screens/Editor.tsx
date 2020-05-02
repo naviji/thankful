@@ -12,7 +12,7 @@ import {
   Dimensions,
   AppState,
 } from "react-native";
-import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
+import { TextInput, TouchableOpacity, ScrollView } from "react-native-gesture-handler";
 import { Button, colors } from "react-native-elements";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -74,13 +74,16 @@ export default function Editor({ route, navigation }: EditorProps) {
 
   const entry: Entry | undefined = entries.find((x) => x.id === entryId);
   if (entry === undefined) {
-    throw new Error("Entry not found!");
+    // throw new Error("Entry not found!");
+    console.log("...here...")
+    navigation.navigate('Home')
   }
 
   return (
     <SafeAreaView style={{ flex: 1, marginTop: 30 }}>
       <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
-      <View style={{
+      {entry &&
+        <View style={{
             justifyContent:"space-between",
             paddingTop:23.5,
             flex: 0,
@@ -95,14 +98,19 @@ export default function Editor({ route, navigation }: EditorProps) {
           <Icons name={'broken-image'} size={30} color='#3377ff' style={{marginLeft:10}}/>
 
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>{}}>
+          <TouchableOpacity onPress={()=>{dispatch(removeEntry(entry.id))}}>
           <Icons name={'delete'} size={30} color='red' style={{marginLeft:10}}/>
 
           </TouchableOpacity>
         </View>
       </View>
-      {entry.image &&<View>
-        <Image source={{uri:entry.image}} style={{height:200,width:100}}></Image>
+}
+
+      {entry &&
+        
+        <ScrollView>
+      {entry.image &&<View style={{ marginTop:20, marginHorizontal:20 }}>
+        <Image source={{uri:entry.image}} style={{height:200,width:100, borderRadius:10,borderWidth:2, borderColor:"#3377ff"}}></Image>
 
       </View>}
       
@@ -152,6 +160,8 @@ export default function Editor({ route, navigation }: EditorProps) {
         </View>
       </View>
 
+      </ScrollView>
+      }
       <View
         style={{
           flex: 0,

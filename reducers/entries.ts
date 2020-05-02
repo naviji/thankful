@@ -55,7 +55,7 @@ const reducer = (entries:Array<Entry>=[], action: EntryActions) => {
                 action.entry : x).sort(_dateSort)
         case REMOVE:
             console.log(action.entryId)
-            return entries.filter(x =>( x.id !== action.entryId))
+            return entries.filter(x=>(x.id!==action.entryId))
         case IMAGE_ADD:
             return entries.map(entry => (entry.id === action.entryId) ? {...entry, image: action.image} : entry)
         default:
