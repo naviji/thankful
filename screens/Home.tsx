@@ -29,6 +29,8 @@ const db = SQLite.openDatabase("paperNote.db");
 
 // edit from test1
 
+//edit from test1 after first merge
+
 
 
 // const data: Array<Entry> = [
