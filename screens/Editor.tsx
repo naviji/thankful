@@ -16,7 +16,7 @@ import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { Button, colors } from "react-native-elements";
 
 import { useSelector, useDispatch } from "react-redux";
-import { updateEntry, createEntry, removeEntry } from "../reducers/entries";
+import { updateEntry, createEntry, removeEntry, addImage } from "../reducers/entries";
 import { EditorProps, IAppState, Entry } from "../types";
 
 import * as SQLite from 'expo-sqlite'
@@ -50,19 +50,20 @@ export default function Editor({ route, navigation }: EditorProps) {
   }
   
 
-  let a="hi";
   const pickImage= async ()=>{
     let result  = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing:true,
       aspect:[4,3],
-      base64:true
+      
 
     })
-    if(!result.cancelled){
-      a=(result.uri)
+    if(!result.cancelled){     
+      
 
-      console.log(a)
+      dispatch(addImage(result.uri,route.params.entryId))
+
+    
     
     }
 
@@ -100,9 +101,13 @@ export default function Editor({ route, navigation }: EditorProps) {
           </TouchableOpacity>
         </View>
       </View>
-      {a!=="hi" && <View>
-        <Image source={{uri:a}} style={{ width: 100, height: 150, borderColor:"blue", borderWidth:2, shadowColor:"blue", borderRadius:10 }}></Image>
+      {entry.image &&<View>
+        <Image source={require("../assets/icon.png")}></Image>
+
       </View>}
+      
+
+       
       <View style={{ flex: 1,padding:20 }}>
         <TextInput
           defaultValue={entry.content}
