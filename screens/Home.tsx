@@ -27,6 +27,10 @@ import { Entry, HomeProps, IAppState } from "../types";
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("paperNote.db");
 
+// edit from test1
+
+
+
 // const data: Array<Entry> = [
 //   {
 //     id: 1,
