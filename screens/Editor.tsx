@@ -1,16 +1,19 @@
-import React from "react";
+import React, {useState} from "react";
 import Icons from 'react-native-vector-icons/MaterialIcons';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
+
 import {
   StatusBar,
   SafeAreaView,
   StyleSheet,
+  Dimensions,
+  Modal,
+  TouchableHighlight,
   Image,
   FlatList,
   Text,
   View,
-  Dimensions,
   AppState,
 } from "react-native";
 import { TextInput, TouchableOpacity, ScrollView } from "react-native-gesture-handler";
@@ -23,9 +26,10 @@ import { EditorProps, IAppState, Entry } from "../types";
 import * as SQLite from 'expo-sqlite'
 const db = SQLite.openDatabase("paperNote.db")
 
+const {height, width} = Dimensions.get('window')
 
 export default function Editor({ route, navigation }: EditorProps) {
-
+  const [modalVisible, setModalVisible] = useState(false);
   // const {width, height} = Dimensions.get('window')
   const { entryId } = route.params;
   const dispatch = useDispatch();
@@ -76,10 +80,9 @@ export default function Editor({ route, navigation }: EditorProps) {
       dispatch(updateEntry({...entry, image:[...entry.image || [], result.uri] }))
     }
   }
-  const _renderItem=(obj)=>{
-    console.log(obj.item)
-
-  }
+  const _renderItem=(obj)=>
+    (<Image key={obj.item.key} source={{uri:obj.item}} style={{height:width/3, width:width/3}}></Image>
+)
   return (
     <SafeAreaView style={{ flex: 1, marginTop: 30 }}>
       {entry &&
@@ -152,16 +155,42 @@ export default function Editor({ route, navigation }: EditorProps) {
       
 
       }
-      {
+      
+
+      
+      <Modal
+        animationType="slide"
+        visible={modalVisible}
+        transparent={false}
+        onRequestClose={()=>{setModalVisible(!modalVisible);}}
+       >
+      <View style={{ marginTop: 22 }}>
+          <View>
+            <TouchableHighlight
+              onPress={() => {
+                setModalVisible(!modalVisible);
+              }}>
+              <Text>Hide Modal</Text>
+            </TouchableHighlight>
+            {
         entry.image &&
-        <View>
           <FlatList data={entry.image}
-          renderItem={(obj)=>{_renderItem(obj)}}>
+          numColumns={3}
+          renderItem={_renderItem}>
 
-          </FlatList>
-          
+          </FlatList>}
+          </View>
+        </View>
+      </Modal>
 
-      </View>}
+      <TouchableHighlight
+        onPress={() => {
+          setModalVisible(true);
+        }}>
+        <Text>Show Modal</Text>
+      </TouchableHighlight>
+
+       
       
     </SafeAreaView>
   );
