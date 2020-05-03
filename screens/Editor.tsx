@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   StyleSheet,
   Image,
+  FlatList,
   Text,
   View,
   Dimensions,
@@ -81,7 +82,6 @@ export default function Editor({ route, navigation }: EditorProps) {
 
   return (
     <SafeAreaView style={{ flex: 1, marginTop: 30 }}>
-      <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
       {entry &&
         <View style={{
             justifyContent:"space-between",
@@ -93,30 +93,26 @@ export default function Editor({ route, navigation }: EditorProps) {
         <TouchableOpacity onPress={() => navigation.navigate("Home")}>
           <Icons name={'arrow-back'} size={30} color='#3377ff'/>
         </TouchableOpacity>
-        <View style={{justifyContent:"flex-end", flexDirection:"row"}}>
-          <TouchableOpacity onPress={pickImage}>
-          <Icons name={'broken-image'} size={30} color='#3377ff' style={{marginLeft:10}}/>
+        <TouchableOpacity onPress={pickImage}>
+          <Icons name={'check'} size={30} color='#3377ff' style={{marginLeft:10}}/>
 
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>{dispatch(removeEntry(entry.id))}}>
-          <Icons name={'delete'} size={30} color='red' style={{marginLeft:10}}/>
-
-          </TouchableOpacity>
-        </View>
+        
       </View>
+      
 }
+  <Text style={{fontSize: 20, fontWeight: "bold", marginHorizontal:20, marginTop:20}}>
+          Tell use about your day..
+        </Text>
 
       {entry &&
         
         <ScrollView>
-      {entry.image &&<View style={{ marginTop:20, marginHorizontal:20 }}>
-        <Image source={{uri:entry.image}} style={{height:200,width:100, borderRadius:10,borderWidth:2, borderColor:"#3377ff"}}></Image>
-
-      </View>}
+      
       
 
        
-      <View style={{ flex: 1,padding:20 }}>
+      <View style={{ flex: 1,paddingHorizontal:20, paddingTop:10 }}>
         <TextInput
           defaultValue={entry.content}
           value={entry.content}
@@ -133,6 +129,8 @@ export default function Editor({ route, navigation }: EditorProps) {
             dispatch(updateEntry(updatedEntry));
           }}
           placeholder="Your note here"
+          autoFocus
+          onTouchStart={()=>{}}
           multiline
           style={{
             flex: 6,
@@ -142,39 +140,18 @@ export default function Editor({ route, navigation }: EditorProps) {
           }}
         />
 
-        <View
-          style={{ flex: 0, flexDirection: "row", justifyContent: "flex-end" }}
-        >
-          {/* <Button
-            onPress={() => navigation.navigate("Home")}
-            buttonStyle={{
-              width: 100,
-              height: 40,
-              backgroundColor: "black",
-              marginHorizontal: 10,
-              marginBottom: 10,
-              // position: 'absolute',
-            }}
-            title="Save"
-          /> */}
-        </View>
+      
       </View>
 
       </ScrollView>
+
       }
-      <View
-        style={{
-          flex: 0,
-          paddingHorizontal: 20,
-          paddingVertical:15,
-          borderTopColor: "#3377ff",
-          borderTopWidth: 8,
-        }}
-      >
-        <Text style={{fontSize: 20, fontWeight: "bold", textAlign: "center" }}>
-          "Gratitude is the quickest way to happiness"
-        </Text>
-      </View>
+      
+        {entry.image &&<View style={{marginHorizontal:0 }}>
+          
+              <Image source={{uri:entry.image}} style={{height:200, width:100, borderWidth:2, borderColor:"#3377ff"}}></Image>
+      </View>}
+      
     </SafeAreaView>
   );
 }
