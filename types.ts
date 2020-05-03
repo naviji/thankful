@@ -7,7 +7,7 @@ import { RouteProp } from '@react-navigation/native';
 export interface Entry {
     id: number,
     date: Date,
-    image: string,
+    image?: string,
     content: string
 }
 

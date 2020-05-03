@@ -37,7 +37,6 @@ function MyStack() {
     <Stack.Navigator initialRouteName="Home">
       
       <Stack.Screen
-      
         name="Home"
         component={Home}
         options={{
@@ -45,32 +44,19 @@ function MyStack() {
           
           headerTitle: props => {return(<View>
                                           <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
-                                          <Text {...props} style={{fontSize: 28, fontWeight: '700', elevation: 6}}>Thankfully</Text>
+                                          <Text {...props} style={{fontSize: 23, fontWeight: '700', elevation: 6}}>Thankfully</Text>
                                         </View>)},
           headerRight: props => <Icon
           
           iconStyle={{
-            // width: 40,
-            // height: 40,
-            // padding: 4,
-          }}
-          onPress={() => console.log('Begin search!')}
-          name='search' />
-          ,
-          headerLeft: props => <Icon
-          
-          iconStyle={{
-            // width: 40,
-            // height: 40,
-            // padding: 4,
+            padding: 8,
           }}
           
-          onPress={() => console.log('Open menu')}
-          name='menu' />
+          onPress={() => console.log('Open settings')}
+          name='settings' />
         }}
-      >
+      />
 
-      </Stack.Screen>
       <Stack.Screen
         name="Editor"
         component={Editor}
