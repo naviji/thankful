@@ -11,6 +11,7 @@ import reducer from "./reducers/index"
 
 import Home from "./screens/Home";
 import Editor from "./screens/Editor";
+import ImageShowScreen from './screens/ImageShowScreen'
 
 import {RootStackParamList} from './types'
 
@@ -64,6 +65,10 @@ function MyStack() {
           headerShown: false,
         }}
       />
+      <Stack.Screen name="ImageShow" component={ImageShowScreen} options={{
+          headerShown: false,
+        }}/>
+      
       
     </Stack.Navigator>
   );

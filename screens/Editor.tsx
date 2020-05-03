@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import { Icon } from "react-native-elements";
 import Icons from 'react-native-vector-icons/MaterialIcons';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
@@ -78,10 +79,13 @@ export default function Editor({ route, navigation }: EditorProps) {
     if(!result.cancelled){     
       // dispatch(updateEntry({...entry, image: result.uri}))
       dispatch(updateEntry({...entry, image:[...entry.image || [], result.uri] }))
+      setModalVisible(true);
     }
   }
-  const _renderItem=(obj)=>
-    (<Image key={obj.item.key} source={{uri:obj.item}} style={{height:width/3, width:width/3}}></Image>
+  const _renderItem=(obj)=>(
+    <TouchableHighlight onPress={()=>{console.log("Hi");navigation.navigate("ImageShow", {image:obj.item})}}>
+      <Image key={obj.item.key} source={{uri:obj.item}} style={{height:width/3, width:width/3}}></Image>
+    </TouchableHighlight>
 )
   return (
     <SafeAreaView style={{ flex: 1, marginTop: 30 }}>
@@ -166,15 +170,16 @@ export default function Editor({ route, navigation }: EditorProps) {
        >
       <View style={{ marginTop: 22 }}>
           <View>
-            <TouchableHighlight
-              onPress={() => {
-                setModalVisible(!modalVisible);
-              }}>
-              <Text>Hide Modal</Text>
-            </TouchableHighlight>
+            
+              <Icon
+          name="clear"
+          onPress={() => {setModalVisible(!modalVisible);}}
+        />
             {
         entry.image &&
-          <FlatList data={entry.image}
+          <FlatList
+          style={{paddingTop:20}}
+          data={entry.image}
           numColumns={3}
           renderItem={_renderItem}>
 
@@ -183,12 +188,20 @@ export default function Editor({ route, navigation }: EditorProps) {
         </View>
       </Modal>
 
-      <TouchableHighlight
-        onPress={() => {
-          setModalVisible(true);
-        }}>
-        <Text>Show Modal</Text>
-      </TouchableHighlight>
+      <View style={{marginHorizontal:20,marginBottom:20}}>
+        <TouchableOpacity
+          onPress={() => {
+            setModalVisible(true);
+          }}>
+            <Text style={{fontSize: 18, color:"#3377ff", fontWeight: "bold"}}>
+          Show images..
+        </Text>
+
+
+        </TouchableOpacity>
+
+      </View>
+      
 
        
       

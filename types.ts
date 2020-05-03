@@ -14,6 +14,7 @@ export interface Entry {
 export type RootStackParamList = {
   Home: undefined;
   Editor: { entryId: number };
+  ImageShow: {image:string}
 };
 
 
