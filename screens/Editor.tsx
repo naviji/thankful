@@ -16,7 +16,7 @@ import { TextInput, TouchableOpacity, ScrollView } from "react-native-gesture-ha
 import { Button, colors } from "react-native-elements";
 
 import { useSelector, useDispatch } from "react-redux";
-import { updateEntry, createEntry, removeEntry, addImage } from "../reducers/entries";
+import { updateEntry, createEntry, removeEntry } from "../reducers/entries";
 import { EditorProps, IAppState, Entry } from "../types";
 
 import * as SQLite from 'expo-sqlite'
@@ -25,8 +25,6 @@ const db = SQLite.openDatabase("paperNote.db")
 
 export default function Editor({ route, navigation }: EditorProps) {
 
-
-  
   // const {width, height} = Dimensions.get('window')
   const { entryId } = route.params;
   const dispatch = useDispatch();
@@ -50,35 +48,33 @@ export default function Editor({ route, navigation }: EditorProps) {
   }
   
 
+  
+  let entries = useSelector((state: IAppState) => {return(state.entries)});
+
+  let item: Entry | undefined = entries.find((x) => x.id === entryId);
+  const entry: Entry = item ? item : {id: -1, content: '', date: new Date()}
+  // if (entry === undefined) {
+  //   // throw new Error("Entry not found!");
+  //   entry = {
+  //     id: -1,
+  //     content: '',
+  //     date: new Date(),
+  //   }
+  //   // console.log("...here...")
+  //   navigation.navigate('Home')
+  // }
+
   const pickImage= async ()=>{
     let result  = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing:true,
       aspect:[4,3],
-      
-
     })
     if(!result.cancelled){     
-      
-
-      dispatch(addImage(result.uri,route.params.entryId))
-
-    
-    
+      // dispatch(updateEntry({...entry, image: result.uri}))
+      dispatch(updateEntry({...entry, image: result.uri}))
     }
-
-
   }
-  
-  let entries = useSelector((state: IAppState) => {getPhotoPermission(); return(state.entries)});
-
-  const entry: Entry | undefined = entries.find((x) => x.id === entryId);
-  if (entry === undefined) {
-    // throw new Error("Entry not found!");
-    console.log("...here...")
-    navigation.navigate('Home')
-  }
-
   return (
     <SafeAreaView style={{ flex: 1, marginTop: 30 }}>
       <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
@@ -94,14 +90,14 @@ export default function Editor({ route, navigation }: EditorProps) {
           <Icons name={'arrow-back'} size={30} color='#3377ff'/>
         </TouchableOpacity>
         <View style={{justifyContent:"flex-end", flexDirection:"row"}}>
-          <TouchableOpacity onPress={pickImage}>
-          <Icons name={'broken-image'} size={30} color='#3377ff' style={{marginLeft:10}}/>
+          <TouchableOpacity onPress={() => { getPhotoPermission(); pickImage();}}>
+          <Icons name={'attach-file'} size={30} color='#3377ff' style={{marginLeft:10}}/>
 
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>{dispatch(removeEntry(entry.id))}}>
+          {/* <TouchableOpacity onPress={()=>{dispatch(removeEntry(entry.id))}}>
           <Icons name={'delete'} size={30} color='red' style={{marginLeft:10}}/>
 
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
 }
@@ -145,6 +141,7 @@ export default function Editor({ route, navigation }: EditorProps) {
         <View
           style={{ flex: 0, flexDirection: "row", justifyContent: "flex-end" }}
         >
+          
           {/* <Button
             onPress={() => navigation.navigate("Home")}
             buttonStyle={{
@@ -162,7 +159,7 @@ export default function Editor({ route, navigation }: EditorProps) {
 
       </ScrollView>
       }
-      <View
+      {/* <View
         style={{
           flex: 0,
           paddingHorizontal: 20,
@@ -174,7 +171,7 @@ export default function Editor({ route, navigation }: EditorProps) {
         <Text style={{fontSize: 20, fontWeight: "bold", textAlign: "center" }}>
           "Gratitude is the quickest way to happiness"
         </Text>
-      </View>
+      </View> */}
     </SafeAreaView>
   );
 }
