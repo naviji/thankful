@@ -148,8 +148,7 @@ export default function Editor({ route, navigation }: EditorProps) {
       }
       
         {entry.image &&<View style={{marginHorizontal:0 }}>
-          
-              <Image source={{uri:entry.image}} style={{height:200, width:100, borderWidth:2, borderColor:"#3377ff"}}></Image>
+              <Image source={{uri:entry.image[0]}} style={{height:200, width:100, borderWidth:2, borderColor:"#3377ff"}}></Image>
       </View>}
       
     </SafeAreaView>
