@@ -65,10 +65,6 @@ function MyStack() {
           headerShown: false,
         }}
       />
-      <Stack.Screen name="ImageShow" component={ImageShowScreen} options={{
-          headerShown: false,
-        }}/>
-      
       
     </Stack.Navigator>
   );

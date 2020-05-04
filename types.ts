@@ -14,7 +14,6 @@ export interface Entry {
 export type RootStackParamList = {
   Home: undefined;
   Editor: { entryId: number };
-  ImageShow: {image:string}
 };
 
 
@@ -41,21 +40,6 @@ export type HomeProps = {
   navigation: HomeScreenNavigationProp
   route: HomeScreenRouteProp
 };
-
-type ImageScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  'ImageShow'
->;
-
-type ImageScreenRouteProp = RouteProp<RootStackParamList, 'ImageShow'>;
-
-export type ImageShowProps = {
-  navigation: ImageScreenNavigationProp
-  route: ImageScreenRouteProp
-};
-
-
-
 
 
 

@@ -107,10 +107,6 @@ export default function Editor({ route, navigation }: EditorProps) {
           <Icons name={'attach-file'} size={30} color='#3377ff' style={{marginLeft:10}}/>
 
           </TouchableOpacity>
-          {/* <TouchableOpacity onPress={()=>{dispatch(removeEntry(entry.id))}}>
-          <Icons name={'delete'} size={30} color='red' style={{marginLeft:10}}/>
-
-          </TouchableOpacity> */}
         </View>
       </View>
       
@@ -201,7 +197,13 @@ export default function Editor({ route, navigation }: EditorProps) {
         </View>
       </Modal>
 
-      <View style={{marginHorizontal:20,marginBottom:20}}>
+      <View style={{
+            justifyContent:"space-between",
+            paddingBottom:20,
+            flex: 0,
+            flexDirection:"row",
+            paddingHorizontal: 20,
+            alignItems:"center",}}>
         <TouchableOpacity
           onPress={() => {
             setModalVisible(true);
@@ -209,12 +211,18 @@ export default function Editor({ route, navigation }: EditorProps) {
             <Text style={{fontSize: 18, color:"#3377ff", fontWeight: "bold"}}>
           Show images..
         </Text>
-
-
         </TouchableOpacity>
+        <View style={{justifyContent:"flex-end", flexDirection:"row"}}>
+          <TouchableOpacity onPress={() => { navigation.navigate('Home') }}>
+          <Icons name={'check'} size={30} color='#3377ff' style={{marginLeft:10}}/>
 
-      </View>
-      
+          </TouchableOpacity>
+          {/* <TouchableOpacity onPress={()=>{dispatch(removeEntry(entry.id))}}>
+          <Icons name={'delete'} size={30} color='red' style={{marginLeft:10}}/>
+
+          </TouchableOpacity> */}
+        </View>
+        </View>
 
        
       

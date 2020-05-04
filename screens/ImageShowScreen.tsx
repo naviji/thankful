@@ -1,7 +1,6 @@
 import React from 'react'
-import {View, Image, Dimensions} from 'react-native'
+import { Image, Dimensions} from 'react-native'
 const {height, width} = Dimensions.get('window')
-import {ImageShowProps} from '../types'
 
 export default function ImageShowScreen (props){
     
