@@ -1,9 +1,13 @@
 import React, { useState } from "react";
+import Icons from 'react-native-vector-icons/MaterialIcons';
 import { Icon, Text } from "react-native-elements";
 import {
   ScrollView,
+  FlatList,
   Dimensions,
+  TouchableHighlight,
   StyleSheet,
+  Image,
   TouchableOpacity,
   View,
   SafeAreaView,
@@ -25,6 +29,7 @@ import { Entry, HomeProps, IAppState } from "../types";
 
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("paperNote.db");
+const {height, width} = Dimensions.get('window')
 
 const dummyData: Array<Entry> = [
   {
@@ -76,7 +81,9 @@ const isYesterday = (dateToCheck: Date): Boolean => {
   yesterdayDate.setHours(0, 0, 0, 0);
   return yesterdayDate.valueOf() === dateToCompare.valueOf();
 };
-
+const _renderItemFlatList=(obj)=>(
+  <Image source={{uri:obj.item}} style={{height:width/4, width:width/4,margin:1.5}}></Image>
+  )
 const JournalEntry = (props: any) => {
   const entry: Entry = props.entry;
   const dispatch = useDispatch();
@@ -95,10 +102,23 @@ const JournalEntry = (props: any) => {
         borderRadius: 10,
       }}
     >
-      <View
-        style={{ flex: 0, justifyContent: "flex-end", flexDirection: "row" }}
-      >
-        <Icon
+
+<View style={{
+            justifyContent:"space-between",
+            flex: 0,
+            flexDirection:"row",
+            alignItems:"center",}}>
+        <Text style={{ fontSize: 30, fontWeight: "700"}}>
+        {isToday(entry.date)
+          ? "Today"
+          : isYesterday(entry.date)
+          ? "Yesterday"
+          : entry.date.toDateString()}
+      </Text>
+        <View style={{justifyContent:"flex-end", flexDirection:"row"}}>
+          <TouchableOpacity onPress={() => { }}>
+          <Icon
+        style={{justifyContent: "flex-end"}}
           name="clear"
           onPress={() => {
             db.transaction(
@@ -117,19 +137,25 @@ const JournalEntry = (props: any) => {
             dispatch(removeEntry(entry.id));
           }}
         />
+
+          </TouchableOpacity>
+        </View>
       </View>
-      <Text style={{ fontSize: 30, fontWeight: "700" }}>
-        {isToday(entry.date)
-          ? "Today"
-          : isYesterday(entry.date)
-          ? "Yesterday"
-          : entry.date.toDateString()}
-      </Text>
       <Text style={{ fontSize: 20, marginTop: 10 }}>
         {entry.content.length > 600
           ? entry.content.slice(0, 600) + "..."
           : entry.content}
       </Text>
+      {entry.image &&
+          <FlatList
+          style={{alignSelf:"center"}}
+          data={entry.image}
+          numColumns={3}
+          renderItem={_renderItemFlatList}>
+
+          </FlatList>}
+
+      
     </View>
   );
 };
@@ -143,6 +169,8 @@ const _onSuccess: SQLite.SQLVoidCallback | undefined = () => {
 };
 
 export default function Home({ navigation }: HomeProps) {
+  
+  
   // const [entries, setEntires] = useState(data);
   //   const entries: Array<Entry> = useSelector(state => state.entries);
   // const windowHeight = useWindowDimensions().height;

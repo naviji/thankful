@@ -84,9 +84,9 @@ export default function Editor({ route, navigation }: EditorProps) {
       setModalVisible(true);
     }
   }
-  const _renderItem=(obj)=>(
+  const _renderItemFlatList=(obj)=>(
     <TouchableHighlight onPress={()=>{setselectedImage(obj.item)}}>
-      <Image key={obj.item.key} source={{uri:obj.item}} style={{height:width/3.1, width:width/3.1,margin:1.5}}></Image>
+      <Image source={{uri:obj.item}} style={{height:width/3.1, width:width/3.1,margin:1.5}}></Image>
     </TouchableHighlight>
 )
   return (
@@ -187,7 +187,7 @@ export default function Editor({ route, navigation }: EditorProps) {
           style={{alignSelf:"center"}}
           data={entry.image}
           numColumns={3}
-          renderItem={_renderItem}>
+          renderItem={_renderItemFlatList}>
 
           </FlatList>}
 
