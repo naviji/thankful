@@ -1,12 +1,12 @@
 import React from 'react'
 import {View, Image, Dimensions} from 'react-native'
 const {height, width} = Dimensions.get('window')
+import {ImageShowProps} from '../types'
 
-export default function ImageShowScreen ({route, navigation}){
+export default function ImageShowScreen (props){
     
     return(
-        <View>
-            <Image resizeMode="cover" source={{uri:route.image}} style={{height:height, width:"100%"}}></Image>
-        </View>
+            <Image resizeMode="contain" source={{uri:props.image}} style={{height:height/2.2, width:width}}></Image>
+        
     )
 }

@@ -25,12 +25,14 @@ import { updateEntry, createEntry, removeEntry } from "../reducers/entries";
 import { EditorProps, IAppState, Entry } from "../types";
 
 import * as SQLite from 'expo-sqlite'
+import ImageShowScreen from "./ImageShowScreen";
 const db = SQLite.openDatabase("paperNote.db")
 
 const {height, width} = Dimensions.get('window')
 
 export default function Editor({ route, navigation }: EditorProps) {
   const [modalVisible, setModalVisible] = useState(false);
+  const [selectedImage, setselectedImage] = useState(null);
   // const {width, height} = Dimensions.get('window')
   const { entryId } = route.params;
   const dispatch = useDispatch();
@@ -83,8 +85,8 @@ export default function Editor({ route, navigation }: EditorProps) {
     }
   }
   const _renderItem=(obj)=>(
-    <TouchableHighlight onPress={()=>{console.log("Hi");navigation.navigate("ImageShow", {image:obj.item})}}>
-      <Image key={obj.item.key} source={{uri:obj.item}} style={{height:width/3, width:width/3}}></Image>
+    <TouchableHighlight onPress={()=>{setselectedImage(obj.item)}}>
+      <Image key={obj.item.key} source={{uri:obj.item}} style={{height:width/3.1, width:width/3.1,margin:1.5}}></Image>
     </TouchableHighlight>
 )
   return (
@@ -169,22 +171,33 @@ export default function Editor({ route, navigation }: EditorProps) {
         onRequestClose={()=>{setModalVisible(!modalVisible);}}
        >
       <View style={{ marginTop: 22 }}>
-          <View>
             
               <Icon
           name="clear"
           onPress={() => {setModalVisible(!modalVisible);}}
         />
+
+      <ScrollView>
+
+      { selectedImage &&
+          <ImageShowScreen image={selectedImage}/> }
+
             {
+              
+              
+
         entry.image &&
           <FlatList
-          style={{paddingTop:20}}
+          style={{alignSelf:"center"}}
           data={entry.image}
           numColumns={3}
           renderItem={_renderItem}>
 
           </FlatList>}
-          </View>
+
+      </ScrollView>
+
+          
         </View>
       </Modal>
 

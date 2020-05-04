@@ -42,6 +42,21 @@ export type HomeProps = {
   route: HomeScreenRouteProp
 };
 
+type ImageScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'ImageShow'
+>;
+
+type ImageScreenRouteProp = RouteProp<RootStackParamList, 'ImageShow'>;
+
+export type ImageShowProps = {
+  navigation: ImageScreenNavigationProp
+  route: ImageScreenRouteProp
+};
+
+
+
+
 
 
 export interface IAppState{
