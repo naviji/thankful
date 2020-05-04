@@ -76,12 +76,13 @@ export default function Editor({ route, navigation }: EditorProps) {
     let result  = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing:true,
-      aspect:[4,3],
+      aspect:[4,3]
     })
     if(!result.cancelled){     
       // dispatch(updateEntry({...entry, image: result.uri}))
       dispatch(updateEntry({...entry, image:[...entry.image || [], result.uri] }))
       setModalVisible(true);
+      setselectedImage(result.uri)
     }
   }
   const _renderItemFlatList=(obj)=>(
@@ -208,9 +209,10 @@ export default function Editor({ route, navigation }: EditorProps) {
           onPress={() => {
             setModalVisible(true);
           }}>
-            <Text style={{fontSize: 18, color:"#3377ff", fontWeight: "bold"}}>
+            { entry.image &&
+              <Text style={{fontSize: 18, color:"#3377ff", fontWeight: "bold"}}>
           Show images..
-        </Text>
+        </Text>}
         </TouchableOpacity>
         <View style={{justifyContent:"flex-end", flexDirection:"row"}}>
           <TouchableOpacity onPress={() => { navigation.navigate('Home') }}>

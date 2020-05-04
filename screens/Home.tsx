@@ -82,7 +82,7 @@ const isYesterday = (dateToCheck: Date): Boolean => {
   return yesterdayDate.valueOf() === dateToCompare.valueOf();
 };
 const _renderItemFlatList=(obj)=>(
-  <Image source={{uri:obj.item}} style={{height:width/4, width:width/4,margin:1.5}}></Image>
+  <Image source={{uri:obj.item}} style={{alignItems:"center", height:width/4.5, width:width/4.5,margin:1.5}}></Image>
   )
 const JournalEntry = (props: any) => {
   const entry: Entry = props.entry;
@@ -106,9 +106,9 @@ const JournalEntry = (props: any) => {
 <View style={{
             justifyContent:"space-between",
             flex: 0,
-            flexDirection:"row",
-            alignItems:"center",}}>
-        <Text style={{ fontSize: 30, fontWeight: "700"}}>
+            alignItems:"center",
+            flexDirection:"row",}}>
+        <Text style={{ fontSize: 20, fontWeight: "700"}}>
         {isToday(entry.date)
           ? "Today"
           : isYesterday(entry.date)
@@ -141,19 +141,22 @@ const JournalEntry = (props: any) => {
           </TouchableOpacity>
         </View>
       </View>
+      <View style={{flex:3,}}>
       <Text style={{ fontSize: 20, marginTop: 10 }}>
-        {entry.content.length > 600
-          ? entry.content.slice(0, 600) + "..."
+        {entry.content.length > 20
+          ? entry.content.slice(0, 20) + "..."
           : entry.content}
-      </Text>
-      {entry.image &&
+      </Text></View>
+      {entry.image &&<View  style={{flex:2,}} >
+        
           <FlatList
           style={{alignSelf:"center"}}
-          data={entry.image}
+          data={entry.image.slice(0,3)}
           numColumns={3}
           renderItem={_renderItemFlatList}>
 
-          </FlatList>}
+          </FlatList></View>}
+      
 
       
     </View>
@@ -249,13 +252,7 @@ export default function Home({ navigation }: HomeProps) {
         >
           <JournalEntry entry={item} />
         </TouchableOpacity>
-        {/* <Button
-          title="Delete"
-          color="red"
-          onPress={() => {
-            dispatch(removeEntry(item.id));
-          }}
-        /> */}
+        
       </View>
     );
   };
@@ -263,9 +260,11 @@ export default function Home({ navigation }: HomeProps) {
   const { width, height } = Dimensions.get("window");
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#ededed" }}>
-      <View style={{flex: 8}}>
+    <View style={{ flex: 1, paddingTop:80 }}>
+      <View style={{flex: 2, paddingBottom:20}}>
       <Carousel
+      layout="tinder"
+      layoutCardOffset={18}
         // swipeThreshold={20} //default
         // data={entries.filter((x) => x.content !== "")}
         data={entries}
@@ -275,7 +274,8 @@ export default function Home({ navigation }: HomeProps) {
         // layout={'stack'}
       />
       </View>
-      <View style={{ flex: 1, alignItems: 'center'}}>
+      <View style={{flex: .4}}></View>
+      <View style={{ flex: 0, alignItems: 'center'}}>
         <Icon
           raised
           size={33} 
