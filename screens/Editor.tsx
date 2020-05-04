@@ -87,7 +87,7 @@ export default function Editor({ route, navigation }: EditorProps) {
   }
   const _renderItemFlatList=(obj)=>(
     <TouchableHighlight onPress={()=>{setselectedImage(obj.item)}}>
-      <Image source={{uri:obj.item}} style={{height:width/3.1, width:width/3.1,margin:1.5}}></Image>
+      <Image key={obj.item} source={{uri:obj.item}} style={{height:width/3.1, width:width/3.1,margin:1.5}}></Image>
     </TouchableHighlight>
 )
   return (

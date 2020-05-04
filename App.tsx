@@ -43,10 +43,9 @@ function MyStack() {
         options={{
           title: "Thankfully",
           
-          headerTitle: props => {return(<View>
-                                          <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
+          headerTitle: props => {return(
                                           <Text {...props} style={{fontSize: 23, fontWeight: '700', elevation: 6}}>Thankfully</Text>
-                                        </View>)},
+                                        )},
           headerRight: props => <Icon
           
           iconStyle={{
@@ -74,6 +73,7 @@ export default function App() {
   return (
     <StoreProvider store={store}>
       <ThemeProvider>
+        <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
         <NavigationContainer>{MyStack()}</NavigationContainer>
       </ThemeProvider>
     </StoreProvider>
