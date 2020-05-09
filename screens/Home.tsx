@@ -155,7 +155,8 @@ const JournalEntry = (props: any) => {
           numColumns={3}
           renderItem={_renderItemFlatList}>
 
-          </FlatList></View>}
+          </FlatList></View>
+          }
       
 
       
