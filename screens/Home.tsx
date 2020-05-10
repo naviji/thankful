@@ -30,7 +30,7 @@ import { Entry, HomeProps, IAppState } from "../types";
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("paperNote.db");
 const {height, width} = Dimensions.get('window')
-
+let bgColor="#161616"
 const dummyData: Array<Entry> = [
   {
     id: 1,
@@ -82,11 +82,7 @@ const isYesterday = (dateToCheck: Date): Boolean => {
   return yesterdayDate.valueOf() === dateToCompare.valueOf();
 };
 const _renderItemFlatList=(obj)=>(
-<<<<<<< Updated upstream
-  <Image source={{uri:obj.item}} style={{alignItems:"center", height:width/4.5, width:width/4.5,margin:1.5}}></Image>
-=======
-  <Image key={obj.item} blurRadius={20} source={{uri:obj.item}} style={{alignItems:"center", height:width/4.5, width:width/4.5,margin:1.5}}></Image>
->>>>>>> Stashed changes
+  <Image key={obj.item} source={{uri:obj.item}} style={{alignItems:"center", height:width/4.5, width:width/4.5,margin:1.5}}></Image>
   )
 const JournalEntry = (props: any) => {
   const entry: Entry = props.entry;
@@ -97,7 +93,7 @@ const JournalEntry = (props: any) => {
       style={{
         flex: 1,
         // minHeight: height/1.23, // replace with dimensions
-        backgroundColor: "#FFA2A0",
+        backgroundColor: "#8249E4",
         padding: 16,
         elevation: 4,
         marginTop: 20,
@@ -112,7 +108,7 @@ const JournalEntry = (props: any) => {
             flex: 0,
             alignItems:"center",
             flexDirection:"row",}}>
-        <Text style={{ fontSize: 20, fontWeight: "700", color:"#BB5664"}}>
+        <Text style={{ fontSize: 20, fontWeight: "700", color:"#ededed"}}>
         {isToday(entry.date)
           ? "Today"
           : isYesterday(entry.date)
@@ -122,6 +118,7 @@ const JournalEntry = (props: any) => {
         <View style={{justifyContent:"flex-end", flexDirection:"row"}}>
           <TouchableOpacity onPress={() => { }}>
           <Icon
+          color="#ededed"
         style={{justifyContent: "flex-end"}}
           name="clear"
           onPress={() => {
@@ -146,7 +143,7 @@ const JournalEntry = (props: any) => {
         </View>
       </View>
       <View style={{flex:3,}}>
-      <Text style={{ fontSize: 20, marginTop: 10, color:"#DDE7F6" }}>
+      <Text style={{ fontSize: 20, marginTop: 10, color:"#ededed" }}>
         {entry.content.length > 20
           ? entry.content.slice(0, 20) + "..."
           : entry.content}
@@ -247,7 +244,7 @@ export default function Home({ navigation }: HomeProps) {
         <TouchableOpacity
           onPress={() =>
             navigation.navigate("Editor", {
-              entryId: item.id,
+              entryId: item.id, backgroundColor:bgColor, textColor:"white", iconColor:"#3377ff"
             })
           }
           key={item.id}
@@ -265,8 +262,12 @@ export default function Home({ navigation }: HomeProps) {
   const { width, height } = Dimensions.get("window");
 
   return (
-    <View style={{ flex: 1, paddingTop:80, backgroundColor:"#233355"}}>
-      <View style={{flex: 2, paddingBottom:20}}>
+    <View style={{ flex: 1, paddingTop:120, backgroundColor:"#161616"}}>
+      <View style={{flex: .25, paddingHorizontal:40}}>
+        <Text style={{color:"white", fontSize:20, fontWeight:"bold"}}>Good Morning</Text>
+      </View>
+
+      <View style={{flex: 2, paddingBottom:55}}>
       <Carousel
       layout="tinder"
       layoutCardOffset={18}
@@ -279,7 +280,6 @@ export default function Home({ navigation }: HomeProps) {
         // layout={'stack'}
       />
       </View>
-      <View style={{flex: .4}}></View>
       <View style={{ flex: 0, alignItems: 'center'}}>
         <Icon
           raised
@@ -317,7 +317,7 @@ export default function Home({ navigation }: HomeProps) {
             dispatch(createEntry(newEntry));
 
             navigation.navigate("Editor", {
-              entryId: newEntry.id,
+              entryId: newEntry.id, backgroundColor:bgColor, textColor:"white", iconColor:"#3377ff"
             });
           }}
           name="event"

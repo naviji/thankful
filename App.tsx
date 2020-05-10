@@ -41,20 +41,7 @@ function MyStack() {
         name="Home"
         component={Home}
         options={{
-          title: "Thankfully",
-          
-          headerTitle: props => {return(<View>
-                                          <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
-                                          <Text {...props} style={{fontSize: 23, fontWeight: '700', elevation: 6}}>Thankfully</Text>
-                                        </View>)},
-          headerRight: props => <Icon
-          
-          iconStyle={{
-            padding: 8,
-          }}
-          
-          onPress={() => console.log('Open settings')}
-          name='settings' />
+          headerShown: false,
         }}
       />
 
@@ -74,7 +61,7 @@ export default function App() {
   return (
     <StoreProvider store={store}>
       <ThemeProvider>
-        <StatusBar translucent backgroundColor="transparent" barStyle="dark-content"  />
+        <StatusBar translucent backgroundColor="#1d1d1d" barStyle="light-content"  />
         <NavigationContainer>{MyStack()}</NavigationContainer>
       </ThemeProvider>
     </StoreProvider>

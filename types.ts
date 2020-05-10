@@ -13,7 +13,7 @@ export interface Entry {
 
 export type RootStackParamList = {
   Home: undefined;
-  Editor: { entryId: number };
+  Editor: { entryId: number, backgroundColor:string, textColor:string, iconColor:string };
 };
 
 

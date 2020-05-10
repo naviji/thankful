@@ -34,10 +34,13 @@ export default function Editor({ route, navigation }: EditorProps) {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setselectedImage] = useState(null);
   // const {width, height} = Dimensions.get('window')
-  const { entryId } = route.params;
+  const  entryId  = route.params.entryId;
   const dispatch = useDispatch();
   //   console.log("")
-  // console.log(entryId);
+  console.log(entryId);
+  let bgColor=route.params.backgroundColor
+  let textColor=route.params.textColor
+  let iconColor=route.params.iconColor
 
   const _onError: SQLite.SQLTransactionErrorCallback | undefined = (e) => {
     console.warn(e);
@@ -91,7 +94,7 @@ export default function Editor({ route, navigation }: EditorProps) {
     </TouchableHighlight>
 )
   return (
-    <SafeAreaView style={{ flex: 1, marginTop: 30 }}>
+    <SafeAreaView style={{ flex: 1, marginTop: 30, backgroundColor:bgColor,}}>
       {entry &&
         <View style={{
             justifyContent:"space-between",
@@ -101,18 +104,18 @@ export default function Editor({ route, navigation }: EditorProps) {
             paddingHorizontal: 20,
             alignItems:"center",}}>
         <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-          <Icons name={'arrow-back'} size={30} color='#3377ff'/>
+          <Icons name={'arrow-back'} size={30} color={iconColor}/>
         </TouchableOpacity>
         <View style={{justifyContent:"flex-end", flexDirection:"row"}}>
           <TouchableOpacity onPress={() => { getPhotoPermission(); pickImage();}}>
-          <Icons name={'attach-file'} size={30} color='#3377ff' style={{marginLeft:10}}/>
+          <Icons name={'attach-file'} size={30} color={iconColor} style={{marginLeft:10}}/>
 
           </TouchableOpacity>
         </View>
       </View>
       
 }
-  <Text style={{fontSize: 20, fontWeight: "bold", marginHorizontal:20, marginTop:20}}>
+  <Text style={{fontSize: 20, fontWeight: "bold", marginHorizontal:20, marginTop:20, color:textColor}}>
           Tell use about your day..
         </Text>
 
@@ -145,6 +148,7 @@ export default function Editor({ route, navigation }: EditorProps) {
           multiline
           style={{
             flex: 6,
+            color:textColor,
             textAlignVertical: "top",
             fontSize: 17.5,
             fontWeight: "300",
@@ -210,13 +214,13 @@ export default function Editor({ route, navigation }: EditorProps) {
             setModalVisible(true);
           }}>
             { entry.image &&
-              <Text style={{fontSize: 18, color:"#3377ff", fontWeight: "bold"}}>
+              <Text style={{fontSize: 18, color:iconColor, fontWeight: "bold"}}>
           Show images..
         </Text>}
         </TouchableOpacity>
         <View style={{justifyContent:"flex-end", flexDirection:"row"}}>
           <TouchableOpacity onPress={() => { navigation.navigate('Home') }}>
-          <Icons name={'check'} size={30} color='#3377ff' style={{marginLeft:10}}/>
+          <Icons name={'check'} size={30} color={iconColor} style={{marginLeft:10}}/>
 
           </TouchableOpacity>
           {/* <TouchableOpacity onPress={()=>{dispatch(removeEntry(entry.id))}}>
