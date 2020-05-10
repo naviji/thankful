@@ -116,7 +116,7 @@ export default function Editor({ route, navigation }: EditorProps) {
       
 }
   <Text style={{fontSize: 20, fontWeight: "bold", marginHorizontal:20, marginTop:20, color:textColor}}>
-          Tell use about your day..
+          Tell us about your day..
         </Text>
 
       {entry &&
@@ -143,7 +143,6 @@ export default function Editor({ route, navigation }: EditorProps) {
             dispatch(updateEntry(updatedEntry));
           }}
           placeholder="Your note here"
-          autoFocus
           onTouchStart={()=>{}}
           multiline
           style={{

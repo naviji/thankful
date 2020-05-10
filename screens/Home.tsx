@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import Icons from 'react-native-vector-icons/MaterialIcons';
 import { Icon, Text } from "react-native-elements";
+
+import { ToggleButton } from 'react-native-paper';
 import {
   ScrollView,
   FlatList,
@@ -30,7 +32,7 @@ import { Entry, HomeProps, IAppState } from "../types";
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("paperNote.db");
 const {height, width} = Dimensions.get('window')
-let bgColor="#161616"
+
 const dummyData: Array<Entry> = [
   {
     id: 1,
@@ -82,7 +84,7 @@ const isYesterday = (dateToCheck: Date): Boolean => {
   return yesterdayDate.valueOf() === dateToCompare.valueOf();
 };
 const _renderItemFlatList=(obj)=>(
-  <Image key={obj.item} source={{uri:obj.item}} style={{alignItems:"center", height:width/4.5, width:width/4.5,margin:1.5}}></Image>
+  <Image key={obj.item} source={{uri:obj.item}} style={{borderRadius:10, shadowColor:"#000", shadowOffset:{width:7, height:7}, shadowOpacity:1, shadowRadius:10, alignItems:"center", height:width/4.5, width:width/4.5,margin:1.5}}></Image>
   )
 const JournalEntry = (props: any) => {
   const entry: Entry = props.entry;
@@ -93,7 +95,7 @@ const JournalEntry = (props: any) => {
       style={{
         flex: 1,
         // minHeight: height/1.23, // replace with dimensions
-        backgroundColor: "#8249E4",
+        backgroundColor: "#3377ff",  //#8249E4
         padding: 16,
         elevation: 4,
         marginTop: 20,
@@ -173,8 +175,12 @@ const _onSuccess: SQLite.SQLVoidCallback | undefined = () => {
 };
 
 export default function Home({ navigation }: HomeProps) {
-  
-  
+  const [bgColor, setBgColor] = useState("#ededed")
+  const [textColor, setTextColor] = useState("#ededed")
+  const [iconColor, setIconColor] = useState("#3377ff")
+
+  const [theme,setTheme] = useState(true)  
+
   // const [entries, setEntires] = useState(data);
   //   const entries: Array<Entry> = useSelector(state => state.entries);
   // const windowHeight = useWindowDimensions().height;
@@ -221,7 +227,16 @@ export default function Home({ navigation }: HomeProps) {
       _onError,
       _onSuccess
     );
-  }, []);
+    if(theme){
+      setBgColor("#ededed")
+      setTextColor("#161616")
+    }
+    else{
+      setBgColor("#161616")
+      setTextColor("#ededed")
+
+    }
+  }, [theme]);
 
   // if (entries.length && !isToday(entries[0].date)) {
   //   const today = new Date();
@@ -244,7 +259,7 @@ export default function Home({ navigation }: HomeProps) {
         <TouchableOpacity
           onPress={() =>
             navigation.navigate("Editor", {
-              entryId: item.id, backgroundColor:bgColor, textColor:"white", iconColor:"#3377ff"
+              entryId: item.id, backgroundColor:bgColor, textColor:textColor, iconColor:iconColor
             })
           }
           key={item.id}
@@ -262,9 +277,36 @@ export default function Home({ navigation }: HomeProps) {
   const { width, height } = Dimensions.get("window");
 
   return (
-    <View style={{ flex: 1, paddingTop:120, backgroundColor:"#161616"}}>
-      <View style={{flex: .25, paddingHorizontal:40}}>
-        <Text style={{color:"white", fontSize:20, fontWeight:"bold"}}>Good Morning</Text>
+    <View style={{ flex: 1, paddingTop:50, backgroundColor:bgColor}}>
+      <View style={{flex: .5, paddingHorizontal:20, justifyContent:"flex-end", flexDirection:"row"}}>
+      <ToggleButton
+        icon="bluetooth"
+        value="bluetooth"
+        status={this.state.status}
+        onPress={this._onButtonToggle}
+      />
+          <Icon
+          color={iconColor}
+        style={{justifyContent: "flex-end"}}
+          name="clear"
+          onPress={() => {
+            setTheme(!theme)
+            
+          }}
+        />
+
+      </View>
+      <View style={{flex: .3, paddingHorizontal:40, flexDirection:"row"}}>
+          <TouchableOpacity onPress={() => { }}>
+          <Icon
+          color={iconColor}
+        style={{justifyContent: "flex-end"}}
+          name="clear"
+          onPress={() => {
+          }}
+        />
+
+          </TouchableOpacity>
       </View>
 
       <View style={{flex: 2, paddingBottom:55}}>
