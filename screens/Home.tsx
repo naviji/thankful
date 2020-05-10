@@ -82,7 +82,11 @@ const isYesterday = (dateToCheck: Date): Boolean => {
   return yesterdayDate.valueOf() === dateToCompare.valueOf();
 };
 const _renderItemFlatList=(obj)=>(
+<<<<<<< Updated upstream
   <Image source={{uri:obj.item}} style={{alignItems:"center", height:width/4.5, width:width/4.5,margin:1.5}}></Image>
+=======
+  <Image key={obj.item} blurRadius={20} source={{uri:obj.item}} style={{alignItems:"center", height:width/4.5, width:width/4.5,margin:1.5}}></Image>
+>>>>>>> Stashed changes
   )
 const JournalEntry = (props: any) => {
   const entry: Entry = props.entry;
@@ -93,7 +97,7 @@ const JournalEntry = (props: any) => {
       style={{
         flex: 1,
         // minHeight: height/1.23, // replace with dimensions
-        backgroundColor: "white",
+        backgroundColor: "#FFA2A0",
         padding: 16,
         elevation: 4,
         marginTop: 20,
@@ -108,7 +112,7 @@ const JournalEntry = (props: any) => {
             flex: 0,
             alignItems:"center",
             flexDirection:"row",}}>
-        <Text style={{ fontSize: 20, fontWeight: "700"}}>
+        <Text style={{ fontSize: 20, fontWeight: "700", color:"#BB5664"}}>
         {isToday(entry.date)
           ? "Today"
           : isYesterday(entry.date)
@@ -142,7 +146,7 @@ const JournalEntry = (props: any) => {
         </View>
       </View>
       <View style={{flex:3,}}>
-      <Text style={{ fontSize: 20, marginTop: 10 }}>
+      <Text style={{ fontSize: 20, marginTop: 10, color:"#DDE7F6" }}>
         {entry.content.length > 20
           ? entry.content.slice(0, 20) + "..."
           : entry.content}
@@ -236,6 +240,7 @@ export default function Home({ navigation }: HomeProps) {
     return (
       <View
         style={{
+
           flex: 1,
         }}
       >
@@ -260,7 +265,7 @@ export default function Home({ navigation }: HomeProps) {
   const { width, height } = Dimensions.get("window");
 
   return (
-    <View style={{ flex: 1, paddingTop:80 }}>
+    <View style={{ flex: 1, paddingTop:80, backgroundColor:"#233355"}}>
       <View style={{flex: 2, paddingBottom:20}}>
       <Carousel
       layout="tinder"
