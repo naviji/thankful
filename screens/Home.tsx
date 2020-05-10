@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Icons from 'react-native-vector-icons/MaterialIcons';
 import { Icon, Text } from "react-native-elements";
 
-import { ToggleButton } from 'react-native-paper';
+import { ToggleButton, Switch } from 'react-native-paper';
 import {
   ScrollView,
   FlatList,
@@ -279,21 +279,18 @@ export default function Home({ navigation }: HomeProps) {
   return (
     <View style={{ flex: 1, paddingTop:50, backgroundColor:bgColor}}>
       <View style={{flex: .5, paddingHorizontal:20, justifyContent:"flex-end", flexDirection:"row"}}>
+      
       <ToggleButton
-        icon="bluetooth"
-        value="bluetooth"
-        status={this.state.status}
-        onPress={this._onButtonToggle}
+        icon="flare"
+        color="blue"
+      accessibilityLabel="sdsd"
+      
+        status="checked"
+        onPress={()=>{
+          setTheme(!theme)
+        }}
       />
-          <Icon
-          color={iconColor}
-        style={{justifyContent: "flex-end"}}
-          name="clear"
-          onPress={() => {
-            setTheme(!theme)
-            
-          }}
-        />
+          
 
       </View>
       <View style={{flex: .3, paddingHorizontal:40, flexDirection:"row"}}>

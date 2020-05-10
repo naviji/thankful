@@ -3,15 +3,14 @@ import { Icon } from "react-native-elements";
 import Icons from 'react-native-vector-icons/MaterialIcons';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
-
 import {
   StatusBar,
   SafeAreaView,
   StyleSheet,
   Dimensions,
-  Modal,
   TouchableHighlight,
   Image,
+  Modal,
   FlatList,
   Text,
   View,
