@@ -95,6 +95,7 @@ const JournalEntry = (props: any) => {
 
     
     <View
+    
       style={{
         flex: 1,
         // minHeight: height/1.23, // replace with dimensions
@@ -191,11 +192,11 @@ const _onSuccess: SQLite.SQLVoidCallback | undefined = () => {
 };
 
 export default function Home({ navigation }: HomeProps) {
-  const [bgColor, setBgColor] = useState("#fff")
-  const [textColor, setTextColor] = useState("#ededed")
+  const [bgColor, setBgColor] = useState("#fae4b8")
+  const [textColor, setTextColor] = useState("#131d27")
   const [iconColor, setIconColor] = useState("#3377ff")
-  const [cardColor, setCardColor] = useState("#fff")
-  const [cardTextColor, setCardTextColor] = useState("#fff")
+  const [cardColor, setCardColor] = useState("#f8d69c")
+  const [cardTextColor, setCardTextColor] = useState("#161616")
 
   const [theme,setTheme] = useState(true)  
 
@@ -250,13 +251,15 @@ export default function Home({ navigation }: HomeProps) {
 
   React.useEffect(()=>{
     if(theme){
-      setBgColor("#ededed")
-      setTextColor("#161616")
+      setBgColor("#fff")
+      setTextColor("#131d27")
+      setCardTextColor("#161616")
       setCardColor("#fff")
     }
     else{
-      setBgColor("#161616")
-      setCardColor("#1D1D1D")
+      setBgColor("#2d455d")
+      setCardColor("#fb9405")
+      setCardTextColor("white")
       setTextColor("#ededed")
 
     }
@@ -292,7 +295,7 @@ export default function Home({ navigation }: HomeProps) {
             flex: 1,
           }}
         >
-         <JournalEntry entry={item} cardColor={cardColor} textColor={textColor} iconColor={textColor}/>
+         <JournalEntry entry={item} cardColor={cardColor} textColor={cardTextColor} iconColor={cardTextColor}/>
         </TouchableOpacity>
         
       </View>
@@ -307,7 +310,7 @@ export default function Home({ navigation }: HomeProps) {
       
       <ToggleButton
         icon="flare"
-        color="blue"
+        color="red"
       accessibilityLabel="sdsd"
       
         status="checked"
@@ -333,6 +336,7 @@ export default function Home({ navigation }: HomeProps) {
         renderItem={_renderItem}
         sliderWidth={width / 1}
         itemWidth={width / 1.5}
+        hasParallaxImages={true}
         // layout={'stack'}
       />
       </View>
