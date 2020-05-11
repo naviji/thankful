@@ -53,7 +53,10 @@ export default function Editor({ route, navigation }: EditorProps) {
     const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
       if (status !== 'granted') {
         getPhotoPermission()
+
       }
+      pickImage();
+
 
   }
   
@@ -106,7 +109,7 @@ export default function Editor({ route, navigation }: EditorProps) {
           <Icons name={'arrow-back'} size={30} color={iconColor}/>
         </TouchableOpacity>
         <View style={{justifyContent:"flex-end", flexDirection:"row"}}>
-          <TouchableOpacity onPress={() => { getPhotoPermission(); pickImage();}}>
+          <TouchableOpacity onPress={() => { getPhotoPermission(); }}>
           <Icons name={'attach-file'} size={30} color={iconColor} style={{marginLeft:10}}/>
 
           </TouchableOpacity>

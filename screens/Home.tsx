@@ -299,7 +299,7 @@ export default function Home({ navigation }: HomeProps) {
 
       <View style={{flex: 2, paddingBottom:55}}>
       <Carousel
-      layout="tinder"
+      layout="default"
       layoutCardOffset={18}
         // swipeThreshold={20} //default
         // data={entries.filter((x) => x.content !== "")}
