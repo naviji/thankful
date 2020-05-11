@@ -1,7 +1,7 @@
+// import Acrylic from 'react-acrylic';
 import React, { useState } from "react";
 import Icons from 'react-native-vector-icons/MaterialIcons';
 import { Icon, Text } from "react-native-elements";
-
 import { ToggleButton, Switch } from 'react-native-paper';
 import {
   ScrollView,
@@ -17,6 +17,7 @@ import {
   ListRenderItem,
   StatusBar,
   Button,
+  Animated,
 } from "react-native";
 import Carousel from "react-native-snap-carousel";
 
@@ -91,11 +92,13 @@ const JournalEntry = (props: any) => {
   const dispatch = useDispatch();
   // const { width, height } = Dimensions.get("window");
   return (
+
+    
     <View
       style={{
         flex: 1,
         // minHeight: height/1.23, // replace with dimensions
-        backgroundColor: "#3377ff",  //#8249E4
+        backgroundColor: props.cardColor,  //#8249E4
         padding: 16,
         elevation: 4,
         marginTop: 20,
@@ -104,13 +107,26 @@ const JournalEntry = (props: any) => {
         borderRadius: 10,
       }}
     >
+{/* <Acrylic
+    colorOverlay='#eee'
+    opacity='0.4'
 
-<View style={{
+    position='fixed'
+    top='100px'
+    left='100px'
+    width='300px'
+    height='200px'
+
+    blur={40}
+    borderRadius='2px'>
+      <span>ajfhiajf</span>
+    </Acrylic> */}
+ <View style={{
             justifyContent:"space-between",
             flex: 0,
             alignItems:"center",
             flexDirection:"row",}}>
-        <Text style={{ fontSize: 20, fontWeight: "700", color:"#ededed"}}>
+        <Text style={{ fontSize: 20, fontWeight: "700", color:props.textColor}}>
         {isToday(entry.date)
           ? "Today"
           : isYesterday(entry.date)
@@ -120,7 +136,7 @@ const JournalEntry = (props: any) => {
         <View style={{justifyContent:"flex-end", flexDirection:"row"}}>
           <TouchableOpacity onPress={() => { }}>
           <Icon
-          color="#ededed"
+          color={props.textColor}
         style={{justifyContent: "flex-end"}}
           name="clear"
           onPress={() => {
@@ -145,9 +161,9 @@ const JournalEntry = (props: any) => {
         </View>
       </View>
       <View style={{flex:3,}}>
-      <Text style={{ fontSize: 20, marginTop: 10, color:"#ededed" }}>
+      <Text style={{ fontSize: 20, marginTop: 10, color:props.textColor }}>
         {entry.content.length > 20
-          ? entry.content.slice(0, 20) + "..."
+          ? entry.content.slice(0, 180) + "..."
           : entry.content}
       </Text></View>
       {entry.image &&<View  style={{flex:2,}} >
@@ -175,9 +191,11 @@ const _onSuccess: SQLite.SQLVoidCallback | undefined = () => {
 };
 
 export default function Home({ navigation }: HomeProps) {
-  const [bgColor, setBgColor] = useState("#ededed")
+  const [bgColor, setBgColor] = useState("#fff")
   const [textColor, setTextColor] = useState("#ededed")
   const [iconColor, setIconColor] = useState("#3377ff")
+  const [cardColor, setCardColor] = useState("#fff")
+  const [cardTextColor, setCardTextColor] = useState("#fff")
 
   const [theme,setTheme] = useState(true)  
 
@@ -227,16 +245,22 @@ export default function Home({ navigation }: HomeProps) {
       _onError,
       _onSuccess
     );
+    
+  }, []);
+
+  React.useEffect(()=>{
     if(theme){
       setBgColor("#ededed")
       setTextColor("#161616")
+      setCardColor("#fff")
     }
     else{
       setBgColor("#161616")
+      setCardColor("#1D1D1D")
       setTextColor("#ededed")
 
     }
-  }, [theme]);
+  },[theme])
 
   // if (entries.length && !isToday(entries[0].date)) {
   //   const today = new Date();
@@ -250,6 +274,7 @@ export default function Home({ navigation }: HomeProps) {
 
   const _renderItem: ListRenderItem<Entry> = ({ item }) => {
     return (
+      
       <View
         style={{
 
@@ -267,7 +292,7 @@ export default function Home({ navigation }: HomeProps) {
             flex: 1,
           }}
         >
-          <JournalEntry entry={item} />
+         <JournalEntry entry={item} cardColor={cardColor} textColor={textColor} iconColor={textColor}/>
         </TouchableOpacity>
         
       </View>
@@ -294,22 +319,26 @@ export default function Home({ navigation }: HomeProps) {
 
       </View>
       <View style={{flex: .3, paddingHorizontal:40, flexDirection:"row"}}>
-           <Text>Good Morning</Text>
+           <Text style={{color:textColor}}>Good Morning</Text>
       </View>
 
       <View style={{flex: 2, paddingBottom:55}}>
       <Carousel
       layout="default"
-      layoutCardOffset={18}
+      inactiveSlideOpacity={1}
+      activeSlideOffset={100}
         // swipeThreshold={20} //default
         // data={entries.filter((x) => x.content !== "")}
         data={entries}
         renderItem={_renderItem}
         sliderWidth={width / 1}
-        itemWidth={width / 1.2}
+        itemWidth={width / 1.5}
         // layout={'stack'}
       />
       </View>
+      <View style={{flex: .3, paddingHorizontal:40, flexDirection:"row"}}>
+      </View>
+
       <View style={{ flex: 0, alignItems: 'center'}}>
         <Icon
           raised
@@ -347,7 +376,7 @@ export default function Home({ navigation }: HomeProps) {
             dispatch(createEntry(newEntry));
 
             navigation.navigate("Editor", {
-              entryId: newEntry.id, backgroundColor:bgColor, textColor:"white", iconColor:"#3377ff"
+              entryId: newEntry.id, backgroundColor:bgColor, textColor:textColor, iconColor:iconColor
             });
           }}
           name="event"
