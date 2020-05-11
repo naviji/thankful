@@ -294,16 +294,7 @@ export default function Home({ navigation }: HomeProps) {
 
       </View>
       <View style={{flex: .3, paddingHorizontal:40, flexDirection:"row"}}>
-          <TouchableOpacity onPress={() => { }}>
-          <Icon
-          color={iconColor}
-        style={{justifyContent: "flex-end"}}
-          name="clear"
-          onPress={() => {
-          }}
-        />
-
-          </TouchableOpacity>
+           <Text>Good Morning</Text>
       </View>
 
       <View style={{flex: 2, paddingBottom:55}}>
