@@ -324,7 +324,7 @@ export default function Home({ navigation }: HomeProps) {
             height: height+80,
           }}
         />
-      <Image source={require("../assets/animated-colorful-landscape-wallpaper.jpg")} style={{flex:1,opacity:0.34, position:"absolute",height:"110%", width:"100%", }} resizeMode="cover"></Image>
+      <Image source={require("../assets/236-2366806_minimalistic-landscape-wallpaper-1080p.jpg")} style={{flex:1,opacity:0.34, position:"absolute",height:"110%", width:"100%", }} resizeMode="cover"></Image>
       
      
       
