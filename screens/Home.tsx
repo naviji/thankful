@@ -1,8 +1,9 @@
-// import Acrylic from 'react-acrylic';
 import React, { useState } from "react";
 import Icons from 'react-native-vector-icons/MaterialIcons';
 import { Icon, Text } from "react-native-elements";
 import { ToggleButton, Switch } from 'react-native-paper';
+import {BlurView} from 'expo-blur';
+import {LinearGradient} from 'expo-linear-gradient';
 import {
   ScrollView,
   FlatList,
@@ -10,6 +11,8 @@ import {
   TouchableHighlight,
   StyleSheet,
   Image,
+  
+  ImageBackground,
   TouchableOpacity,
   View,
   SafeAreaView,
@@ -93,35 +96,31 @@ const JournalEntry = (props: any) => {
   // const { width, height } = Dimensions.get("window");
   return (
 
+
     
-    <View
     
+    <BlurView
+    tint={props.cardType}
+    intensity={40}
       style={{
         flex: 1,
         // minHeight: height/1.23, // replace with dimensions
         backgroundColor: props.cardColor,  //#8249E4
         padding: 16,
-        elevation: 4,
         marginTop: 20,
         marginBottom: 20,
         marginHorizontal: 7,
         borderRadius: 10,
+        shadowColor:"black",
+        shadowOffset: {height:20, width:20},
+        shadowOpacity:0.9,
+        shadowRadius:20
+
+
       }}
     >
-{/* <Acrylic
-    colorOverlay='#eee'
-    opacity='0.4'
+      
 
-    position='fixed'
-    top='100px'
-    left='100px'
-    width='300px'
-    height='200px'
-
-    blur={40}
-    borderRadius='2px'>
-      <span>ajfhiajf</span>
-    </Acrylic> */}
  <View style={{
             justifyContent:"space-between",
             flex: 0,
@@ -179,7 +178,7 @@ const JournalEntry = (props: any) => {
       
 
       
-    </View>
+    </BlurView>
   );
 };
 
@@ -194,9 +193,12 @@ const _onSuccess: SQLite.SQLVoidCallback | undefined = () => {
 export default function Home({ navigation }: HomeProps) {
   const [bgColor, setBgColor] = useState("#fae4b8")
   const [textColor, setTextColor] = useState("#131d27")
-  const [iconColor, setIconColor] = useState("#3377ff")
+  const [iconColor, setIconColor] = useState("#00c6ff")
   const [cardColor, setCardColor] = useState("#f8d69c")
-  const [cardTextColor, setCardTextColor] = useState("#161616")
+  const [cardTextColor, setCardTextColor] = useState("#fff")
+  const [backTopColor,setBackTopColor ] = useState('#00c6ff')
+  const [backBottomColor,setBackBottomColor ] = useState('#0b8793')
+  const [cardType,setCardType] = useState("light")
 
   const [theme,setTheme] = useState(true)  
 
@@ -253,14 +255,20 @@ export default function Home({ navigation }: HomeProps) {
     if(theme){
       setBgColor("#fff")
       setTextColor("#131d27")
-      setCardTextColor("#161616")
+      setCardTextColor("#fff")
       setCardColor("#fff")
+      setBackBottomColor('#0b8793')
+      setBackTopColor('#00c6ff')
+      setCardType("light")
     }
     else{
       setBgColor("#2d455d")
       setCardColor("#fb9405")
       setCardTextColor("white")
       setTextColor("#ededed")
+      setBackBottomColor('#2d455d')
+      setBackTopColor('#2d455d')
+      setCardType("dark")
 
     }
   },[theme])
@@ -295,7 +303,7 @@ export default function Home({ navigation }: HomeProps) {
             flex: 1,
           }}
         >
-         <JournalEntry entry={item} cardColor={cardColor} textColor={cardTextColor} iconColor={cardTextColor}/>
+         <JournalEntry entry={item} cardColor={cardColor} textColor={cardTextColor} iconColor={cardTextColor} cardType={cardType}/>
         </TouchableOpacity>
         
       </View>
@@ -306,86 +314,107 @@ export default function Home({ navigation }: HomeProps) {
 
   return (
     <View style={{ flex: 1, paddingTop:50, backgroundColor:bgColor}}>
-      <View style={{flex: .5, paddingHorizontal:20, justifyContent:"flex-end", flexDirection:"row"}}>
-      
-      <ToggleButton
-        icon="flare"
-        color="red"
-      accessibilityLabel="sdsd"
-      
-        status="checked"
-        onPress={()=>{
-          setTheme(!theme)
-        }}
-      />
-          
-
-      </View>
-      <View style={{flex: .3, paddingHorizontal:40, flexDirection:"row"}}>
-           <Text style={{color:textColor}}>Good Morning</Text>
-      </View>
-
-      <View style={{flex: 2, paddingBottom:55}}>
-      <Carousel
-      layout="default"
-      inactiveSlideOpacity={1}
-      activeSlideOffset={100}
-        // swipeThreshold={20} //default
-        // data={entries.filter((x) => x.content !== "")}
-        data={entries}
-        renderItem={_renderItem}
-        sliderWidth={width / 1}
-        itemWidth={width / 1.5}
-        hasParallaxImages={true}
-        // layout={'stack'}
-      />
-      </View>
-      <View style={{flex: .3, paddingHorizontal:40, flexDirection:"row"}}>
-      </View>
-
-      <View style={{ flex: 0, alignItems: 'center'}}>
-        <Icon
-          raised
-          size={33} 
-          iconStyle={
-            {
-              // width: 40,
-              // height: 40,
-              // padding: 4,
-            }
-          }
-          onPress={() => {
-            const newEntry = {
-              id: Math.round(Math.random() * 1000000),
-              date: new Date(),
-              content: "",
-            };
-
-            db.transaction(
-              (tx) => {
-                tx.executeSql(
-                  "INSERT into entries(id, content, created_time) values (?, ?, ?)",
-                  [newEntry.id, newEntry.content, newEntry.date.getTime()],
-                  () => console.log("Insert success"),
-                  (t, e) => {
-                    console.log("Insert failed");
-                    return false;
-                  }
-                );
-              },
-              () => console.log("creation failed"),
-              () => console.log("creation successful")
-            );
-
-            dispatch(createEntry(newEntry));
-
-            navigation.navigate("Editor", {
-              entryId: newEntry.id, backgroundColor:bgColor, textColor:textColor, iconColor:iconColor
-            });
+      <LinearGradient
+          colors={[backTopColor, backBottomColor]}
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            top: 0,
+            height: height+80,
           }}
-          name="event"
         />
-      </View>
+      <Image source={require("../assets/animated-colorful-landscape-wallpaper.jpg")} style={{flex:1,opacity:0.34, position:"absolute",height:"110%", width:"100%", }} resizeMode="cover"></Image>
+      
+     
+      
+        <View style={{flex: .5, paddingHorizontal:20, justifyContent:"flex-end", flexDirection:"row"}}>
+        
+        <ToggleButton
+          icon="flare"
+          color="#928DAB"
+        accessibilityLabel="sdsd"
+        
+          status="checked"
+          onPress={()=>{
+            setTheme(!theme)
+          }}
+        />
+            
+
+        </View>
+        <View style={{flex: .3, paddingHorizontal:40, flexDirection:"row"}}>
+            <Text style={{color:textColor}}>Good Morning</Text>
+        </View>
+
+        <View style={{flex: 2, paddingBottom:55}}>
+        <Carousel
+        style={{
+        elevation: 4,
+        }}
+        layout="default"
+        inactiveSlideOpacity={1}
+        activeSlideOffset={100}
+        
+          // swipeThreshold={20} //default
+          // data={entries.filter((x) => x.content !== "")}
+          data={entries}
+          renderItem={_renderItem}
+          sliderWidth={width / 1}
+          itemWidth={width / 1.5}
+          hasParallaxImages={true}
+          // layout={'stack'}
+        />
+        </View>
+        <View style={{flex: .3, paddingHorizontal:40, flexDirection:"row"}}>
+        </View>
+
+        <View style={{ flex: 0, alignItems: 'center'}}>
+          <Icon
+            raised
+            size={33} 
+            iconStyle={
+              {
+                // width: 40,
+                // height: 40,
+                // padding: 4,
+              }
+            }
+            onPress={() => {
+              const newEntry = {
+                id: Math.round(Math.random() * 1000000),
+                date: new Date(),
+                content: "",
+              };
+
+              db.transaction(
+                (tx) => {
+                  tx.executeSql(
+                    "INSERT into entries(id, content, created_time) values (?, ?, ?)",
+                    [newEntry.id, newEntry.content, newEntry.date.getTime()],
+                    () => console.log("Insert success"),
+                    (t, e) => {
+                      console.log("Insert failed");
+                      return false;
+                    }
+                  );
+                },
+                () => console.log("creation failed"),
+                () => console.log("creation successful")
+              );
+
+              dispatch(createEntry(newEntry));
+
+              navigation.navigate("Editor", {
+                entryId: newEntry.id, backgroundColor:bgColor, textColor:textColor, iconColor:iconColor
+              });
+            }}
+            name="event"
+          />
+        </View>
+     
+      
+      
     </View>
   );
 }
