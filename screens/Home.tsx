@@ -3,6 +3,10 @@ import Icons from 'react-native-vector-icons/MaterialIcons';
 import { Icon, Text } from "react-native-elements";
 import { ToggleButton, Switch } from 'react-native-paper';
 import {BlurView} from 'expo-blur';
+import * as Font from 'expo-font';
+
+import { useFonts } from '@use-expo/font';
+
 import {LinearGradient} from 'expo-linear-gradient';
 import {
   ScrollView,
@@ -29,11 +33,12 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { loadEntries, createEntry, removeEntry } from "../reducers/entries";
 
+import { AppLoading } from 'expo';
 import { Entry, HomeProps, IAppState } from "../types";
-
 // import { v4 as uuidv4 } from 'uuid';
 
 import * as SQLite from "expo-sqlite";
+import Settings from "./Settings";
 const db = SQLite.openDatabase("paperNote.db");
 const {height, width} = Dimensions.get('window')
 
@@ -99,16 +104,13 @@ const JournalEntry = (props: any) => {
 
     
     
-    <BlurView
-    tint={props.cardType}
-    intensity={40}
+    <View
       style={{
+        
         flex: 1,
         // minHeight: height/1.23, // replace with dimensions
         backgroundColor: props.cardColor,  //#8249E4
-        padding: 16,
         marginTop: 20,
-        marginBottom: 20,
         marginHorizontal: 7,
         borderRadius: 10,
         shadowColor:"black",
@@ -119,11 +121,20 @@ const JournalEntry = (props: any) => {
 
       }}
     >
-      
+
+      {(props.entry.image)&&  
+      <Image source={{uri:props.entry.image[0]}} resizeMode="cover" style={{borderTopLeftRadius:10, borderTopRightRadius:10, width:"100%", height:height/4}}></Image>
+    }
+
+    {!props.entry.image&&
+      <Image source={require("../assets/ab2.jpg")} resizeMode="cover" style={{borderTopLeftRadius:10, borderTopRightRadius:10, width:"100%", height:height/4}}></Image>
+    }
 
  <View style={{
             justifyContent:"space-between",
             flex: 0,
+            paddingHorizontal:15,
+            paddingTop:15,
             alignItems:"center",
             flexDirection:"row",}}>
         <Text style={{ fontSize: 20, fontWeight: "700", color:props.textColor}}>
@@ -134,6 +145,7 @@ const JournalEntry = (props: any) => {
           : entry.date.toDateString()}
       </Text>
         <View style={{justifyContent:"flex-end", flexDirection:"row"}}>
+
           <TouchableOpacity onPress={() => { }}>
           <Icon
           color={props.textColor}
@@ -160,13 +172,14 @@ const JournalEntry = (props: any) => {
           </TouchableOpacity>
         </View>
       </View>
-      <View style={{flex:3,}}>
-      <Text style={{ fontSize: 20, marginTop: 10, color:props.textColor }}>
+      <View style={{flex:3, paddingHorizontal:15,}}>
+      
+      <Text style={{ fontSize: 17, marginTop: 10, color:props.textColor }}>
         {entry.content.length > 20
-          ? entry.content.slice(0, 180) + "..."
+          ? entry.content.slice(0, 400) + "..."
           : entry.content}
       </Text></View>
-      {entry.image &&<View  style={{flex:2,}} >
+      {entry.image &&<View  style={{flex:2,paddingTop:15}} >
         
           <FlatList
           style={{alignSelf:"center"}}
@@ -178,7 +191,7 @@ const JournalEntry = (props: any) => {
       
 
       
-    </BlurView>
+    </View>
   );
 };
 
@@ -191,14 +204,21 @@ const _onSuccess: SQLite.SQLVoidCallback | undefined = () => {
 };
 
 export default function Home({ navigation }: HomeProps) {
-  const [bgColor, setBgColor] = useState("#fae4b8")
+  const [bgColor, setBgColor] = useState("#fff")
   const [textColor, setTextColor] = useState("#131d27")
   const [iconColor, setIconColor] = useState("#00c6ff")
   const [cardColor, setCardColor] = useState("#f8d69c")
   const [cardTextColor, setCardTextColor] = useState("#fff")
-  const [backTopColor,setBackTopColor ] = useState('#00c6ff')
-  const [backBottomColor,setBackBottomColor ] = useState('#0b8793')
+  const [backTopColor,setBackTopColor ] = useState('#ededed')
+  const [backBottomColor,setBackBottomColor ] = useState('#ededed')
   const [cardType,setCardType] = useState("light")
+
+  let [fontsLoaded] = useFonts({
+    'Balsamiq-Bold': require('../assets/fonts/BalsamiqSans-Bold.ttf'),
+    'Balsamiq-Regular': require('../assets/fonts/BalsamiqSans-Regular.ttf'),
+  });
+
+  
 
   const [theme,setTheme] = useState(true)  
 
@@ -251,19 +271,20 @@ export default function Home({ navigation }: HomeProps) {
     
   }, []);
 
+
   React.useEffect(()=>{
     if(theme){
-      setBgColor("#fff")
+      setBgColor("#f1f2fa")
       setTextColor("#131d27")
-      setCardTextColor("#fff")
+      setCardTextColor("#161616")
       setCardColor("#fff")
-      setBackBottomColor('#0b8793')
-      setBackTopColor('#00c6ff')
+      setBackBottomColor('#fea09c')
+      setBackTopColor('#fdc7d5')
       setCardType("light")
     }
     else{
-      setBgColor("#2d455d")
-      setCardColor("#fb9405")
+      setBgColor("#161616")
+      setCardColor("#1a1a1a")
       setCardTextColor("white")
       setTextColor("#ededed")
       setBackBottomColor('#2d455d')
@@ -312,9 +333,13 @@ export default function Home({ navigation }: HomeProps) {
 
   const { width, height } = Dimensions.get("window");
 
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  } else {
   return (
     <View style={{ flex: 1, paddingTop:50, backgroundColor:bgColor}}>
-      <LinearGradient
+      {/* <LinearGradient
           colors={[backTopColor, backBottomColor]}
           style={{
             position: 'absolute',
@@ -323,31 +348,21 @@ export default function Home({ navigation }: HomeProps) {
             top: 0,
             height: height+80,
           }}
-        />
-      <Image source={require("../assets/236-2366806_minimalistic-landscape-wallpaper-1080p.jpg")} style={{flex:1,opacity:0.34, position:"absolute",height:"110%", width:"100%", }} resizeMode="cover"></Image>
+        /> */}
+      {/* <Image source={require("../assets/ab2.jpg")}  blurRadius={10} style={{flex:1,opacity:0.9, position:"absolute",height:"110%", width:"100%", }} resizeMode="cover"></Image> */}
       
      
       
-        <View style={{flex: .5, paddingHorizontal:20, justifyContent:"flex-end", flexDirection:"row"}}>
+        <View style={{flex: .4, paddingHorizontal:20, justifyContent:"flex-end", flexDirection:"row"}}>
         
-        <ToggleButton
-          icon="flare"
-          color="#928DAB"
-        accessibilityLabel="sdsd"
-        
-          status="checked"
-          onPress={()=>{
-            setTheme(!theme)
-          }}
-        />
             
 
         </View>
-        <View style={{flex: .3, paddingHorizontal:40, flexDirection:"row"}}>
-            <Text style={{color:textColor}}>Good Morning</Text>
-        </View>
+        {/* <View style={{flex: .3, paddingHorizontal:40, flexDirection:"row"}}>
+            <Text style={{color:textColor, fontFamily: 'Balsamiq-Bold', fontSize: 30}}>Good Morning</Text>
+        </View> */}
 
-        <View style={{flex: 2, paddingBottom:55}}>
+        <View style={{flex:4, paddingBottom:55}}>
         <Carousel
         style={{
         elevation: 4,
@@ -361,60 +376,97 @@ export default function Home({ navigation }: HomeProps) {
           data={entries}
           renderItem={_renderItem}
           sliderWidth={width / 1}
-          itemWidth={width / 1.5}
+          itemWidth={width / 1.1}
           hasParallaxImages={true}
           // layout={'stack'}
         />
         </View>
-        <View style={{flex: .3, paddingHorizontal:40, flexDirection:"row"}}>
-        </View>
+        {/* <View style={{flex: .3, paddingHorizontal:40, flexDirection:"row"}}>
+        </View> */}
 
-        <View style={{ flex: 0, alignItems: 'center'}}>
+        <View style={{ flex: 0, alignItems: 'center', backgroundColor:cardColor, marginHorizontal:20, marginBottom:20, padding:25,borderRadius:15}}>
+          
+
+
+ <View style={{
+   width:"100%",
+            justifyContent:"space-between",
+            flex: 0,
+            paddingHorizontal:15,
+            alignItems:"center",
+            flexDirection:"row",}}>
+
+              <View style={{justifyContent:"flex-start"}}>
+
+          <TouchableOpacity onPress={() => { }}>
           <Icon
-            raised
-            size={33} 
-            iconStyle={
-              {
-                // width: 40,
-                // height: 40,
-                // padding: 4,
-              }
-            }
-            onPress={() => {
-              const newEntry = {
-                id: Math.round(Math.random() * 1000000),
-                date: new Date(),
-                content: "",
-              };
+          color="#01d4bf"
+          name="alarm"
+          onPress={() => { 
+            const newEntry = {
+              id: Math.round(Math.random() * 1000000),
+              date: new Date(),
+              content: "",
+            };
+  
+            db.transaction(
+              (tx) => {
+                tx.executeSql(
+                  "INSERT into entries(id, content, created_time) values (?, ?, ?)",
+                  [newEntry.id, newEntry.content, newEntry.date.getTime()],
+                  () => console.log("Insert success"),
+                  (t, e) => {
+                    console.log("Insert failed");
+                    return false;
+                  }
+                );
+              },
+              () => console.log("creation failed"),
+              () => console.log("creation successful")
+            );
+  
+            dispatch(createEntry(newEntry));
+  
+            navigation.navigate("Editor", {
+              entryId: newEntry.id, backgroundColor:bgColor, textColor:textColor, iconColor:iconColor
+            });}}
+        />
 
-              db.transaction(
-                (tx) => {
-                  tx.executeSql(
-                    "INSERT into entries(id, content, created_time) values (?, ?, ?)",
-                    [newEntry.id, newEntry.content, newEntry.date.getTime()],
-                    () => console.log("Insert success"),
-                    (t, e) => {
-                      console.log("Insert failed");
-                      return false;
-                    }
-                  );
-                },
-                () => console.log("creation failed"),
-                () => console.log("creation successful")
-              );
+          </TouchableOpacity>
+        </View>
+        <View style={{justifyContent:"center"}}>
 
-              dispatch(createEntry(newEntry));
+        {/* <Icon
+        color="#2d455d"
+        name="add"
+        onPress={() => { 
+        }}
+        /> */}
+        <Switch value={!theme}
+          onValueChange={()=>{
+            setTheme(!theme)
+          }}></Switch>
 
-              navigation.navigate("Editor", {
-                entryId: newEntry.id, backgroundColor:bgColor, textColor:textColor, iconColor:iconColor
-              });
-            }}
-            name="event"
-          />
+      </View>
+
+        <View style={{justifyContent:"flex-end"}}>
+
+          <TouchableOpacity onPress={() => { }}>
+          <Icon
+          color="#01d4bf"
+          name="settings"
+          onPress={()=>{}}
+        />
+
+          </TouchableOpacity>
+        </View>
+      </View>
+          
         </View>
      
       
       
     </View>
   );
+  }
 }

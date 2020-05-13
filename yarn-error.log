@@ -1,5 +1,5 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add @types/react-acrylic
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add @types/react-native-neomorph-shadows
 
 PATH: 
   C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\;C:\windows\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Program Files (x86)\Yarn\bin\;C:\Users\sasik\AppData\Local\Microsoft\WindowsApps;C:\Users\sasik\AppData\Roaming\npm;C:\Users\sasik\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\sasik\AppData\Local\Yarn\bin
@@ -14,7 +14,7 @@ Platform:
   win32 x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/@types%2freact-acrylic: Not found
+  Error: https://registry.yarnpkg.com/@types%2freact-native-neomorph-shadows: Not found
       at Request.params.callback [as _callback] (C:\Program Files (x86)\Yarn\lib\cli.js:66096:18)
       at Request.self.callback (C:\Program Files (x86)\Yarn\lib\cli.js:140748:22)
       at Request.emit (events.js:310:20)
@@ -37,15 +37,19 @@ npm manifest:
       "eject": "expo eject"
     },
     "dependencies": {
+      "@react-native-community/art": "^1.2.0",
       "@react-native-community/masked-view": "0.1.6",
       "@react-navigation/native": "^5.1.5",
       "@react-navigation/stack": "^5.2.10",
       "@types/react-native-snap-carousel": "^3.8.1",
       "@types/react-redux": "^7.1.7",
       "@types/uuid": "^7.0.2",
+      "@use-expo/font": "^2.0.0",
       "expo": "~37.0.3",
+      "expo-blur": "~8.1.0",
       "expo-font": "~8.1.0",
       "expo-image-picker": "~8.1.0",
+      "expo-linear-gradient": "~8.1.0",
       "expo-permissions": "^8.1.0",
       "react": "~16.9.0",
       "react-acrylic": "^0.1.1",
@@ -53,6 +57,7 @@ npm manifest:
       "react-native": "https://github.com/expo/react-native/archive/sdk-37.0.1.tar.gz",
       "react-native-elements": "^1.2.7",
       "react-native-gesture-handler": "~1.6.0",
+      "react-native-neomorph-shadows": "^1.0.3",
       "react-native-paper": "^3.10.1",
       "react-native-reanimated": "~1.7.0",
       "react-native-safe-area-context": "0.7.3",
@@ -1125,6 +1130,15 @@ Lockfile:
       "@types/yargs" "^15.0.0"
       chalk "^3.0.0"
   
+  "@react-native-community/art@^1.2.0":
+    version "1.2.0"
+    resolved "https://registry.yarnpkg.com/@react-native-community/art/-/art-1.2.0.tgz#386d95393f6042d9006f9d4bc6063fb898794460"
+    integrity sha512-a+ZcRGl/BzLa89yi33Mbn5SHavsEXqKUMdbfLf3U8MDLElndPqUetoJyGkv63+BcPO49UMWiQRP1YUz6/zfJ+A==
+    dependencies:
+      art "^0.10.3"
+      invariant "^2.2.4"
+      prop-types "^15.7.2"
+  
   "@react-native-community/cli-debugger-ui@^3.0.0":
     version "3.0.0"
     resolved "https://registry.yarnpkg.com/@react-native-community/cli-debugger-ui/-/cli-debugger-ui-3.0.0.tgz#d01d08d1e5ddc1633d82c7d84d48fff07bd39416"
@@ -1423,6 +1437,11 @@ Lockfile:
       lodash "^4.5.0"
       prop-types "^15.6.1"
   
+  "@use-expo/font@^2.0.0":
+    version "2.0.0"
+    resolved "https://registry.yarnpkg.com/@use-expo/font/-/font-2.0.0.tgz#09b56d626e5b0c83cd0116f5bb69ad6d612d677f"
+    integrity sha512-oOJ2uaRyZNQg7PnQviz7nBcdrRL38zxScab4ktgtI4asa6G0dHW9wg307uJJmn0sHS04Yqtw+m0EOjDcGw3iWg==
+  
   abort-controller@^3.0.0:
     version "3.0.0"
     resolved "https://registry.yarnpkg.com/abort-controller/-/abort-controller-3.0.0.tgz#eaf54d53b62bae4138e809ca225c8439a6efb392"
@@ -1603,7 +1622,7 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/array-unique/-/array-unique-0.3.2.tgz#a894b75d4bc4f6cd679ef3244a9fd8f46ae2d428"
     integrity sha1-qJS3XUvE9s1nnvMkSp/Y9Gri1Cg=
   
-  art@^0.10.0:
+  art@^0.10.0, art@^0.10.3:
     version "0.10.3"
     resolved "https://registry.yarnpkg.com/art/-/art-0.10.3.tgz#b01d84a968ccce6208df55a733838c96caeeaea2"
     integrity sha512-HXwbdofRTiJT6qZX/FnchtldzJjS3vkLJxQilc3Xj+ma2MXjY4UAyQ0ls1XZYVnDvVIBiFZbC6QsvtW86TD6tQ==
@@ -2532,6 +2551,13 @@ Lockfile:
       md5-file "^3.2.3"
       path-browserify "^1.0.0"
       url-parse "^1.4.4"
+  
+  expo-blur@~8.1.0:
+    version "8.1.0"
+    resolved "https://registry.yarnpkg.com/expo-blur/-/expo-blur-8.1.0.tgz#44823ddd1ed4db3864c20fa7d9b7b91b65af0d76"
+    integrity sha512-X7UUmRPV6I/f+oKJqsgKFJnKshqseK8MukwdLpIwBh7VNHiYp5gK0ynq5KlLGG6kb9zo68acjsD27DYlerARJQ==
+    dependencies:
+      prop-types "^15.6.0"
   
   expo-constants@~9.0.0:
     version "9.0.0"
@@ -4610,6 +4636,14 @@ Lockfile:
     version "1.2.1"
     resolved "https://registry.yarnpkg.com/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.2.1.tgz#645e2ffbbb49e80844bb4cbbe34a126fda1e6772"
     integrity sha512-/VbpIEp8tSNNHIvstuA3Swx610whci1Zpc9mqNkqn14DkMbw+ORviln2u0XyHG1kPvvwTNGZY6QpeFwxYaSdbQ==
+  
+  react-native-neomorph-shadows@^1.0.3:
+    version "1.0.3"
+    resolved "https://registry.yarnpkg.com/react-native-neomorph-shadows/-/react-native-neomorph-shadows-1.0.3.tgz#32df43219662fe8c66e062301768ba4abb38cfdb"
+    integrity sha512-cqXBq73uPHuLpl5cDOu7crWqiER0jWpG+4Gtnc23HRxJGT2DXfK5VJ1zYHsh1rEbEFML7o6+4lf62lmfBs7jcA==
+    dependencies:
+      "@react-native-community/art" "^1.2.0"
+      prop-types "^15.7.2"
   
   react-native-paper@^3.10.1:
     version "3.10.1"
