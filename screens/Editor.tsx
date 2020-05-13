@@ -172,9 +172,10 @@ export default function Editor({ route, navigation }: EditorProps) {
         transparent={false}
         onRequestClose={()=>{setModalVisible(!modalVisible);}}
        >
-      <View style={{ marginTop: 22 }}>
+      <View style={{flex:1, paddingTop: 22, backgroundColor:route.params.backgroundColor }}>
             
               <Icon
+              color={route.params.textColor}
           name="clear"
           onPress={() => {setModalVisible(!modalVisible);}}
         />
@@ -224,10 +225,6 @@ export default function Editor({ route, navigation }: EditorProps) {
           <Icons name={'check'} size={30} color={iconColor} style={{marginLeft:10}}/>
 
           </TouchableOpacity>
-          {/* <TouchableOpacity onPress={()=>{dispatch(removeEntry(entry.id))}}>
-          <Icons name={'delete'} size={30} color='red' style={{marginLeft:10}}/>
-
-          </TouchableOpacity> */}
         </View>
         </View>
 

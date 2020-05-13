@@ -38,7 +38,6 @@ import { Entry, HomeProps, IAppState } from "../types";
 // import { v4 as uuidv4 } from 'uuid';
 
 import * as SQLite from "expo-sqlite";
-import Settings from "./Settings";
 const db = SQLite.openDatabase("paperNote.db");
 const {height, width} = Dimensions.get('window')
 
@@ -206,12 +205,13 @@ const _onSuccess: SQLite.SQLVoidCallback | undefined = () => {
 export default function Home({ navigation }: HomeProps) {
   const [bgColor, setBgColor] = useState("#fff")
   const [textColor, setTextColor] = useState("#131d27")
-  const [iconColor, setIconColor] = useState("#00c6ff")
+  const [iconColor, setIconColor] = useState("#01d4bf")
   const [cardColor, setCardColor] = useState("#f8d69c")
   const [cardTextColor, setCardTextColor] = useState("#fff")
   const [backTopColor,setBackTopColor ] = useState('#ededed')
   const [backBottomColor,setBackBottomColor ] = useState('#ededed')
   const [cardType,setCardType] = useState("light")
+  const [settingToggle, setSettingToggle] = useState(false)
 
   let [fontsLoaded] = useFonts({
     'Balsamiq-Bold': require('../assets/fonts/BalsamiqSans-Bold.ttf'),
@@ -331,60 +331,32 @@ export default function Home({ navigation }: HomeProps) {
     );
   };
 
-  const { width, height } = Dimensions.get("window");
 
 
-  if (!fontsLoaded) {
-    return <AppLoading />;
-  } else {
-  return (
-    <View style={{ flex: 1, paddingTop:50, backgroundColor:bgColor}}>
-      {/* <LinearGradient
-          colors={[backTopColor, backBottomColor]}
-          style={{
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            top: 0,
-            height: height+80,
-          }}
-        /> */}
-      {/* <Image source={require("../assets/ab2.jpg")}  blurRadius={10} style={{flex:1,opacity:0.9, position:"absolute",height:"110%", width:"100%", }} resizeMode="cover"></Image> */}
-      
-     
-      
-        <View style={{flex: .4, paddingHorizontal:20, justifyContent:"flex-end", flexDirection:"row"}}>
-        
-            
+  const Settings=()=>{
+    return(
+      <View style={{flex:3,marginHorizontal:25, marginBottom:55}}>
+        <View style={{flexDirection:"row",justifyContent:"space-between", marginBottom:15}}>
+          <Text style={{fontFamily:"Balsamiq-Bold", color:textColor}}>Dark Mode</Text>
+          <View style={{justifyContent:"flex-end"}}>
+        <Switch value={!theme}
+          onValueChange={()=>{
+            setTheme(!theme)
+          }}></Switch>
 
         </View>
-        {/* <View style={{flex: .3, paddingHorizontal:40, flexDirection:"row"}}>
-            <Text style={{color:textColor, fontFamily: 'Balsamiq-Bold', fontSize: 30}}>Good Morning</Text>
-        </View> */}
-
-        <View style={{flex:4, paddingBottom:55}}>
-        <Carousel
-        style={{
-        elevation: 4,
-        }}
-        layout="default"
-        inactiveSlideOpacity={1}
-        activeSlideOffset={100}
-        
-          // swipeThreshold={20} //default
-          // data={entries.filter((x) => x.content !== "")}
-          data={entries}
-          renderItem={_renderItem}
-          sliderWidth={width / 1}
-          itemWidth={width / 1.1}
-          hasParallaxImages={true}
-          // layout={'stack'}
-        />
         </View>
-        {/* <View style={{flex: .3, paddingHorizontal:40, flexDirection:"row"}}>
-        </View> */}
+        
+        
 
-        <View style={{ flex: 0, alignItems: 'center', backgroundColor:cardColor, marginHorizontal:20, marginBottom:20, padding:25,borderRadius:15}}>
+      </View>
+      
+    )
+  }
+
+  const BottomTab=()=>{
+    return(
+      <View style={{ flex: 0, alignItems: 'center', backgroundColor:cardColor, marginHorizontal:20, marginBottom:20, padding:25,borderRadius:15}}>
           
 
 
@@ -398,11 +370,7 @@ export default function Home({ navigation }: HomeProps) {
 
               <View style={{justifyContent:"flex-start"}}>
 
-          <TouchableOpacity onPress={() => { }}>
-          <Icon
-          color="#01d4bf"
-          name="alarm"
-          onPress={() => { 
+          <TouchableOpacity onPress={() => { 
             const newEntry = {
               id: Math.round(Math.random() * 1000000),
               date: new Date(),
@@ -429,40 +397,90 @@ export default function Home({ navigation }: HomeProps) {
   
             navigation.navigate("Editor", {
               entryId: newEntry.id, backgroundColor:bgColor, textColor:textColor, iconColor:iconColor
-            });}}
+            });
+            setSettingToggle(false)
+          }}>
+          <Icon
+          color="#01d4bf"
+          name="add"
         />
 
           </TouchableOpacity>
         </View>
         <View style={{justifyContent:"center"}}>
 
-        {/* <Icon
-        color="#2d455d"
-        name="add"
-        onPress={() => { 
-        }}
-        /> */}
-        <Switch value={!theme}
-          onValueChange={()=>{
-            setTheme(!theme)
-          }}></Switch>
-
+        <TouchableOpacity onPress={()=>{ setSettingToggle(false)}}><Icon
+          color="#01d4bf"
+          name="home"
+        /></TouchableOpacity>
+        
       </View>
 
         <View style={{justifyContent:"flex-end"}}>
 
-          <TouchableOpacity onPress={() => { }}>
-          <Icon
+        <TouchableOpacity
+          onPress={()=>{ setSettingToggle(true)}}>
+        <Icon
           color="#01d4bf"
           name="settings"
-          onPress={()=>{}}
         />
 
-          </TouchableOpacity>
+        </TouchableOpacity>
+          
         </View>
       </View>
           
         </View>
+    )
+  }
+
+  const { width, height } = Dimensions.get("window");
+  
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  } else {
+  return (
+    <View style={{ flex: 1, paddingTop:50, backgroundColor:bgColor}}>
+      {/* <LinearGradient
+          colors={[backTopColor, backBottomColor]}
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            top: 0,
+            height: height+80,
+          }}
+        /> */}
+      {/* <Image source={require("../assets/ab2.jpg")}  blurRadius={10} style={{flex:1,opacity:0.9, position:"absolute",height:"110%", width:"100%", }} resizeMode="cover"></Image> */}
+      <View style={{flex: .4, paddingHorizontal:20, justifyContent:"center", flexDirection:"row"}}>
+      {settingToggle &&
+      <Text style={{fontFamily:"Balsamiq-Bold", fontSize:20, color:textColor}}>Settings</Text>}
+        {!settingToggle &&
+      <Text style={{fontFamily:"Balsamiq-Bold", marginTop:10, fontSize:20, color:textColor}}>Welcome to Thankfully</Text>}
+        
+        </View>
+        
+        {!settingToggle &&
+        <View style={{flex:4, paddingBottom:55}}>
+        <Carousel
+        style={{
+        elevation: 4,
+        }}
+        layout="default"
+        inactiveSlideOpacity={1}
+        activeSlideOffset={100}
+          data={entries}
+          renderItem={_renderItem}
+          sliderWidth={width / 1}
+          itemWidth={width / 1.1}
+          hasParallaxImages={true}
+        /></View>}
+
+        {settingToggle &&
+        <Settings></Settings>}
+
+        <BottomTab></BottomTab>
      
       
       
