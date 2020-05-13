@@ -80,8 +80,7 @@ export default function Editor({ route, navigation }: EditorProps) {
   const pickImage= async ()=>{
     let result  = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing:true,
-      // aspect:[4,3]
+      allowsEditing:false
     })
     if(!result.cancelled){     
       // dispatch(updateEntry({...entry, image: result.uri}))
@@ -145,7 +144,6 @@ export default function Editor({ route, navigation }: EditorProps) {
             dispatch(updateEntry(updatedEntry));
           }}
           placeholder="Your note here"
-          onTouchStart={()=>{}}
           multiline
           style={{
             flex: 6,
