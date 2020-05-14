@@ -105,6 +105,7 @@ export default function Editor({ route, navigation }: EditorProps) {
       <Image key={obj.item} source={{uri:obj.item}} style={{height:width/3.1, width:width/3.1,margin:1.5}}></Image>
     </TouchableHighlight>
 )
+
 if (!fontsLoaded) {
   return <AppLoading />;
 } else {
@@ -119,7 +120,8 @@ if (!fontsLoaded) {
             paddingHorizontal: 20,
             alignItems:"center",}}>
         <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-          <Icons name={'check'} size={30} color={iconColor}/>
+          <Icon 
+          type='simple-line-icon' name={'like'} color={iconColor}/>
         </TouchableOpacity>
         {/* <View style={{justifyContent:"flex-end", flexDirection:"row"}}>
           <TouchableOpacity onPress={() => { getPhotoPermission(); }}>
@@ -236,7 +238,9 @@ if (!fontsLoaded) {
         </TouchableOpacity>
         <View style={{justifyContent:"flex-end", flexDirection:"row"}}>
           <TouchableOpacity onPress={() => {getPhotoPermission();}}>
-          <Icons name={'attach-file'} size={30} color={iconColor} style={{marginLeft:10}}/>
+          <Icon 
+          name='picture'
+          type='simple-line-icon' color={iconColor} style={{marginLeft:10}}/>
 
           </TouchableOpacity>
         </View>

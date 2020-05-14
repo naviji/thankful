@@ -75,14 +75,14 @@ const JournalEntry = (props: any) => {
       }
   
       {!props.entry.image&&
-        <Image source={require("../assets/ab2.jpg")} resizeMode="cover" style={{borderTopLeftRadius:10, borderTopRightRadius:10, width:"100%", height:height/4.7}}></Image>
+        <Image source={require("../assets/pattern.jpg")} resizeMode="cover" style={{borderTopLeftRadius:10, borderTopRightRadius:10, width:"100%", height:height/4.7}}></Image>
       }
   
    <View style={{
               justifyContent:"space-between",
               flex: 0,
-              paddingHorizontal:15,
-              paddingTop:15,
+              paddingHorizontal:20,
+              paddingTop:20,
               alignItems:"center",
               flexDirection:"row",}}>
           <Text style={{ fontSize: 20,  color:props.textColor, fontFamily:"Balsamiq-Bold"}}>
@@ -111,16 +111,17 @@ const JournalEntry = (props: any) => {
               dispatch(removeEntry(entry.id));
             }}>
             <Icon
-            color="red"
+            color="#cf3d43"
           style={{justifyContent: "flex-end"}}
-            name="clear"
+          name="trash"
+          type='simple-line-icon'
             
           />
   
             </TouchableOpacity>
           </View>
         </View>
-        <View style={{flex:3, paddingHorizontal:15,}}>
+        <View style={{flex:3, paddingHorizontal:20,}}>
         
         <Text style={{ fontSize: 17, marginTop: 10, color:props.textColor, fontFamily:"Balsamiq-Regular" }}>
           {entry.content.length > 20

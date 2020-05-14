@@ -83,6 +83,8 @@ const _onSuccess: SQLite.SQLVoidCallback | undefined = () => {
   console.log("Success loading database");
 };
 
+
+
 export default function Home({ navigation }: HomeProps) {
   const [bgColor, setBgColor] = useState("#fff")
   const [textColor, setTextColor] = useState("#131d27")
@@ -220,6 +222,7 @@ export default function Home({ navigation }: HomeProps) {
           <Text style={{fontFamily:"Balsamiq-Bold", color:textColor}}>Dark Mode</Text>
           <View style={{justifyContent:"flex-end"}}>
         <Switch value={!theme}
+        color='#cf3d43'
           onValueChange={()=>{
             setTheme(!theme)
           }}></Switch>
@@ -281,8 +284,9 @@ export default function Home({ navigation }: HomeProps) {
             setSettingToggle(false)
           }}>
           <Icon
-          color="#01d4bf"
-          name="add"
+          color="#cf3d43"
+          name='event'
+          type='simple-line-icon'
         />
 
           </TouchableOpacity>
@@ -290,8 +294,9 @@ export default function Home({ navigation }: HomeProps) {
         <View style={{justifyContent:"center"}}>
 
         <TouchableOpacity onPress={()=>{ setSettingToggle(false)}}><Icon
-          color="#01d4bf"
-          name="home"
+          color="#cf3d43"
+          name='emotsmile'
+          type='simple-line-icon'
         /></TouchableOpacity>
         
       </View>
@@ -301,8 +306,9 @@ export default function Home({ navigation }: HomeProps) {
         <TouchableOpacity
           onPress={()=>{ setSettingToggle(true)}}>
         <Icon
-          color="#01d4bf"
+          color="#cf3d43"
           name="settings"
+          type='simple-line-icon'
         />
 
         </TouchableOpacity>
