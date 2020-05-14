@@ -111,7 +111,7 @@ const JournalEntry = (props: any) => {
               dispatch(removeEntry(entry.id));
             }}>
             <Icon
-            color="#cf3d43"
+            color={props.iconColor}
           style={{justifyContent: "flex-end"}}
           name="trash"
           type='simple-line-icon'

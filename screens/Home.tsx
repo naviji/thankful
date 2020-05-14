@@ -88,7 +88,7 @@ const _onSuccess: SQLite.SQLVoidCallback | undefined = () => {
 export default function Home({ navigation }: HomeProps) {
   const [bgColor, setBgColor] = useState("#fff")
   const [textColor, setTextColor] = useState("#131d27")
-  const [iconColor, setIconColor] = useState("#01d4bf")
+  const [iconColor, setIconColor] = useState("#cf3d43")
   const [cardColor, setCardColor] = useState("#f8d69c")
   const [cardTextColor, setCardTextColor] = useState("#fff")
   const [backTopColor,setBackTopColor ] = useState('#ededed')
@@ -198,7 +198,7 @@ export default function Home({ navigation }: HomeProps) {
         <TouchableOpacity
           onPress={() =>
             navigation.navigate("Editor", {
-              entryId: item.id, backgroundColor:cardColor, textColor:textColor, iconColor:textColor
+              entryId: item.id, backgroundColor:cardColor, textColor:textColor, iconColor:iconColor
             })
           }
           key={item.id}
@@ -206,7 +206,7 @@ export default function Home({ navigation }: HomeProps) {
             flex: 1,
           }}
         >
-         <JournalEntry entry={item} cardColor={cardColor} textColor={cardTextColor} iconColor={cardTextColor} cardType={cardType}/>
+         <JournalEntry entry={item} cardColor={cardColor} textColor={cardTextColor} iconColor={iconColor} cardType={cardType}/>
         </TouchableOpacity>
         
       </View>
@@ -279,12 +279,12 @@ export default function Home({ navigation }: HomeProps) {
             dispatch(createEntry(newEntry));
   
             navigation.navigate("Editor", {
-              entryId: newEntry.id, backgroundColor:cardColor, textColor:textColor, iconColor:textColor
+              entryId: newEntry.id, backgroundColor:cardColor, textColor:textColor, iconColor:iconColor
             });
             setSettingToggle(false)
           }}>
           <Icon
-          color="#cf3d43"
+          color={iconColor}
           name='event'
           type='simple-line-icon'
         />
@@ -294,7 +294,7 @@ export default function Home({ navigation }: HomeProps) {
         <View style={{justifyContent:"center"}}>
 
         <TouchableOpacity onPress={()=>{ setSettingToggle(false)}}><Icon
-          color="#cf3d43"
+          color={iconColor}
           name='emotsmile'
           type='simple-line-icon'
         /></TouchableOpacity>
@@ -306,7 +306,7 @@ export default function Home({ navigation }: HomeProps) {
         <TouchableOpacity
           onPress={()=>{ setSettingToggle(true)}}>
         <Icon
-          color="#cf3d43"
+          color={iconColor}
           name="settings"
           type='simple-line-icon'
         />
