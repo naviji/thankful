@@ -207,6 +207,7 @@ if (!fontsLoaded) {
           style={{alignSelf:"center",marginTop:18}}
           data={entry.image}
           numColumns={3}
+          
           renderItem={_renderItemFlatList}>
 
           </FlatList>}
