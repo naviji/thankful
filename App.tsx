@@ -11,7 +11,6 @@ import reducer from "./reducers/index"
 
 import Home from "./screens/Home";
 import Editor from "./screens/Editor";
-import ImageShowScreen from './screens/ImageShowScreen'
 
 import {RootStackParamList} from './types'
 
@@ -41,19 +40,7 @@ function MyStack() {
         name="Home"
         component={Home}
         options={{
-          title: "Thankfully",
-          
-          headerTitle: props => {return(
-                                          <Text {...props} style={{fontSize: 23, fontWeight: '700', elevation: 6}}>Thankfully</Text>
-                                        )},
-          headerRight: props => <Icon
-          
-          iconStyle={{
-            padding: 8,
-          }}
-          
-          onPress={() => console.log('Open settings')}
-          name='settings' />
+          headerShown: false,
         }}
       />
 
@@ -73,7 +60,7 @@ export default function App() {
   return (
     <StoreProvider store={store}>
       <ThemeProvider>
-        <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
+        <StatusBar translucent backgroundColor="transparent" barStyle="dark-content"  />
         <NavigationContainer>{MyStack()}</NavigationContainer>
       </ThemeProvider>
     </StoreProvider>

@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import Icons from 'react-native-vector-icons/MaterialIcons';
 import { Icon, Text } from "react-native-elements";
+import { ToggleButton, Switch } from 'react-native-paper';
+import {BlurView} from 'expo-blur';
+import * as Font from 'expo-font';
+
+import { useFonts } from '@use-expo/font';
+
+import {LinearGradient} from 'expo-linear-gradient';
 import {
   ScrollView,
   FlatList,
@@ -8,6 +15,8 @@ import {
   TouchableHighlight,
   StyleSheet,
   Image,
+  
+  ImageBackground,
   TouchableOpacity,
   View,
   SafeAreaView,
@@ -15,6 +24,7 @@ import {
   ListRenderItem,
   StatusBar,
   Button,
+  Animated,
 } from "react-native";
 import Carousel from "react-native-snap-carousel";
 
@@ -23,8 +33,8 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { loadEntries, createEntry, removeEntry } from "../reducers/entries";
 
+import { AppLoading } from 'expo';
 import { Entry, HomeProps, IAppState } from "../types";
-
 // import { v4 as uuidv4 } from 'uuid';
 
 import * as SQLite from "expo-sqlite";
@@ -82,33 +92,51 @@ const isYesterday = (dateToCheck: Date): Boolean => {
   return yesterdayDate.valueOf() === dateToCompare.valueOf();
 };
 const _renderItemFlatList=(obj)=>(
-  <Image key={obj.item} source={{uri:obj.item}} style={{alignItems:"center", height:width/4.5, width:width/4.5,margin:1.5}}></Image>
+  <Image key={obj.item} source={{uri:obj.item}} style={{borderRadius:10, shadowColor:"#000", shadowOffset:{width:7, height:7}, shadowOpacity:1, shadowRadius:10, alignItems:"center", height:width/4.5, width:width/4.5,margin:1.5}}></Image>
   )
 const JournalEntry = (props: any) => {
   const entry: Entry = props.entry;
   const dispatch = useDispatch();
   // const { width, height } = Dimensions.get("window");
   return (
+
+
+    
+    
     <View
       style={{
+        
         flex: 1,
         // minHeight: height/1.23, // replace with dimensions
-        backgroundColor: "white",
-        padding: 16,
-        elevation: 4,
+        backgroundColor: props.cardColor,  //#8249E4
         marginTop: 20,
-        marginBottom: 20,
         marginHorizontal: 7,
         borderRadius: 10,
+        shadowColor:"black",
+        shadowOffset: {height:20, width:20},
+        shadowOpacity:0.9,
+        shadowRadius:20
+
+
       }}
     >
 
-<View style={{
+      {(props.entry.image)&&  
+      <Image source={{uri:props.entry.image[0]}} resizeMode="cover" style={{borderTopLeftRadius:10, borderTopRightRadius:10, width:"100%", height:height/4}}></Image>
+    }
+
+    {!props.entry.image&&
+      <Image source={require("../assets/ab2.jpg")} resizeMode="cover" style={{borderTopLeftRadius:10, borderTopRightRadius:10, width:"100%", height:height/4}}></Image>
+    }
+
+ <View style={{
             justifyContent:"space-between",
             flex: 0,
+            paddingHorizontal:15,
+            paddingTop:15,
             alignItems:"center",
             flexDirection:"row",}}>
-        <Text style={{ fontSize: 20, fontWeight: "700"}}>
+        <Text style={{ fontSize: 20, fontWeight: "700", color:props.textColor}}>
         {isToday(entry.date)
           ? "Today"
           : isYesterday(entry.date)
@@ -116,8 +144,10 @@ const JournalEntry = (props: any) => {
           : entry.date.toDateString()}
       </Text>
         <View style={{justifyContent:"flex-end", flexDirection:"row"}}>
+
           <TouchableOpacity onPress={() => { }}>
           <Icon
+          color={props.textColor}
         style={{justifyContent: "flex-end"}}
           name="clear"
           onPress={() => {
@@ -141,13 +171,14 @@ const JournalEntry = (props: any) => {
           </TouchableOpacity>
         </View>
       </View>
-      <View style={{flex:3,}}>
-      <Text style={{ fontSize: 20, marginTop: 10 }}>
+      <View style={{flex:3, paddingHorizontal:15,}}>
+      
+      <Text style={{ fontSize: 17, marginTop: 10, color:props.textColor }}>
         {entry.content.length > 20
-          ? entry.content.slice(0, 20) + "..."
+          ? entry.content.slice(0, 400) + "..."
           : entry.content}
       </Text></View>
-      {entry.image &&<View  style={{flex:2,}} >
+      {entry.image &&<View  style={{flex:2,paddingTop:15}} >
         
           <FlatList
           style={{alignSelf:"center"}}
@@ -173,8 +204,25 @@ const _onSuccess: SQLite.SQLVoidCallback | undefined = () => {
 };
 
 export default function Home({ navigation }: HomeProps) {
+  const [bgColor, setBgColor] = useState("#fff")
+  const [textColor, setTextColor] = useState("#131d27")
+  const [iconColor, setIconColor] = useState("#01d4bf")
+  const [cardColor, setCardColor] = useState("#f8d69c")
+  const [cardTextColor, setCardTextColor] = useState("#fff")
+  const [backTopColor,setBackTopColor ] = useState('#ededed')
+  const [backBottomColor,setBackBottomColor ] = useState('#ededed')
+  const [cardType,setCardType] = useState("light")
+  const [settingToggle, setSettingToggle] = useState(false)
+
+  let [fontsLoaded] = useFonts({
+    'Balsamiq-Bold': require('../assets/fonts/BalsamiqSans-Bold.ttf'),
+    'Balsamiq-Regular': require('../assets/fonts/BalsamiqSans-Regular.ttf'),
+  });
+
   
-  
+
+  const [theme,setTheme] = useState(true)  
+
   // const [entries, setEntires] = useState(data);
   //   const entries: Array<Entry> = useSelector(state => state.entries);
   // const windowHeight = useWindowDimensions().height;
@@ -221,7 +269,31 @@ export default function Home({ navigation }: HomeProps) {
       _onError,
       _onSuccess
     );
+    
   }, []);
+
+
+  React.useEffect(()=>{
+    if(theme){
+      setBgColor("#f1f2fa")
+      setTextColor("#131d27")
+      setCardTextColor("#161616")
+      setCardColor("#fff")
+      setBackBottomColor('#fea09c')
+      setBackTopColor('#fdc7d5')
+      setCardType("light")
+    }
+    else{
+      setBgColor("#161616")
+      setCardColor("#1a1a1a")
+      setCardTextColor("white")
+      setTextColor("#ededed")
+      setBackBottomColor('#2d455d')
+      setBackTopColor('#2d455d')
+      setCardType("dark")
+
+    }
+  },[theme])
 
   // if (entries.length && !isToday(entries[0].date)) {
   //   const today = new Date();
@@ -235,15 +307,17 @@ export default function Home({ navigation }: HomeProps) {
 
   const _renderItem: ListRenderItem<Entry> = ({ item }) => {
     return (
+      
       <View
         style={{
+
           flex: 1,
         }}
       >
         <TouchableOpacity
           onPress={() =>
             navigation.navigate("Editor", {
-              entryId: item.id,
+              entryId: item.id, backgroundColor:bgColor, textColor:textColor, iconColor:iconColor
             })
           }
           key={item.id}
@@ -251,49 +325,59 @@ export default function Home({ navigation }: HomeProps) {
             flex: 1,
           }}
         >
-          <JournalEntry entry={item} />
+         <JournalEntry entry={item} cardColor={cardColor} textColor={cardTextColor} iconColor={cardTextColor} cardType={cardType}/>
         </TouchableOpacity>
         
       </View>
     );
   };
 
-  const { width, height } = Dimensions.get("window");
 
-  return (
-    <View style={{ flex: 1, paddingTop:80 }}>
-      <View style={{flex: 2, paddingBottom:20}}>
-      <Carousel
-      layout="tinder"
-      layoutCardOffset={18}
-        // swipeThreshold={20} //default
-        // data={entries.filter((x) => x.content !== "")}
-        data={entries}
-        renderItem={_renderItem}
-        sliderWidth={width / 1}
-        itemWidth={width / 1.2}
-        // layout={'stack'}
-      />
+
+  const Settings=()=>{
+    return(
+      <View style={{flex:3,marginHorizontal:25, marginBottom:55}}>
+        <View style={{flexDirection:"row",justifyContent:"space-between", marginBottom:15}}>
+          <Text style={{fontFamily:"Balsamiq-Bold", color:textColor}}>Dark Mode</Text>
+          <View style={{justifyContent:"flex-end"}}>
+        <Switch value={!theme}
+          onValueChange={()=>{
+            setTheme(!theme)
+          }}></Switch>
+
+        </View>
+        </View>
+        
+        
+
       </View>
-      <View style={{flex: .4}}></View>
-      <View style={{ flex: 0, alignItems: 'center'}}>
-        <Icon
-          raised
-          size={33} 
-          iconStyle={
-            {
-              // width: 40,
-              // height: 40,
-              // padding: 4,
-            }
-          }
-          onPress={() => {
+      
+    )
+  }
+
+  const BottomTab=()=>{
+    return(
+      <View style={{ flex: 0, alignItems: 'center', backgroundColor:cardColor, marginHorizontal:20, marginBottom:20, padding:25,borderRadius:15}}>
+          
+
+
+ <View style={{
+   width:"100%",
+            justifyContent:"space-between",
+            flex: 0,
+            paddingHorizontal:15,
+            alignItems:"center",
+            flexDirection:"row",}}>
+
+              <View style={{justifyContent:"flex-start"}}>
+
+          <TouchableOpacity onPress={() => { 
             const newEntry = {
               id: Math.round(Math.random() * 1000000),
               date: new Date(),
               content: "",
             };
-
+  
             db.transaction(
               (tx) => {
                 tx.executeSql(
@@ -309,16 +393,99 @@ export default function Home({ navigation }: HomeProps) {
               () => console.log("creation failed"),
               () => console.log("creation successful")
             );
-
+  
             dispatch(createEntry(newEntry));
-
+  
             navigation.navigate("Editor", {
-              entryId: newEntry.id,
+              entryId: newEntry.id, backgroundColor:bgColor, textColor:textColor, iconColor:iconColor
             });
-          }}
-          name="event"
+            setSettingToggle(false)
+          }}>
+          <Icon
+          color="#01d4bf"
+          name="add"
         />
+
+          </TouchableOpacity>
+        </View>
+        <View style={{justifyContent:"center"}}>
+
+        <TouchableOpacity onPress={()=>{ setSettingToggle(false)}}><Icon
+          color="#01d4bf"
+          name="home"
+        /></TouchableOpacity>
+        
       </View>
+
+        <View style={{justifyContent:"flex-end"}}>
+
+        <TouchableOpacity
+          onPress={()=>{ setSettingToggle(true)}}>
+        <Icon
+          color="#01d4bf"
+          name="settings"
+        />
+
+        </TouchableOpacity>
+          
+        </View>
+      </View>
+          
+        </View>
+    )
+  }
+
+  const { width, height } = Dimensions.get("window");
+  
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  } else {
+  return (
+    <View style={{ flex: 1, paddingTop:50, backgroundColor:bgColor}}>
+      {/* <LinearGradient
+          colors={[backTopColor, backBottomColor]}
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            top: 0,
+            height: height+80,
+          }}
+        /> */}
+      {/* <Image source={require("../assets/ab2.jpg")}  blurRadius={10} style={{flex:1,opacity:0.9, position:"absolute",height:"110%", width:"100%", }} resizeMode="cover"></Image> */}
+      <View style={{flex: .4, paddingHorizontal:20, justifyContent:"center", flexDirection:"row"}}>
+      {settingToggle &&
+      <Text style={{fontFamily:"Balsamiq-Bold", fontSize:20, color:textColor}}>Settings</Text>}
+        {!settingToggle &&
+      <Text style={{fontFamily:"Balsamiq-Bold", marginTop:10, fontSize:20, color:textColor}}>Welcome to Thankfully</Text>}
+        
+        </View>
+        
+        {!settingToggle &&
+        <View style={{flex:4, paddingBottom:55}}>
+        <Carousel
+        style={{
+        elevation: 4,
+        }}
+        layout="default"
+        inactiveSlideOpacity={1}
+        activeSlideOffset={100}
+          data={entries}
+          renderItem={_renderItem}
+          sliderWidth={width / 1}
+          itemWidth={width / 1.1}
+          hasParallaxImages={true}
+        /></View>}
+
+        {settingToggle &&
+        <Settings></Settings>}
+
+        <BottomTab></BottomTab>
+     
+      
+      
     </View>
   );
+  }
 }
