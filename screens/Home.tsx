@@ -4,7 +4,7 @@ import { Icon, Text } from "react-native-elements";
 import { ToggleButton, Switch } from 'react-native-paper';
 import {BlurView} from 'expo-blur';
 import * as Font from 'expo-font';
-
+import JournalEntry from '../screens/JournalEntry'
 import { useFonts } from '@use-expo/font';
 
 import {LinearGradient} from 'expo-linear-gradient';
@@ -75,126 +75,6 @@ const dummyData: Array<Entry> = [
   },
 ];
 
-const isToday = (dateToCheck: Date): Boolean => {
-  const dateToCompare = new Date(dateToCheck);
-  dateToCompare.setHours(0, 0, 0, 0);
-  const todayDate = new Date();
-  todayDate.setHours(0, 0, 0, 0);
-  return todayDate.valueOf() === dateToCompare.valueOf();
-};
-
-const isYesterday = (dateToCheck: Date): Boolean => {
-  const dateToCompare = new Date(dateToCheck);
-  dateToCompare.setHours(0, 0, 0, 0);
-  const yesterdayDate = new Date();
-  yesterdayDate.setDate(yesterdayDate.getDate() - 1);
-  yesterdayDate.setHours(0, 0, 0, 0);
-  return yesterdayDate.valueOf() === dateToCompare.valueOf();
-};
-const _renderItemFlatList=(obj)=>(
-  <Image key={obj.item} source={{uri:obj.item}} style={{borderRadius:10, shadowColor:"#000", shadowOffset:{width:7, height:7}, shadowOpacity:1, shadowRadius:10, alignItems:"center", height:width/4.5, width:width/4.5,margin:1.5}}></Image>
-  )
-const JournalEntry = (props: any) => {
-  const entry: Entry = props.entry;
-  const dispatch = useDispatch();
-  // const { width, height } = Dimensions.get("window");
-  return (
-
-
-    
-    
-    <View
-      style={{
-        
-        flex: 1,
-        // minHeight: height/1.23, // replace with dimensions
-        backgroundColor: props.cardColor,  //#8249E4
-        marginTop: 20,
-        marginHorizontal: 7,
-        borderRadius: 10,
-        shadowColor:"black",
-        shadowOffset: {height:20, width:20},
-        shadowOpacity:0.9,
-        shadowRadius:20
-
-
-      }}
-    >
-
-      {(props.entry.image)&&  
-      <Image source={{uri:props.entry.image[0]}} resizeMode="cover" style={{borderTopLeftRadius:10, borderTopRightRadius:10, width:"100%", height:height/4}}></Image>
-    }
-
-    {!props.entry.image&&
-      <Image source={require("../assets/ab2.jpg")} resizeMode="cover" style={{borderTopLeftRadius:10, borderTopRightRadius:10, width:"100%", height:height/4}}></Image>
-    }
-
- <View style={{
-            justifyContent:"space-between",
-            flex: 0,
-            paddingHorizontal:15,
-            paddingTop:15,
-            alignItems:"center",
-            flexDirection:"row",}}>
-        <Text style={{ fontSize: 20, fontWeight: "700", color:props.textColor}}>
-        {isToday(entry.date)
-          ? "Today"
-          : isYesterday(entry.date)
-          ? "Yesterday"
-          : entry.date.toDateString()}
-      </Text>
-        <View style={{justifyContent:"flex-end", flexDirection:"row"}}>
-
-          <TouchableOpacity onPress={() => { }}>
-          <Icon
-          color={props.textColor}
-        style={{justifyContent: "flex-end"}}
-          name="clear"
-          onPress={() => {
-            db.transaction(
-              tx => {
-                tx.executeSql(
-                  "DELETE from entries WHERE id=?",
-                  [entry.id],
-                  () => console.log("delete success"),
-                  (t, e) => {
-                    console.log("delete failed");
-                    return false;
-                  }
-                );
-              }
-            )
-            dispatch(removeEntry(entry.id));
-          }}
-        />
-
-          </TouchableOpacity>
-        </View>
-      </View>
-      <View style={{flex:3, paddingHorizontal:15,}}>
-      
-      <Text style={{ fontSize: 17, marginTop: 10, color:props.textColor }}>
-        {entry.content.length > 20
-          ? entry.content.slice(0, 400) + "..."
-          : entry.content}
-      </Text></View>
-      {entry.image &&<View  style={{flex:2,paddingTop:15}} >
-        
-          <FlatList
-          style={{alignSelf:"center"}}
-          data={entry.image.slice(0,3)}
-          numColumns={3}
-          renderItem={_renderItemFlatList}>
-
-          </FlatList></View>
-          }
-      
-
-      
-    </View>
-  );
-};
-
 const _onError: SQLite.SQLTransactionErrorCallback | undefined = (e) => {
   console.warn(e);
 };
@@ -220,7 +100,6 @@ export default function Home({ navigation }: HomeProps) {
   });
 
   
-
   const [theme,setTheme] = useState(true)  
 
   // const [entries, setEntires] = useState(data);
@@ -276,8 +155,8 @@ export default function Home({ navigation }: HomeProps) {
   React.useEffect(()=>{
     if(theme){
       setBgColor("#f1f2fa")
-      setTextColor("#131d27")
-      setCardTextColor("#161616")
+      setTextColor("#262c33")
+      setCardTextColor("#262c33")
       setCardColor("#fff")
       setBackBottomColor('#fea09c')
       setBackTopColor('#fdc7d5')
@@ -317,7 +196,7 @@ export default function Home({ navigation }: HomeProps) {
         <TouchableOpacity
           onPress={() =>
             navigation.navigate("Editor", {
-              entryId: item.id, backgroundColor:bgColor, textColor:textColor, iconColor:iconColor
+              entryId: item.id, backgroundColor:cardColor, textColor:textColor, iconColor:textColor
             })
           }
           key={item.id}
@@ -357,7 +236,7 @@ export default function Home({ navigation }: HomeProps) {
 
   const BottomTab=()=>{
     return(
-      <View style={{ flex: 0, alignItems: 'center', backgroundColor:cardColor, marginHorizontal:20, marginBottom:20, padding:25,borderRadius:15}}>
+      <View style={{ flex: 0, alignItems: 'center', backgroundColor:cardColor, marginHorizontal:10, marginBottom:10, padding:25,borderRadius:15}}>
           
 
 
@@ -397,7 +276,7 @@ export default function Home({ navigation }: HomeProps) {
             dispatch(createEntry(newEntry));
   
             navigation.navigate("Editor", {
-              entryId: newEntry.id, backgroundColor:bgColor, textColor:textColor, iconColor:iconColor
+              entryId: newEntry.id, backgroundColor:cardColor, textColor:textColor, iconColor:textColor
             });
             setSettingToggle(false)
           }}>
@@ -435,7 +314,7 @@ export default function Home({ navigation }: HomeProps) {
     )
   }
 
-  const { width, height } = Dimensions.get("window");
+  const { width, height } = Dimensions.get("screen");
   
 
   if (!fontsLoaded) {
@@ -450,7 +329,7 @@ export default function Home({ navigation }: HomeProps) {
             left: 0,
             right: 0,
             top: 0,
-            height: height+80,
+            height: height,
           }}
         /> */}
       {/* <Image source={require("../assets/ab2.jpg")}  blurRadius={10} style={{flex:1,opacity:0.9, position:"absolute",height:"110%", width:"100%", }} resizeMode="cover"></Image> */}

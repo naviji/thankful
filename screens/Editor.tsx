@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import { Icon } from "react-native-elements";
 import Icons from 'react-native-vector-icons/MaterialIcons';
 import * as ImagePicker from 'expo-image-picker';
+import { useFonts } from '@use-expo/font';
 import * as Permissions from 'expo-permissions';
 import {
   StatusBar,
@@ -22,6 +23,7 @@ import { Button, colors } from "react-native-elements";
 import { useSelector, useDispatch } from "react-redux";
 import { updateEntry, createEntry, removeEntry } from "../reducers/entries";
 import { EditorProps, IAppState, Entry } from "../types";
+import { AppLoading } from 'expo';
 
 import * as SQLite from 'expo-sqlite'
 import ImageShowScreen from "./ImageShowScreen";
@@ -30,6 +32,15 @@ const db = SQLite.openDatabase("paperNote.db")
 const {height, width} = Dimensions.get('window')
 
 export default function Editor({ route, navigation }: EditorProps) {
+
+
+  
+  
+  let [fontsLoaded] = useFonts({
+    'Balsamiq-Bold': require('../assets/fonts/BalsamiqSans-Bold.ttf'),
+    'Balsamiq-Regular': require('../assets/fonts/BalsamiqSans-Regular.ttf'),
+  });
+
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setselectedImage] = useState(null);
   // const {width, height} = Dimensions.get('window')
@@ -94,6 +105,9 @@ export default function Editor({ route, navigation }: EditorProps) {
       <Image key={obj.item} source={{uri:obj.item}} style={{height:width/3.1, width:width/3.1,margin:1.5}}></Image>
     </TouchableHighlight>
 )
+if (!fontsLoaded) {
+  return <AppLoading />;
+} else {
   return (
     <SafeAreaView style={{ flex: 1, marginTop: 30, backgroundColor:bgColor,}}>
       {entry &&
@@ -105,18 +119,18 @@ export default function Editor({ route, navigation }: EditorProps) {
             paddingHorizontal: 20,
             alignItems:"center",}}>
         <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-          <Icons name={'arrow-back'} size={30} color={iconColor}/>
+          <Icons name={'check'} size={30} color={iconColor}/>
         </TouchableOpacity>
-        <View style={{justifyContent:"flex-end", flexDirection:"row"}}>
+        {/* <View style={{justifyContent:"flex-end", flexDirection:"row"}}>
           <TouchableOpacity onPress={() => { getPhotoPermission(); }}>
           <Icons name={'attach-file'} size={30} color={iconColor} style={{marginLeft:10}}/>
 
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
       
 }
-  <Text style={{fontSize: 20, fontWeight: "bold", marginHorizontal:20, marginTop:20, color:textColor}}>
+  <Text style={{fontSize: 20, fontFamily:"Balsamiq-Bold", marginHorizontal:20, marginTop:20, color:textColor}}>
           Tell us about your day..
         </Text>
 
@@ -150,7 +164,7 @@ export default function Editor({ route, navigation }: EditorProps) {
             color:textColor,
             textAlignVertical: "top",
             fontSize: 17.5,
-            fontWeight: "300",
+            fontFamily:"Balsamiq-Regular",
           }}
         />
 
@@ -168,12 +182,13 @@ export default function Editor({ route, navigation }: EditorProps) {
         animationType="slide"
         visible={modalVisible}
         transparent={false}
+        
         onRequestClose={()=>{setModalVisible(!modalVisible);}}
        >
       <View style={{flex:1, paddingTop: 22, backgroundColor:route.params.backgroundColor }}>
             
               <Icon
-              color={route.params.textColor}
+              color="red"
           name="clear"
           onPress={() => {setModalVisible(!modalVisible);}}
         />
@@ -181,7 +196,7 @@ export default function Editor({ route, navigation }: EditorProps) {
       <ScrollView>
 
       { selectedImage &&
-          <ImageShowScreen image={selectedImage}/> }
+          <ImageShowScreen image={selectedImage} /> }
 
             {
               
@@ -189,7 +204,7 @@ export default function Editor({ route, navigation }: EditorProps) {
 
         entry.image &&
           <FlatList
-          style={{alignSelf:"center"}}
+          style={{alignSelf:"center",marginTop:18}}
           data={entry.image}
           numColumns={3}
           renderItem={_renderItemFlatList}>
@@ -214,13 +229,13 @@ export default function Editor({ route, navigation }: EditorProps) {
             setModalVisible(true);
           }}>
             { entry.image &&
-              <Text style={{fontSize: 18, color:iconColor, fontWeight: "bold"}}>
-          Show images..
+              <Text style={{fontSize: 18, color:iconColor, fontFamily:"Balsamiq-Bold",}}>
+          IMAGES OF THE DAY
         </Text>}
         </TouchableOpacity>
         <View style={{justifyContent:"flex-end", flexDirection:"row"}}>
-          <TouchableOpacity onPress={() => { navigation.navigate('Home') }}>
-          <Icons name={'check'} size={30} color={iconColor} style={{marginLeft:10}}/>
+          <TouchableOpacity onPress={() => {getPhotoPermission();}}>
+          <Icons name={'attach-file'} size={30} color={iconColor} style={{marginLeft:10}}/>
 
           </TouchableOpacity>
         </View>
@@ -230,4 +245,5 @@ export default function Editor({ route, navigation }: EditorProps) {
       
     </SafeAreaView>
   );
+            }
 }
