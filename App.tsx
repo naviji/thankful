@@ -17,6 +17,7 @@ import {RootStackParamList} from './types'
 import { YellowBox, StatusBar, View } from 'react-native';
 
 import * as SQLite from 'expo-sqlite'
+import LocalAuth from "./screens/LocalAuth";
 const db = SQLite.openDatabase("paperNote.db")
 
 // About: Non-serializable warning.
@@ -51,6 +52,15 @@ function MyStack() {
           headerShown: false,
         }}
       />
+
+      <Stack.Screen
+        name="Local"
+        component={LocalAuth}
+        options={{
+          headerShown: false,
+        }}
+      />
+      
       
     </Stack.Navigator>
   );

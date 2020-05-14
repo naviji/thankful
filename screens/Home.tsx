@@ -6,6 +6,7 @@ import {BlurView} from 'expo-blur';
 import * as Font from 'expo-font';
 import JournalEntry from '../screens/JournalEntry'
 import { useFonts } from '@use-expo/font';
+import * as LocalAuthentication from 'expo-local-authentication';
 
 import {LinearGradient} from 'expo-linear-gradient';
 import {
@@ -95,7 +96,8 @@ export default function Home({ navigation }: HomeProps) {
   const [backBottomColor,setBackBottomColor ] = useState('#ededed')
   const [cardType,setCardType] = useState("light")
   const [settingToggle, setSettingToggle] = useState(false)
-
+  const [auth, setAuth] = useState(false)
+  
   let [fontsLoaded] = useFonts({
     'Balsamiq-Bold': require('../assets/fonts/BalsamiqSans-Bold.ttf'),
     'Balsamiq-Regular': require('../assets/fonts/BalsamiqSans-Regular.ttf'),
@@ -150,7 +152,9 @@ export default function Home({ navigation }: HomeProps) {
       _onError,
       _onSuccess
     );
-    
+    LocalAuthentication.authenticateAsync().then(value=>{if(value.success){
+      setAuth(true)
+    }})
   }, []);
 
 
@@ -321,7 +325,12 @@ export default function Home({ navigation }: HomeProps) {
   }
 
   const { width, height } = Dimensions.get("screen");
-  
+
+  if(!auth){
+    return(
+      <AppLoading/>
+    )
+  }
 
   if (!fontsLoaded) {
     return <AppLoading />;
