@@ -14,13 +14,8 @@ export interface Entry {
 export type RootStackParamList = {
   Home: undefined;
   Editor: { entryId: number, backgroundColor:string, textColor:string, iconColor:string };
-  Local:undefined
 };
 
-type LocalScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Local'>
-export type LocalProps = {
-  navigation: LocalScreenNavigationProp
-};
 
 type EditorScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
