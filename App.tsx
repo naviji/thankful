@@ -17,6 +17,7 @@ import {RootStackParamList} from './types'
 import { YellowBox, StatusBar, View } from 'react-native';
 
 import * as SQLite from 'expo-sqlite'
+import Wait from "./screens/Wait";
 const db = SQLite.openDatabase("paperNote.db")
 
 // About: Non-serializable warning.
@@ -52,6 +53,13 @@ function MyStack() {
         }}
       />
       
+      <Stack.Screen
+        name="Wait"
+        component={Wait}
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack.Navigator>
   );
 }

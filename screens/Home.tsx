@@ -26,6 +26,7 @@ import {
   StatusBar,
   Button,
   Animated,
+  BackHandler,
 } from "react-native";
 import Carousel from "react-native-snap-carousel";
 
@@ -96,8 +97,9 @@ export default function Home({ navigation }: HomeProps) {
   const [backBottomColor,setBackBottomColor ] = useState('#ededed')
   const [cardType,setCardType] = useState("light")
   const [settingToggle, setSettingToggle] = useState(false)
-  const [auth, setAuth] = useState(false)
   const [finger, setFinger] = useState(false)
+  const [auth, setAuth] = useState(false)
+  const [error, setError] = useState(false)
   
   let [fontsLoaded] = useFonts({
     'Balsamiq-Bold': require('../assets/fonts/BalsamiqSans-Bold.ttf'),
@@ -153,14 +155,19 @@ export default function Home({ navigation }: HomeProps) {
       _onError,
       _onSuccess
     );
-    if(finger){
-      LocalAuthentication.authenticateAsync().then(value=>{
-        console.log(value.success)
-      })
-    }
-  }, [finger]);
+    
+    console.log("Here....")
+    if(finger)
+    
+  {LocalAuthentication.authenticateAsync().then(value=>{value.success?setAuth(true):setError(true)})}
 
 
+  
+      
+  }, []);
+
+
+  
   React.useEffect(()=>{
     if(theme){
       setBgColor("#f1f2fa")
@@ -192,6 +199,19 @@ export default function Home({ navigation }: HomeProps) {
   //   };
   //   dispatch(createEntry(entryForToday));
   // }
+
+  const fingerPrintLock=()=>{
+
+
+    if(finger){
+      setFinger(!finger)
+      return
+    }
+
+    LocalAuthentication.authenticateAsync().then(value=>{value.success?setFinger(!finger):setFinger(finger)})
+
+
+  }
 
   const _renderItem: ListRenderItem<Entry> = ({ item }) => {
     return (
@@ -239,11 +259,13 @@ export default function Home({ navigation }: HomeProps) {
         <View style={{flexDirection:"row",justifyContent:"space-between", marginBottom:15}}>
           <Text style={{fontFamily:"Balsamiq-Bold", color:textColor}}>Fingerprint Lock</Text>
           <View style={{justifyContent:"flex-end"}}>
-        <Switch value={finger}
-        color='#cf3d43'
-          onValueChange={()=>{
-            setFinger(!finger)
-          }}></Switch>
+        
+        
+        
+            <Switch value={finger}
+  
+          color='#cf3d43'
+            onValueChange={ fingerPrintLock }></Switch>
 
         </View>
         </View>
@@ -338,12 +360,8 @@ export default function Home({ navigation }: HomeProps) {
   }
 
   const { width, height } = Dimensions.get("screen");
+  
 
-  // if(!auth){
-  //   return(
-  //     <AppLoading/>
-  //   )
-  // }
 
   if (!fontsLoaded) {
     return <AppLoading />;
