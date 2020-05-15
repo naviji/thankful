@@ -60,7 +60,7 @@ export default function App() {
   return (
     <StoreProvider store={store}>
       <ThemeProvider>
-        <StatusBar translucent backgroundColor="transparent" barStyle="dark-content"  />
+        <StatusBar backgroundColor="#cf3d43" barStyle="light-content"  />
         <NavigationContainer>{MyStack()}</NavigationContainer>
       </ThemeProvider>
     </StoreProvider>

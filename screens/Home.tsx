@@ -97,6 +97,7 @@ export default function Home({ navigation }: HomeProps) {
   const [cardType,setCardType] = useState("light")
   const [settingToggle, setSettingToggle] = useState(false)
   const [auth, setAuth] = useState(false)
+  const [finger, setFinger] = useState(false)
   
   let [fontsLoaded] = useFonts({
     'Balsamiq-Bold': require('../assets/fonts/BalsamiqSans-Bold.ttf'),
@@ -152,10 +153,12 @@ export default function Home({ navigation }: HomeProps) {
       _onError,
       _onSuccess
     );
-    LocalAuthentication.authenticateAsync().then(value=>{if(value.success){
-      setAuth(true)
-    }})
-  }, []);
+    if(finger){
+      LocalAuthentication.authenticateAsync().then(value=>{
+        console.log(value.success)
+      })
+    }
+  }, [finger]);
 
 
   React.useEffect(()=>{
@@ -233,7 +236,17 @@ export default function Home({ navigation }: HomeProps) {
 
         </View>
         </View>
-        
+        <View style={{flexDirection:"row",justifyContent:"space-between", marginBottom:15}}>
+          <Text style={{fontFamily:"Balsamiq-Bold", color:textColor}}>Fingerprint Lock</Text>
+          <View style={{justifyContent:"flex-end"}}>
+        <Switch value={finger}
+        color='#cf3d43'
+          onValueChange={()=>{
+            setFinger(!finger)
+          }}></Switch>
+
+        </View>
+        </View>
         
 
       </View>
@@ -326,11 +339,11 @@ export default function Home({ navigation }: HomeProps) {
 
   const { width, height } = Dimensions.get("screen");
 
-  if(!auth){
-    return(
-      <AppLoading/>
-    )
-  }
+  // if(!auth){
+  //   return(
+  //     <AppLoading/>
+  //   )
+  // }
 
   if (!fontsLoaded) {
     return <AppLoading />;

@@ -110,7 +110,8 @@ if (!fontsLoaded) {
   return <AppLoading />;
 } else {
   return (
-    <SafeAreaView style={{ flex: 1, marginTop: 30, backgroundColor:bgColor,}}>
+    <SafeAreaView style={{ flex: 1,  backgroundColor:bgColor,}}>
+      <ScrollView>
       {entry &&
         <View style={{
             justifyContent:"space-between",
@@ -177,6 +178,7 @@ if (!fontsLoaded) {
       
 
       }
+      </ScrollView>
       
 
       
@@ -222,7 +224,7 @@ if (!fontsLoaded) {
 
       <View style={{
             justifyContent:"space-between",
-            paddingBottom:20,
+            paddingVertical:20,
             flex: 0,
             flexDirection:"row",
             paddingHorizontal: 20,
