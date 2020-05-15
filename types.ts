@@ -14,8 +14,13 @@ export interface Entry {
 export type RootStackParamList = {
   Home: undefined;
   Editor: { entryId: number, backgroundColor:string, textColor:string, iconColor:string };
+  Wait:undefined;
 };
 
+type WaitNavigationProps = StackNavigationProp<RootStackParamList, 'Wait'>
+export type WaitNavProps={
+  navigation:WaitNavigationProps
+};
 
 type EditorScreenNavigationProp = StackNavigationProp<
   RootStackParamList,

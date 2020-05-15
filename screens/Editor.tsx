@@ -91,7 +91,8 @@ export default function Editor({ route, navigation }: EditorProps) {
   const pickImage= async ()=>{
     let result  = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing:false
+      allowsEditing:true,
+      aspect:[6,5]
     })
     if(!result.cancelled){     
       // dispatch(updateEntry({...entry, image: result.uri}))
@@ -102,7 +103,7 @@ export default function Editor({ route, navigation }: EditorProps) {
   }
   const _renderItemFlatList=(obj)=>(
     <TouchableHighlight onPress={()=>{setselectedImage(obj.item)}}>
-      <Image key={obj.item} source={{uri:obj.item}} style={{height:width/3.1, width:width/3.1,margin:1.5}}></Image>
+      <Image key={obj.item} source={{uri:obj.item}} style={{height:width/3.1, width:width/3.1,margin:1.5,borderRadius:10}}></Image>
     </TouchableHighlight>
 )
 
@@ -110,7 +111,8 @@ if (!fontsLoaded) {
   return <AppLoading />;
 } else {
   return (
-    <SafeAreaView style={{ flex: 1, marginTop: 30, backgroundColor:bgColor,}}>
+    <SafeAreaView style={{ flex: 1,  backgroundColor:bgColor,}}>
+      <ScrollView>
       {entry &&
         <View style={{
             justifyContent:"space-between",
@@ -177,6 +179,7 @@ if (!fontsLoaded) {
       
 
       }
+      </ScrollView>
       
 
       
@@ -187,19 +190,45 @@ if (!fontsLoaded) {
         
         onRequestClose={()=>{setModalVisible(!modalVisible);}}
        >
-      <View style={{flex:1, paddingTop: 22, backgroundColor:route.params.backgroundColor }}>
-            
+      <View style={{flex:1, backgroundColor:route.params.backgroundColor}}>
+            <View style={{ marginTop: 8, marginHorizontal: 8, justifyContent:"space-between", flexDirection:"row",alignItems:"center"}}>
               <Icon
-              color="red"
+              raised
+              color={iconColor}
           name="clear"
           onPress={() => {setModalVisible(!modalVisible);}}
         />
+        {selectedImage &&
+        <Icon name="trash" type="simple-line-icon" color={iconColor} raised
+        onPress={()=>{
+    dispatch(updateEntry({...entry, image:[...entry.image?.filter((value)=>(value!==selectedImage))] }))
+    setselectedImage(null)
+    
 
+        }}></Icon>
+        }
+
+              <Icon
+              raised
+              color={iconColor}
+          name="picture"
+          type="simple-line-icon"
+          onPress={() => {getPhotoPermission();}}
+        /></View>
       <ScrollView>
 
       { selectedImage &&
-          <ImageShowScreen image={selectedImage} /> }
+          <ImageShowScreen image={selectedImage}/> }
+{/* 
+{ selectedImage &&
+<View  style={{alignItems:"center"}}>
+          <Icon name="trash" type="simple-line-icon" color={iconColor} raised
+          onPress={()=>{
+      dispatch(updateEntry({...entry, image:[...entry.image?.filter((value)=>(value!==selectedImage))] }))
+      setselectedImage(null)
 
+          }}></Icon>
+          </View>} */}
             {
               
               
@@ -222,7 +251,7 @@ if (!fontsLoaded) {
 
       <View style={{
             justifyContent:"space-between",
-            paddingBottom:20,
+            paddingVertical:20,
             flex: 0,
             flexDirection:"row",
             paddingHorizontal: 20,
