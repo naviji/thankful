@@ -100,6 +100,7 @@ export default function Home({ navigation }: HomeProps) {
   const [finger, setFinger] = useState(false)
   const [auth, setAuth] = useState(false)
   const [error, setError] = useState(false)
+  const [reminder, setReminder] = useState(false)
   
   let [fontsLoaded] = useFonts({
     'Balsamiq-Bold': require('../assets/fonts/BalsamiqSans-Bold.ttf'),
@@ -244,9 +245,16 @@ export default function Home({ navigation }: HomeProps) {
 
   const Settings=()=>{
     return(
-      <View style={{flex:3,marginHorizontal:25, marginBottom:55}}>
-        <View style={{flexDirection:"row",justifyContent:"space-between", marginBottom:15}}>
-          <Text style={{fontFamily:"Balsamiq-Bold", color:textColor}}>Dark Mode</Text>
+      <View style={{flex:3,marginRight:25, marginLeft:27, marginBottom:55}}>
+        <View style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
+          <View style={{flexDirection:"row", alignItems:"center"}}>
+            <Icon
+              color={iconColor}
+              name='moon'
+              type='feather'/>
+                <Text style={{fontFamily:"Balsamiq-Bold", color:textColor, marginLeft:10}}>Dark Mode</Text>
+
+          </View>
           <View style={{justifyContent:"flex-end"}}>
         <Switch value={!theme}
         color='#cf3d43'
@@ -256,8 +264,82 @@ export default function Home({ navigation }: HomeProps) {
 
         </View>
         </View>
-        <View style={{flexDirection:"row",justifyContent:"space-between", marginBottom:15}}>
-          <Text style={{fontFamily:"Balsamiq-Bold", color:textColor}}>Fingerprint Lock</Text>
+
+
+        <View style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
+          <View style={{flexDirection:"row", alignItems:"center"}}>
+            <Icon
+              color={iconColor}
+              name='bell'
+              type='feather'/>
+                <Text style={{fontFamily:"Balsamiq-Bold", color:textColor, marginLeft:10}}>Daily Reminder Notifications</Text>
+
+          </View>
+            
+          <View style={{justifyContent:"flex-end"}}>
+        <Switch value={reminder}
+        color='#cf3d43'
+          onValueChange={()=>{
+            setReminder(!reminder)
+          }}></Switch>
+
+        </View>
+        </View>
+
+        {reminder &&
+          <TouchableOpacity style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
+          <View style={{flexDirection:"row", alignItems:"center"}}>
+            <Icon
+              color={iconColor}
+              name='clock'
+              type='feather'/>
+                <Text style={{fontFamily:"Balsamiq-Bold", color:textColor, marginLeft:10}}>Adjust Reminder Notifications</Text>
+
+          </View>
+            
+        </TouchableOpacity>}
+        
+        <TouchableOpacity style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
+          <View style={{flexDirection:"row", alignItems:"center"}}>
+            <Icon
+              color={iconColor}
+              name='arrow-up'
+              
+              type='feather'/>
+                <Text style={{fontFamily:"Balsamiq-Bold", color:textColor, marginLeft:10}}>Export Journals</Text>
+
+          </View>
+        </TouchableOpacity>
+
+
+        <TouchableOpacity style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
+          <View style={{flexDirection:"row", alignItems:"center"}}>
+            <Icon
+              color={iconColor}
+              name='arrow-down'
+              type='feather'/>
+                <Text style={{fontFamily:"Balsamiq-Bold", color:textColor, marginLeft:10}}>Import Journals</Text>
+
+          </View>
+            
+          {/* <View style={{justifyContent:"flex-end"}}>
+        <Switch value={!theme}
+        color='#cf3d43'
+          onValueChange={()=>{
+            setTheme(!theme)
+          }}></Switch>
+
+        </View> */}
+        </TouchableOpacity>
+
+        <View style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
+          <View style={{flexDirection:"row", alignItems:"center"}}>
+              <Icon
+                color={iconColor}
+                name='lock'
+                type='feather'/>
+                <Text style={{fontFamily:"Balsamiq-Bold", color:textColor, marginLeft:10}}>Lock with Fingerprint</Text>
+            </View>
           <View style={{justifyContent:"flex-end"}}>
         
         
@@ -324,8 +406,8 @@ export default function Home({ navigation }: HomeProps) {
           }}>
           <Icon
           color={iconColor}
-          name='event'
-          type='simple-line-icon'
+          name='calendar'
+          type='feather'
         />
 
           </TouchableOpacity>
@@ -334,8 +416,8 @@ export default function Home({ navigation }: HomeProps) {
 
         <TouchableOpacity onPress={()=>{ setSettingToggle(false)}}><Icon
           color={iconColor}
-          name='emotsmile'
-          type='simple-line-icon'
+          name='home'
+          type='feather'
         /></TouchableOpacity>
         
       </View>
@@ -347,7 +429,7 @@ export default function Home({ navigation }: HomeProps) {
         <Icon
           color={iconColor}
           name="settings"
-          type='simple-line-icon'
+          type='feather'
         />
 
         </TouchableOpacity>
