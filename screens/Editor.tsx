@@ -1,15 +1,20 @@
-import React from "react";
+import React, {useState} from "react";
+import { Icon } from "react-native-elements";
 import Icons from 'react-native-vector-icons/MaterialIcons';
 import * as ImagePicker from 'expo-image-picker';
+import { useFonts } from '@use-expo/font';
 import * as Permissions from 'expo-permissions';
 import {
   StatusBar,
   SafeAreaView,
   StyleSheet,
+  Dimensions,
+  TouchableHighlight,
   Image,
+  Modal,
+  FlatList,
   Text,
   View,
-  Dimensions,
   AppState,
 } from "react-native";
 import { TextInput, TouchableOpacity, ScrollView } from "react-native-gesture-handler";
@@ -18,18 +23,34 @@ import { Button, colors } from "react-native-elements";
 import { useSelector, useDispatch } from "react-redux";
 import { updateEntry, createEntry, removeEntry } from "../reducers/entries";
 import { EditorProps, IAppState, Entry } from "../types";
+import { AppLoading } from 'expo';
 
 import * as SQLite from 'expo-sqlite'
+import ImageShowScreen from "./ImageShowScreen";
 const db = SQLite.openDatabase("paperNote.db")
 
+const {height, width} = Dimensions.get('window')
 
 export default function Editor({ route, navigation }: EditorProps) {
 
+
+  
+  
+  let [fontsLoaded] = useFonts({
+    'Balsamiq-Bold': require('../assets/fonts/BalsamiqSans-Bold.ttf'),
+    'Balsamiq-Regular': require('../assets/fonts/BalsamiqSans-Regular.ttf'),
+  });
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedImage, setselectedImage] = useState(null);
   // const {width, height} = Dimensions.get('window')
-  const { entryId } = route.params;
+  const  entryId  = route.params.entryId;
   const dispatch = useDispatch();
   //   console.log("")
-  // console.log(entryId);
+  console.log(entryId);
+  let bgColor=route.params.backgroundColor
+  let textColor=route.params.textColor
+  let iconColor=route.params.iconColor
 
   const _onError: SQLite.SQLTransactionErrorCallback | undefined = (e) => {
     console.warn(e);
@@ -43,7 +64,10 @@ export default function Editor({ route, navigation }: EditorProps) {
     const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
       if (status !== 'granted') {
         getPhotoPermission()
+
       }
+      pickImage();
+
 
   }
   
@@ -68,16 +92,27 @@ export default function Editor({ route, navigation }: EditorProps) {
     let result  = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing:true,
-      aspect:[4,3],
+      aspect:[6,5]
     })
     if(!result.cancelled){     
       // dispatch(updateEntry({...entry, image: result.uri}))
-      dispatch(updateEntry({...entry, image: result.uri}))
+      dispatch(updateEntry({...entry, image:[...entry.image || [], result.uri] }))
+      setModalVisible(true);
+      setselectedImage(result.uri)
     }
   }
+  const _renderItemFlatList=(obj)=>(
+    <TouchableHighlight onPress={()=>{setselectedImage(obj.item)}}>
+      <Image key={obj.item} source={{uri:obj.item}} style={{height:width/3.1, width:width/3.1,margin:1.5,borderRadius:10}}></Image>
+    </TouchableHighlight>
+)
+
+if (!fontsLoaded) {
+  return <AppLoading />;
+} else {
   return (
-    <SafeAreaView style={{ flex: 1, marginTop: 30 }}>
-      <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
+    <SafeAreaView style={{ flex: 1,  backgroundColor:bgColor,}}>
+      <ScrollView>
       {entry &&
         <View style={{
             justifyContent:"space-between",
@@ -87,32 +122,30 @@ export default function Editor({ route, navigation }: EditorProps) {
             paddingHorizontal: 20,
             alignItems:"center",}}>
         <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-          <Icons name={'arrow-back'} size={30} color='#3377ff'/>
+          <Icon 
+          type='simple-line-icon' name={'like'} color={iconColor}/>
         </TouchableOpacity>
-        <View style={{justifyContent:"flex-end", flexDirection:"row"}}>
-          <TouchableOpacity onPress={() => { getPhotoPermission(); pickImage();}}>
-          <Icons name={'attach-file'} size={30} color='#3377ff' style={{marginLeft:10}}/>
+        {/* <View style={{justifyContent:"flex-end", flexDirection:"row"}}>
+          <TouchableOpacity onPress={() => { getPhotoPermission(); }}>
+          <Icons name={'attach-file'} size={30} color={iconColor} style={{marginLeft:10}}/>
 
           </TouchableOpacity>
-          {/* <TouchableOpacity onPress={()=>{dispatch(removeEntry(entry.id))}}>
-          <Icons name={'delete'} size={30} color='red' style={{marginLeft:10}}/>
-
-          </TouchableOpacity> */}
-        </View>
+        </View> */}
       </View>
+      
 }
+  <Text style={{fontSize: 20, fontFamily:"Balsamiq-Bold", marginHorizontal:20, marginTop:20, color:textColor}}>
+          Tell us about your day..
+        </Text>
 
       {entry &&
         
         <ScrollView>
-      {entry.image &&<View style={{ marginTop:20, marginHorizontal:20 }}>
-        <Image source={{uri:entry.image}} style={{height:200,width:100, borderRadius:10,borderWidth:2, borderColor:"#3377ff"}}></Image>
-
-      </View>}
+      
       
 
        
-      <View style={{ flex: 1,padding:20 }}>
+      <View style={{ flex: 1,paddingHorizontal:20, paddingTop:10 }}>
         <TextInput
           defaultValue={entry.content}
           value={entry.content}
@@ -132,46 +165,119 @@ export default function Editor({ route, navigation }: EditorProps) {
           multiline
           style={{
             flex: 6,
+            color:textColor,
             textAlignVertical: "top",
             fontSize: 17.5,
-            fontWeight: "300",
+            fontFamily:"Balsamiq-Regular",
           }}
         />
 
-        <View
-          style={{ flex: 0, flexDirection: "row", justifyContent: "flex-end" }}
-        >
-          
-          {/* <Button
-            onPress={() => navigation.navigate("Home")}
-            buttonStyle={{
-              width: 100,
-              height: 40,
-              backgroundColor: "black",
-              marginHorizontal: 10,
-              marginBottom: 10,
-              // position: 'absolute',
-            }}
-            title="Save"
-          /> */}
-        </View>
       </View>
 
       </ScrollView>
+
+      
+
       }
-      {/* <View
-        style={{
-          flex: 0,
-          paddingHorizontal: 20,
-          paddingVertical:15,
-          borderTopColor: "#3377ff",
-          borderTopWidth: 8,
-        }}
-      >
-        <Text style={{fontSize: 20, fontWeight: "bold", textAlign: "center" }}>
-          "Gratitude is the quickest way to happiness"
-        </Text>
-      </View> */}
+      </ScrollView>
+      
+
+      
+      <Modal
+        animationType="slide"
+        visible={modalVisible}
+        transparent={false}
+        
+        onRequestClose={()=>{setModalVisible(!modalVisible);}}
+       >
+      <View style={{flex:1, backgroundColor:route.params.backgroundColor}}>
+            <View style={{ marginTop: 8, marginHorizontal: 8, justifyContent:"space-between", flexDirection:"row",alignItems:"center"}}>
+              <Icon
+              raised
+              color={iconColor}
+          name="clear"
+          onPress={() => {setModalVisible(!modalVisible);}}
+        />
+        {selectedImage &&
+        <Icon name="trash" type="simple-line-icon" color={iconColor} raised
+        onPress={()=>{
+    dispatch(updateEntry({...entry, image:[...entry.image?.filter((value)=>(value!==selectedImage))] }))
+    setselectedImage(null)
+    
+
+        }}></Icon>
+        }
+
+              <Icon
+              raised
+              color={iconColor}
+          name="picture"
+          type="simple-line-icon"
+          onPress={() => {getPhotoPermission();}}
+        /></View>
+      <ScrollView>
+
+      { selectedImage &&
+          <ImageShowScreen image={selectedImage}/> }
+{/* 
+{ selectedImage &&
+<View  style={{alignItems:"center"}}>
+          <Icon name="trash" type="simple-line-icon" color={iconColor} raised
+          onPress={()=>{
+      dispatch(updateEntry({...entry, image:[...entry.image?.filter((value)=>(value!==selectedImage))] }))
+      setselectedImage(null)
+
+          }}></Icon>
+          </View>} */}
+            {
+              
+              
+
+        entry.image &&
+          <FlatList
+          style={{alignSelf:"center",marginTop:18}}
+          data={entry.image}
+          numColumns={3}
+          
+          renderItem={_renderItemFlatList}>
+
+          </FlatList>}
+
+      </ScrollView>
+
+          
+        </View>
+      </Modal>
+
+      <View style={{
+            justifyContent:"space-between",
+            paddingVertical:20,
+            flex: 0,
+            flexDirection:"row",
+            paddingHorizontal: 20,
+            alignItems:"center",}}>
+        <TouchableOpacity
+          onPress={() => {
+            setModalVisible(true);
+          }}>
+            { entry.image &&
+              <Text style={{fontSize: 18, color:iconColor, fontFamily:"Balsamiq-Bold",}}>
+          IMAGES OF THE DAY
+        </Text>}
+        </TouchableOpacity>
+        <View style={{justifyContent:"flex-end", flexDirection:"row"}}>
+          <TouchableOpacity onPress={() => {getPhotoPermission();}}>
+          <Icon 
+          name='picture'
+          type='simple-line-icon' color={iconColor} style={{marginLeft:10}}/>
+
+          </TouchableOpacity>
+        </View>
+        </View>
+
+       
+      
     </SafeAreaView>
   );
+            }
 }
