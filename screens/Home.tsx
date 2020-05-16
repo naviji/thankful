@@ -29,6 +29,7 @@ import {
   Button,
   Animated,
   BackHandler,
+  TimePickerAndroid,
 } from "react-native";
 import Carousel from "react-native-snap-carousel";
 
@@ -106,8 +107,10 @@ export default function Home({ navigation }: HomeProps) {
   const [error, setError] = useState(false)
   const [reminder, setReminder] = useState(false)
   const [date, setDate] = useState(new Date(Date.now()));
-  const [mode, setMode] = useState('date');
+  const [time, setTime] = useState(new Date(Date.now()));
   const [show, setShow] = useState(false);
+  const [show1, setShow1] = useState(false);
+  const [sync, setSync] = useState(false);
   
   let [fontsLoaded] = useFonts({
     'Balsamiq-Bold': require('../assets/fonts/BalsamiqSans-Bold.ttf'),
@@ -251,6 +254,21 @@ export default function Home({ navigation }: HomeProps) {
 }
 
 
+const onTimeSelect = (event, selectedTime) => {
+  console.log(event)
+  if(event.type==="dismissed"){
+  setShow1(false)
+
+  }
+  else{
+  const currentDate = selectedTime || date;
+  setShow1(false)
+  setTime(selectedTime);
+  console.log(selectedTime)
+  
+};
+}
+
   const fingerPrintLock=()=>{
     setFinger(!finger)
 
@@ -337,17 +355,38 @@ export default function Home({ navigation }: HomeProps) {
         </View>
 
         {reminder &&
-          <TouchableOpacity style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
+          <TouchableOpacity
+          onPress={()=>{
+            setShow1(true)
+          }}
+          style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
           <View style={{flexDirection:"row", alignItems:"center"}}>
             <Icon
               color={iconColor}
               name='clock'
+              
               type='feather'/>
                 <Text style={{fontFamily:"Balsamiq-Bold", color:textColor, marginLeft:10}}>Adjust Reminder Notifications</Text>
 
           </View>
             
-        </TouchableOpacity>}
+        </TouchableOpacity>
+        }
+
+        {show1&&
+        <DateTimePicker
+          testID="dateTimePicker"
+          timeZoneOffsetInMinutes={0}
+          value={time}
+          mode='time'
+          is24Hour={false}
+          onChange={onTimeSelect}
+        />
+        } 
+        
+        
+
+
         
         <TouchableOpacity style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
           <View style={{flexDirection:"row", alignItems:"center"}}>
@@ -423,7 +462,7 @@ export default function Home({ navigation }: HomeProps) {
             flexDirection:"row",}}>
 
               <View style={{justifyContent:"flex-start"}}>
-              {show&&<DateTimePicker
+             {show&&<DateTimePicker
           testID="dateTimePicker"
           timeZoneOffsetInMinutes={0}
           value={date}
@@ -431,7 +470,7 @@ export default function Home({ navigation }: HomeProps) {
           display="calendar"
           style={{}}
           onChange={onChange}
-        />}
+        />} 
 
           <TouchableOpacity onPress={() => {             
             setShow(true)
