@@ -4,6 +4,7 @@ import { Icon, Text } from "react-native-elements";
 import { ToggleButton, Switch } from 'react-native-paper';
 import {BlurView} from 'expo-blur';
 import * as Font from 'expo-font';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import JournalEntry from '../screens/JournalEntry'
 import { useFonts } from '@use-expo/font';
 import * as LocalAuthentication from 'expo-local-authentication';
@@ -16,6 +17,7 @@ import {
   TouchableHighlight,
   StyleSheet,
   Image,
+  Platform,
   
   ImageBackground,
   TouchableOpacity,
@@ -87,6 +89,8 @@ const _onSuccess: SQLite.SQLVoidCallback | undefined = () => {
 
 
 
+
+
 export default function Home({ navigation }: HomeProps) {
   const [bgColor, setBgColor] = useState("#fff")
   const [textColor, setTextColor] = useState("#131d27")
@@ -101,6 +105,9 @@ export default function Home({ navigation }: HomeProps) {
   const [auth, setAuth] = useState(false)
   const [error, setError] = useState(false)
   const [reminder, setReminder] = useState(false)
+  const [date, setDate] = useState(new Date(Date.now()));
+  const [mode, setMode] = useState('date');
+  const [show, setShow] = useState(false);
   
   let [fontsLoaded] = useFonts({
     'Balsamiq-Bold': require('../assets/fonts/BalsamiqSans-Bold.ttf'),
@@ -157,7 +164,6 @@ export default function Home({ navigation }: HomeProps) {
       _onSuccess
     );
     
-    console.log("Here....")
     if(finger)
     
   {LocalAuthentication.authenticateAsync().then(value=>{value.success?setAuth(true):setError(true)})}
@@ -201,15 +207,59 @@ export default function Home({ navigation }: HomeProps) {
   //   dispatch(createEntry(entryForToday));
   // }
 
-  const fingerPrintLock=()=>{
 
+  const onChange = (event, selectedDate) => {
+    console.log(event)
+    if(event.type==="dismissed"){
+    setShow(false)
 
-    if(finger){
-      setFinger(!finger)
-      return
     }
+    else{
+    const currentDate = selectedDate || date;
+    setShow(false)
+    // setDate(currentDate);
+    // console.log(currentDate)
+    const newEntry = {
+              id: Math.round(Math.random() * 1000000),
+              date: new Date(selectedDate),
+              content: "",
+            };
+  
+            db.transaction(
+              (tx) => {
+                tx.executeSql(
+                  "INSERT into entries(id, content, created_time) values (?, ?, ?)",
+                  [newEntry.id, newEntry.content, newEntry.date.getTime()],
+                  () => console.log("Insert success"),
+                  (t, e) => {
+                    console.log("Insert failed");
+                    return false;
+                  }
+                );
+              },
+              () => console.log("creation failed"),
+              () => console.log("creation successful")
+            );
+  
+            dispatch(createEntry(newEntry));
+  
+            navigation.navigate("Editor", {
+              entryId: newEntry.id, backgroundColor:cardColor, textColor:textColor, iconColor:iconColor
+            });
+            setSettingToggle(false)
+  };
+}
 
-    LocalAuthentication.authenticateAsync().then(value=>{value.success?setFinger(!finger):setFinger(finger)})
+
+  const fingerPrintLock=()=>{
+    setFinger(!finger)
+
+    // if(finger){
+    //   setFinger(!finger)
+    //   return
+    // }
+
+    // LocalAuthentication.authenticateAsync().then(value=>{value.success?setFinger(!finger):setFinger(finger)})
 
 
   }
@@ -373,36 +423,18 @@ export default function Home({ navigation }: HomeProps) {
             flexDirection:"row",}}>
 
               <View style={{justifyContent:"flex-start"}}>
+              {show&&<DateTimePicker
+          testID="dateTimePicker"
+          timeZoneOffsetInMinutes={0}
+          value={date}
+          is24Hour={true}
+          display="calendar"
+          style={{}}
+          onChange={onChange}
+        />}
 
-          <TouchableOpacity onPress={() => { 
-            const newEntry = {
-              id: Math.round(Math.random() * 1000000),
-              date: new Date(),
-              content: "",
-            };
-  
-            db.transaction(
-              (tx) => {
-                tx.executeSql(
-                  "INSERT into entries(id, content, created_time) values (?, ?, ?)",
-                  [newEntry.id, newEntry.content, newEntry.date.getTime()],
-                  () => console.log("Insert success"),
-                  (t, e) => {
-                    console.log("Insert failed");
-                    return false;
-                  }
-                );
-              },
-              () => console.log("creation failed"),
-              () => console.log("creation successful")
-            );
-  
-            dispatch(createEntry(newEntry));
-  
-            navigation.navigate("Editor", {
-              entryId: newEntry.id, backgroundColor:cardColor, textColor:textColor, iconColor:iconColor
-            });
-            setSettingToggle(false)
+          <TouchableOpacity onPress={() => {             
+            setShow(true)
           }}>
           <Icon
           color={iconColor}
