@@ -1,9 +1,23 @@
 import React, { useState } from "react";
+import Icons from 'react-native-vector-icons/MaterialIcons';
 import { Icon, Text } from "react-native-elements";
+import { ToggleButton, Switch } from 'react-native-paper';
+import {BlurView} from 'expo-blur';
+import * as Font from 'expo-font';
+import JournalEntry from '../screens/JournalEntry'
+import { useFonts } from '@use-expo/font';
+import * as LocalAuthentication from 'expo-local-authentication';
+
+import {LinearGradient} from 'expo-linear-gradient';
 import {
   ScrollView,
+  FlatList,
   Dimensions,
+  TouchableHighlight,
   StyleSheet,
+  Image,
+  
+  ImageBackground,
   TouchableOpacity,
   View,
   SafeAreaView,
@@ -11,6 +25,8 @@ import {
   ListRenderItem,
   StatusBar,
   Button,
+  Animated,
+  BackHandler,
 } from "react-native";
 import Carousel from "react-native-snap-carousel";
 
@@ -19,12 +35,13 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { loadEntries, createEntry, removeEntry } from "../reducers/entries";
 
+import { AppLoading } from 'expo';
 import { Entry, HomeProps, IAppState } from "../types";
-
 // import { v4 as uuidv4 } from 'uuid';
 
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("paperNote.db");
+const {height, width} = Dimensions.get('window')
 
 const dummyData: Array<Entry> = [
   {
@@ -60,80 +77,6 @@ const dummyData: Array<Entry> = [
   },
 ];
 
-const isToday = (dateToCheck: Date): Boolean => {
-  const dateToCompare = new Date(dateToCheck);
-  dateToCompare.setHours(0, 0, 0, 0);
-  const todayDate = new Date();
-  todayDate.setHours(0, 0, 0, 0);
-  return todayDate.valueOf() === dateToCompare.valueOf();
-};
-
-const isYesterday = (dateToCheck: Date): Boolean => {
-  const dateToCompare = new Date(dateToCheck);
-  dateToCompare.setHours(0, 0, 0, 0);
-  const yesterdayDate = new Date();
-  yesterdayDate.setDate(yesterdayDate.getDate() - 1);
-  yesterdayDate.setHours(0, 0, 0, 0);
-  return yesterdayDate.valueOf() === dateToCompare.valueOf();
-};
-
-const JournalEntry = (props: any) => {
-  const entry: Entry = props.entry;
-  const dispatch = useDispatch();
-  // const { width, height } = Dimensions.get("window");
-  return (
-    <View
-      style={{
-        flex: 1,
-        // minHeight: height/1.23, // replace with dimensions
-        backgroundColor: "white",
-        padding: 16,
-        elevation: 4,
-        marginTop: 20,
-        marginBottom: 20,
-        marginHorizontal: 7,
-        borderRadius: 10,
-      }}
-    >
-      <View
-        style={{ flex: 0, justifyContent: "flex-end", flexDirection: "row" }}
-      >
-        <Icon
-          name="clear"
-          onPress={() => {
-            db.transaction(
-              tx => {
-                tx.executeSql(
-                  "DELETE from entries WHERE id=?",
-                  [entry.id],
-                  () => console.log("delete success"),
-                  (t, e) => {
-                    console.log("delete failed");
-                    return false;
-                  }
-                );
-              }
-            )
-            dispatch(removeEntry(entry.id));
-          }}
-        />
-      </View>
-      <Text style={{ fontSize: 30, fontWeight: "700" }}>
-        {isToday(entry.date)
-          ? "Today"
-          : isYesterday(entry.date)
-          ? "Yesterday"
-          : entry.date.toDateString()}
-      </Text>
-      <Text style={{ fontSize: 20, marginTop: 10 }}>
-        {entry.content.length > 600
-          ? entry.content.slice(0, 600) + "..."
-          : entry.content}
-      </Text>
-    </View>
-  );
-};
-
 const _onError: SQLite.SQLTransactionErrorCallback | undefined = (e) => {
   console.warn(e);
 };
@@ -142,7 +85,31 @@ const _onSuccess: SQLite.SQLVoidCallback | undefined = () => {
   console.log("Success loading database");
 };
 
+
+
 export default function Home({ navigation }: HomeProps) {
+  const [bgColor, setBgColor] = useState("#fff")
+  const [textColor, setTextColor] = useState("#131d27")
+  const [iconColor, setIconColor] = useState("#cf3d43")
+  const [cardColor, setCardColor] = useState("#f8d69c")
+  const [cardTextColor, setCardTextColor] = useState("#fff")
+  const [backTopColor,setBackTopColor ] = useState('#ededed')
+  const [backBottomColor,setBackBottomColor ] = useState('#ededed')
+  const [cardType,setCardType] = useState("light")
+  const [settingToggle, setSettingToggle] = useState(false)
+  const [finger, setFinger] = useState(false)
+  const [auth, setAuth] = useState(false)
+  const [error, setError] = useState(false)
+  const [reminder, setReminder] = useState(false)
+  
+  let [fontsLoaded] = useFonts({
+    'Balsamiq-Bold': require('../assets/fonts/BalsamiqSans-Bold.ttf'),
+    'Balsamiq-Regular': require('../assets/fonts/BalsamiqSans-Regular.ttf'),
+  });
+
+  
+  const [theme,setTheme] = useState(true)  
+
   // const [entries, setEntires] = useState(data);
   //   const entries: Array<Entry> = useSelector(state => state.entries);
   // const windowHeight = useWindowDimensions().height;
@@ -189,7 +156,40 @@ export default function Home({ navigation }: HomeProps) {
       _onError,
       _onSuccess
     );
+    
+    console.log("Here....")
+    if(finger)
+    
+  {LocalAuthentication.authenticateAsync().then(value=>{value.success?setAuth(true):setError(true)})}
+
+
+  
+      
   }, []);
+
+
+  
+  React.useEffect(()=>{
+    if(theme){
+      setBgColor("#f1f2fa")
+      setTextColor("#262c33")
+      setCardTextColor("#262c33")
+      setCardColor("#fff")
+      setBackBottomColor('#fea09c')
+      setBackTopColor('#fdc7d5')
+      setCardType("light")
+    }
+    else{
+      setBgColor("#161616")
+      setCardColor("#1a1a1a")
+      setCardTextColor("white")
+      setTextColor("#ededed")
+      setBackBottomColor('#2d455d')
+      setBackTopColor('#2d455d')
+      setCardType("dark")
+
+    }
+  },[theme])
 
   // if (entries.length && !isToday(entries[0].date)) {
   //   const today = new Date();
@@ -201,17 +201,32 @@ export default function Home({ navigation }: HomeProps) {
   //   dispatch(createEntry(entryForToday));
   // }
 
+  const fingerPrintLock=()=>{
+
+
+    if(finger){
+      setFinger(!finger)
+      return
+    }
+
+    LocalAuthentication.authenticateAsync().then(value=>{value.success?setFinger(!finger):setFinger(finger)})
+
+
+  }
+
   const _renderItem: ListRenderItem<Entry> = ({ item }) => {
     return (
+      
       <View
         style={{
+
           flex: 1,
         }}
       >
         <TouchableOpacity
           onPress={() =>
             navigation.navigate("Editor", {
-              entryId: item.id,
+              entryId: item.id, backgroundColor:cardColor, textColor:textColor, iconColor:iconColor
             })
           }
           key={item.id}
@@ -219,52 +234,153 @@ export default function Home({ navigation }: HomeProps) {
             flex: 1,
           }}
         >
-          <JournalEntry entry={item} />
+         <JournalEntry entry={item} cardColor={cardColor} textColor={cardTextColor} iconColor={iconColor} cardType={cardType}/>
         </TouchableOpacity>
-        {/* <Button
-          title="Delete"
-          color="red"
-          onPress={() => {
-            dispatch(removeEntry(item.id));
-          }}
-        /> */}
+        
       </View>
     );
   };
 
-  const { width, height } = Dimensions.get("window");
 
-  return (
-    <View style={{ flex: 1, backgroundColor: "#ededed" }}>
-      <View style={{flex: 8}}>
-      <Carousel
-        // swipeThreshold={20} //default
-        // data={entries.filter((x) => x.content !== "")}
-        data={entries}
-        renderItem={_renderItem}
-        sliderWidth={width / 1}
-        itemWidth={width / 1.2}
-        // layout={'stack'}
-      />
+
+  const Settings=()=>{
+    return(
+      <View style={{flex:3,marginRight:25, marginLeft:27, marginBottom:55}}>
+        <View style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
+          <View style={{flexDirection:"row", alignItems:"center"}}>
+            <Icon
+              color={iconColor}
+              name='moon'
+              type='feather'/>
+                <Text style={{fontFamily:"Balsamiq-Bold", color:textColor, marginLeft:10}}>Dark Mode</Text>
+
+          </View>
+          <View style={{justifyContent:"flex-end"}}>
+        <Switch value={!theme}
+        color='#cf3d43'
+          onValueChange={()=>{
+            setTheme(!theme)
+          }}></Switch>
+
+        </View>
+        </View>
+
+
+        <View style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
+          <View style={{flexDirection:"row", alignItems:"center"}}>
+            <Icon
+              color={iconColor}
+              name='bell'
+              type='feather'/>
+                <Text style={{fontFamily:"Balsamiq-Bold", color:textColor, marginLeft:10}}>Daily Reminder Notifications</Text>
+
+          </View>
+            
+          <View style={{justifyContent:"flex-end"}}>
+        <Switch value={reminder}
+        color='#cf3d43'
+          onValueChange={()=>{
+            setReminder(!reminder)
+          }}></Switch>
+
+        </View>
+        </View>
+
+        {reminder &&
+          <TouchableOpacity style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
+          <View style={{flexDirection:"row", alignItems:"center"}}>
+            <Icon
+              color={iconColor}
+              name='clock'
+              type='feather'/>
+                <Text style={{fontFamily:"Balsamiq-Bold", color:textColor, marginLeft:10}}>Adjust Reminder Notifications</Text>
+
+          </View>
+            
+        </TouchableOpacity>}
+        
+        <TouchableOpacity style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
+          <View style={{flexDirection:"row", alignItems:"center"}}>
+            <Icon
+              color={iconColor}
+              name='arrow-up'
+              
+              type='feather'/>
+                <Text style={{fontFamily:"Balsamiq-Bold", color:textColor, marginLeft:10}}>Export Journals</Text>
+
+          </View>
+        </TouchableOpacity>
+
+
+        <TouchableOpacity style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
+          <View style={{flexDirection:"row", alignItems:"center"}}>
+            <Icon
+              color={iconColor}
+              name='arrow-down'
+              type='feather'/>
+                <Text style={{fontFamily:"Balsamiq-Bold", color:textColor, marginLeft:10}}>Import Journals</Text>
+
+          </View>
+            
+          {/* <View style={{justifyContent:"flex-end"}}>
+        <Switch value={!theme}
+        color='#cf3d43'
+          onValueChange={()=>{
+            setTheme(!theme)
+          }}></Switch>
+
+        </View> */}
+        </TouchableOpacity>
+
+        <View style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
+          <View style={{flexDirection:"row", alignItems:"center"}}>
+              <Icon
+                color={iconColor}
+                name='lock'
+                type='feather'/>
+                <Text style={{fontFamily:"Balsamiq-Bold", color:textColor, marginLeft:10}}>Lock with Fingerprint</Text>
+            </View>
+          <View style={{justifyContent:"flex-end"}}>
+        
+        
+        
+            <Switch value={finger}
+  
+          color='#cf3d43'
+            onValueChange={ fingerPrintLock }></Switch>
+
+        </View>
+        </View>
+        
+
       </View>
-      <View style={{ flex: 1, alignItems: 'center'}}>
-        <Icon
-          raised
-          size={33} 
-          iconStyle={
-            {
-              // width: 40,
-              // height: 40,
-              // padding: 4,
-            }
-          }
-          onPress={() => {
+      
+    )
+  }
+
+  const BottomTab=()=>{
+    return(
+      <View style={{ flex: 0, alignItems: 'center', backgroundColor:cardColor, marginHorizontal:10, marginBottom:10, padding:25,borderRadius:15}}>
+          
+
+
+ <View style={{
+   width:"100%",
+            justifyContent:"space-between",
+            flex: 0,
+            paddingHorizontal:15,
+            alignItems:"center",
+            flexDirection:"row",}}>
+
+              <View style={{justifyContent:"flex-start"}}>
+
+          <TouchableOpacity onPress={() => { 
             const newEntry = {
               id: Math.round(Math.random() * 1000000),
               date: new Date(),
               content: "",
             };
-
+  
             db.transaction(
               (tx) => {
                 tx.executeSql(
@@ -280,16 +396,103 @@ export default function Home({ navigation }: HomeProps) {
               () => console.log("creation failed"),
               () => console.log("creation successful")
             );
-
+  
             dispatch(createEntry(newEntry));
-
+  
             navigation.navigate("Editor", {
-              entryId: newEntry.id,
+              entryId: newEntry.id, backgroundColor:cardColor, textColor:textColor, iconColor:iconColor
             });
-          }}
-          name="event"
+            setSettingToggle(false)
+          }}>
+          <Icon
+          color={iconColor}
+          name='calendar'
+          type='feather'
         />
+
+          </TouchableOpacity>
+        </View>
+        <View style={{justifyContent:"center"}}>
+
+        <TouchableOpacity onPress={()=>{ setSettingToggle(false)}}><Icon
+          color={iconColor}
+          name='home'
+          type='feather'
+        /></TouchableOpacity>
+        
       </View>
+
+        <View style={{justifyContent:"flex-end"}}>
+
+        <TouchableOpacity
+          onPress={()=>{ setSettingToggle(true)}}>
+        <Icon
+          color={iconColor}
+          name="settings"
+          type='feather'
+        />
+
+        </TouchableOpacity>
+          
+        </View>
+      </View>
+          
+        </View>
+    )
+  }
+
+  const { width, height } = Dimensions.get("screen");
+  
+
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  } else {
+  return (
+    <View style={{ flex: 1, paddingTop:50, backgroundColor:bgColor}}>
+      {/* <LinearGradient
+          colors={[backTopColor, backBottomColor]}
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            top: 0,
+            height: height,
+          }}
+        /> */}
+      {/* <Image source={require("../assets/ab2.jpg")}  blurRadius={10} style={{flex:1,opacity:0.9, position:"absolute",height:"110%", width:"100%", }} resizeMode="cover"></Image> */}
+      <View style={{flex: .4, paddingHorizontal:20, justifyContent:"center", flexDirection:"row"}}>
+      {settingToggle &&
+      <Text style={{fontFamily:"Balsamiq-Bold", fontSize:20, color:textColor}}>Settings</Text>}
+        {!settingToggle &&
+      <Text style={{fontFamily:"Balsamiq-Bold", marginTop:10, fontSize:20, color:textColor}}>Welcome to Thankfully</Text>}
+        
+        </View>
+        
+        {!settingToggle &&
+        <View style={{flex:4, paddingBottom:55}}>
+        <Carousel
+        style={{
+        elevation: 4,
+        }}
+        layout="default"
+        inactiveSlideOpacity={1}
+        activeSlideOffset={100}
+          data={entries}
+          renderItem={_renderItem}
+          sliderWidth={width / 1}
+          itemWidth={width / 1.1}
+          hasParallaxImages={true}
+        /></View>}
+
+        {settingToggle &&
+        <Settings></Settings>}
+
+        <BottomTab></BottomTab>
+     
+      
+      
     </View>
   );
+  }
 }

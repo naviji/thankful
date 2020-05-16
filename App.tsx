@@ -17,6 +17,7 @@ import {RootStackParamList} from './types'
 import { YellowBox, StatusBar, View } from 'react-native';
 
 import * as SQLite from 'expo-sqlite'
+import Wait from "./screens/Wait";
 const db = SQLite.openDatabase("paperNote.db")
 
 // About: Non-serializable warning.
@@ -40,20 +41,7 @@ function MyStack() {
         name="Home"
         component={Home}
         options={{
-          title: "Thankfully",
-          
-          headerTitle: props => {return(<View>
-                                          <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
-                                          <Text {...props} style={{fontSize: 23, fontWeight: '700', elevation: 6}}>Thankfully</Text>
-                                        </View>)},
-          headerRight: props => <Icon
-          
-          iconStyle={{
-            padding: 8,
-          }}
-          
-          onPress={() => console.log('Open settings')}
-          name='settings' />
+          headerShown: false,
         }}
       />
 
@@ -65,6 +53,13 @@ function MyStack() {
         }}
       />
       
+      <Stack.Screen
+        name="Wait"
+        component={Wait}
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack.Navigator>
   );
 }
@@ -73,6 +68,7 @@ export default function App() {
   return (
     <StoreProvider store={store}>
       <ThemeProvider>
+        <StatusBar backgroundColor="#cf3d43" barStyle="light-content"  />
         <NavigationContainer>{MyStack()}</NavigationContainer>
       </ThemeProvider>
     </StoreProvider>
