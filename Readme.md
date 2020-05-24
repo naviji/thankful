@@ -8,18 +8,18 @@
 - [ ] Support import from other journal apps
 - [ ] Writing prompts as default text input value
 - [ ] Add a tomorrow card with a motivational quote
-- [ ] Feature - attach images
+- [x] Feature - attach images
 - [ ] Feature - google sync
-- [ ] Feature - Lockable (PIN or Biometric)
+- [x] Feature - Lockable (PIN or Biometric)
 - [ ] Feature - Export journal entries
-- [ ] Feature - Add calendar
-- [ ] Feature - Entry deletion
-- [ ] Feature - Persistance using SQLite database
-- [ ] Enhancement - Dark mode
+- [x] Feature - Add calendar
+- [x] Feature - Entry deletion
+- [x] Feature - Persistance using SQLite database
+- [x] Enhancement - Dark mode
 - [ ] Enhancement - Reward system
-- [ ] Enhancement - Style cards to look pretty!
-- [ ] Enhancement - Make app stylish :) 
-- [ ] Enhancement - Better typography
+- [x] Enhancement - Style cards to look pretty!
+- [x] Enhancement - Make app stylish :) 
+- [x] Enhancement - Better typography
 - [ ] Enhancement - Icon and splash screen
 
 # How to add a new feature
