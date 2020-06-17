@@ -25,6 +25,12 @@ const db = SQLite.openDatabase("paperNote.db")
 
 const {height, width} = Dimensions.get('window')
 
+
+/*
+TO DO: Support adding images without cropping
+Instead display images with a fixed height and width
+*/
+
 export default function Editor({ route, navigation }: EditorProps) {
 
   let [fontsLoaded] = useFonts({
@@ -161,7 +167,7 @@ if (!fontsLoaded) {
         {selectedImage &&
         <Icon name="trash" type="simple-line-icon" color={iconColor} raised
         onPress={()=>{
-    dispatch(updateEntry({...entry, image:[...entry.image?.filter((value)=>(value!==selectedImage))] }))
+    dispatch(updateEntry({...entry, image:[...entry.image.filter((value)=>(value!==selectedImage))] }))
     setselectedImage(null)
         }}>
 

@@ -5,22 +5,22 @@
 4. expo start --android
 
 # Things to do:
-- [ ] Support import from other journal apps
 - [ ] Writing prompts as default text input value
-- [ ] Add a tomorrow card with a motivational quote
+- [ ] Add a today card (What happened today?,  Add a note )
+- [ ] Add a tomorrow card with a motivational quote (Future motivational quote?)
 - [x] Feature - attach images
-- [ ] Feature - google sync
-- [x] Feature - Lockable (PIN or Biometric)
-- [ ] Feature - Export journal entries
+- [ ] Feature - google/dropbox sync
+- [x] Feature - Lockable (PIN or Biometric*)
 - [x] Feature - Add calendar
 - [x] Feature - Entry deletion
 - [x] Feature - Persistance using SQLite database
 - [x] Enhancement - Dark mode
-- [ ] Enhancement - Reward system
+- [ ] Enhancement - Reward system (Not important)
 - [x] Enhancement - Style cards to look pretty!
 - [x] Enhancement - Make app stylish :) 
 - [x] Enhancement - Better typography
 - [ ] Enhancement - Icon and splash screen
+- [ ] Important - Add some tests
 
 # How to add a new feature
 ```

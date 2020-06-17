@@ -1,6 +1,5 @@
 import React from "react";
-import { StyleSheet } from "react-native";
-import { ThemeProvider, Text , Icon} from "react-native-elements";
+import { ThemeProvider } from "react-native-elements";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -14,16 +13,10 @@ import Editor from "./screens/Editor";
 
 import {RootStackParamList} from './types'
 
-import { YellowBox, StatusBar, View } from 'react-native';
+import { useFonts } from '@use-expo/font';
+import { AppLoading } from 'expo';
 
-import * as SQLite from 'expo-sqlite'
-import Wait from "./screens/Wait";
-const db = SQLite.openDatabase("paperNote.db")
-
-// About: Non-serializable warning.
-// If you don't use state persistence or deep link to the screen
-// which accepts functions in params, 
-// then the warning doesn't affect you and you can safely ignore it.
+import { YellowBox, StatusBar } from 'react-native';
 
 YellowBox.ignoreWarnings([
   'Non-serializable values were found in the navigation state',
@@ -33,43 +26,69 @@ const store = createStore(reducer);
 const Stack = createStackNavigator<RootStackParamList>();
 
 
-function MyStack() {
-  return (
-    <Stack.Navigator initialRouteName="Home">
-      
-      <Stack.Screen
-        name="Home"
-        component={Home}
-        options={{
-          headerShown: false,
-        }}
-      />
+// Define style object and pass it to theme provider
+// Give theme presets to ThemeProvider once instead of passing
+// it seperately. ie. Don't mix theme and application logic!
 
-      <Stack.Screen
-        name="Editor"
-        component={Editor}
-        options={{
-          headerShown: false,
-        }}
-      />
-      
-      <Stack.Screen
-        name="Wait"
-        component={Wait}
-        options={{
-          headerShown: false,
-        }}
-      />
-    </Stack.Navigator>
-  );
+// Refactor: Styles into a single object.
+  // Also save setting into asyncStorage
+
+
+const theme = {
+  light: {
+    colors: {
+      background: "#f1f2fa",
+      text: "#262c33",
+      icon: "#cf3d43",
+      card: "#fff",
+      cardText: "#262c33",
+    }
+  },
+  dark: {
+    colors: {
+      background: "#161616",
+      text: "#ededed",
+      icon: "#cf3d43",
+      card: "#1a1a1a",
+      cardText: "#fff",
+    }
+  }
 }
 
+
 export default function App() {
+
+  let [fontsLoaded] = useFonts({
+    'Balsamiq-Bold': require('./assets/fonts/BalsamiqSans-Bold.ttf'),
+    'Balsamiq-Regular': require('./assets/fonts/BalsamiqSans-Regular.ttf'),
+  });
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
   return (
     <StoreProvider store={store}>
-      <ThemeProvider>
-        <StatusBar backgroundColor="#cf3d43" barStyle="light-content"  />
-        <NavigationContainer>{MyStack()}</NavigationContainer>
+      <ThemeProvider theme={theme}>
+        <StatusBar backgroundColor={theme.light.colors.icon} barStyle="light-content"  />
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="Home">
+            <Stack.Screen
+              name="Home"
+              component={Home}
+              options={{
+                headerShown: false,
+              }}
+            />
+
+            <Stack.Screen
+              name="Editor"
+              component={Editor}
+              options={{
+                headerShown: false,
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
       </ThemeProvider>
     </StoreProvider>
   );

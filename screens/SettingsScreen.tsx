@@ -1,26 +1,33 @@
-import React from "react";
+import React, { useContext }from "react";
 import { TouchableOpacity, View } from "react-native";
-import { Icon, Text } from "react-native-elements";
+import { Icon, Text, ThemeContext } from "react-native-elements";
 import { Switch } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
+// theme, setTheme
+
   const SettingsScreen=(props)=>{
+    const theme = props.theme;
+    const activeTheme = props.activeTheme
+
     return(
       <View style={{flex:3,marginRight:25, marginLeft:27, marginBottom:55}}>
         <View style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
           <View style={{flexDirection:"row", alignItems:"center"}}>
             <Icon
-              color={props.iconColor}
+              color={theme[activeTheme].colors.icon}
               name='moon'
               type='feather'/>
-                <Text style={{fontFamily:"Balsamiq-Bold", color:props.textColor, marginLeft:10}}>Dark Mode</Text>
+                <Text style={{fontFamily:"Balsamiq-Bold", color:theme[activeTheme].colors.text, marginLeft:10}}>Dark Mode</Text>
 
           </View>
           <View style={{justifyContent:"flex-end"}}>
-        <Switch value={!props.theme}
-        color='#cf3d43'
+
+
+        <Switch value={activeTheme === 'dark'}
+        color={theme[activeTheme].colors.icon}
           onValueChange={()=>{
-            props.setTheme(!props.theme)
+            props.setActiveTheme(activeTheme === 'dark' ? 'light' : 'dark')
           }}></Switch>
 
         </View>
@@ -30,16 +37,16 @@ import DateTimePicker from '@react-native-community/datetimepicker';
         <View style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
           <View style={{flexDirection:"row", alignItems:"center"}}>
             <Icon
-              color={props.iconColor}
+              color={theme[activeTheme].colors.icon}
               name='bell'
               type='feather'/>
-                <Text style={{fontFamily:"Balsamiq-Bold", color:props.textColor, marginLeft:10}}>Daily Reminder Notifications</Text>
+                <Text style={{fontFamily:"Balsamiq-Bold", color:theme[activeTheme].colors.text, marginLeft:10}}>Daily Reminder Notifications</Text>
 
           </View>
             
           <View style={{justifyContent:"flex-end"}}>
         <Switch value={props.reminder}
-        color='#cf3d43'
+        color={theme[activeTheme].colors.icon}
           onValueChange={()=>{
             props.setReminder(!props.reminder)
           }}></Switch>
@@ -55,11 +62,11 @@ import DateTimePicker from '@react-native-community/datetimepicker';
           style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
           <View style={{flexDirection:"row", alignItems:"center"}}>
             <Icon
-              color={props.iconColor}
+              color={theme[activeTheme].colors.icon}
               name='clock'
               
               type='feather'/>
-                <Text style={{fontFamily:"Balsamiq-Bold", color:props.textColor, marginLeft:10}}>Adjust Reminder Notifications</Text>
+                <Text style={{fontFamily:"Balsamiq-Bold", color:theme[activeTheme].colors.text, marginLeft:10}}>Adjust Reminder Notifications</Text>
 
           </View>
             
@@ -78,17 +85,14 @@ import DateTimePicker from '@react-native-community/datetimepicker';
         } 
         
         
-
-
-        
         <TouchableOpacity style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
           <View style={{flexDirection:"row", alignItems:"center"}}>
             <Icon
-              color={props.iconColor}
+              color={theme[activeTheme].colors.icon}
               name='arrow-up'
               
               type='feather'/>
-                <Text style={{fontFamily:"Balsamiq-Bold", color:props.textColor, marginLeft:10}}>Export Journals</Text>
+                <Text style={{fontFamily:"Balsamiq-Bold", color:theme[activeTheme].colors.text, marginLeft:10}}>Export Journals</Text>
 
           </View>
         </TouchableOpacity>
@@ -97,30 +101,23 @@ import DateTimePicker from '@react-native-community/datetimepicker';
         <TouchableOpacity style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
           <View style={{flexDirection:"row", alignItems:"center"}}>
             <Icon
-              color={props.iconColor}
+              color={theme[activeTheme].colors.icon}
               name='arrow-down'
               type='feather'/>
-                <Text style={{fontFamily:"Balsamiq-Bold", color:props.textColor, marginLeft:10}}>Import Journals</Text>
+                <Text style={{fontFamily:"Balsamiq-Bold", color:theme[activeTheme].colors.text, marginLeft:10}}>Import Journals</Text>
 
           </View>
             
-          {/* <View style={{justifyContent:"flex-end"}}>
-        <Switch value={!theme}
-        color='#cf3d43'
-          onValueChange={()=>{
-            setTheme(!theme)
-          }}></Switch>
-
-        </View> */}
+         
         </TouchableOpacity>
 
         <View style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
           <View style={{flexDirection:"row", alignItems:"center"}}>
               <Icon
-                color={props.iconColor}
+                color={theme[activeTheme].colors.icon}
                 name='lock'
                 type='feather'/>
-                <Text style={{fontFamily:"Balsamiq-Bold", color:props.textColor, marginLeft:10}}>Lock with Fingerprint</Text>
+                <Text style={{fontFamily:"Balsamiq-Bold", color:theme[activeTheme].colors.text, marginLeft:10}}>Lock with Fingerprint</Text>
             </View>
           <View style={{justifyContent:"flex-end"}}>
         
@@ -128,7 +125,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
         
             <Switch value={props.finger}
   
-          color='#cf3d43'
+          color={theme[activeTheme].colors.icon}
             onValueChange={ props.fingerPrintLock }></Switch>
 
         </View>

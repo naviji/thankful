@@ -16,7 +16,7 @@ import { TouchableOpacity, View } from "react-native";
             flexDirection:"row",}}>
 
               <View style={{justifyContent:"flex-start"}}>
-             {props.show&&<DateTimePicker
+             {props.showCalendar&&<DateTimePicker
           testID="dateTimePicker"
           timeZoneOffsetInMinutes={0}
           value={props.date}
@@ -27,7 +27,7 @@ import { TouchableOpacity, View } from "react-native";
         />} 
 
           <TouchableOpacity onPress={() => {             
-            props.setShow(true)
+            props.setShowCalendar(true)
           }}>
           <Icon
           color={props.iconColor}
@@ -67,4 +67,4 @@ import { TouchableOpacity, View } from "react-native";
   }
 
 
-  export default BottomTab
+  export default BottomTab;

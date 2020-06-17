@@ -5,7 +5,6 @@ const LOAD = 'entries/LOAD';
 const UPDATE = 'entries/UPDATE';
 const CREATE = 'entries/CREATE';
 const REMOVE = 'entries/REMOVE';
-// const IMAGE_ADD = 'entries/IMAGE_ADD';
 
 
 export interface LoadEntryAction extends Action<'entries/LOAD'> {
@@ -24,22 +23,16 @@ export interface RemoveEntryAction extends Action<'entries/REMOVE'> {
     entryId: Number;
 }
 
-// export interface AddImageAction extends Action<'entries/IMAGE_ADD'> {
-//     image: string, entryId: Number
-// }
-
 export type EntryActions = 
     | LoadEntryAction
     | UpdateEntryAction
     | CreateEntryAction
     | RemoveEntryAction
-    // | AddImageAction
 
-export const loadEntries = (entries: Array<Entry>) => ({type: LOAD, entries})
-export const createEntry = (entry: Entry) => ({type: CREATE, entry})
-export const updateEntry = (entry: Entry) => ({type: UPDATE, entry})
-export const removeEntry = (entryId: Number) => ({type: REMOVE, entryId})
-// export const addImage = (image: string, entryId: Number) => ({type: IMAGE_ADD, entryId:entryId, image:image})
+export const loadEntries = (entries: Entry[]): {type: string, entries: Entry[]} => ({type: LOAD, entries})
+export const createEntry = (entry: Entry): {type: string, entry: Entry} => ({type: CREATE, entry})
+export const updateEntry = (entry: Entry): {type: string, entry: Entry} => ({type: UPDATE, entry})
+export const removeEntry = (entryId: Number): {type: string, entryId: Number} => ({type: REMOVE, entryId})
 
 const _dateSort = (a: Entry, b: Entry) => b.date.valueOf() - a.date.valueOf()
 
@@ -55,8 +48,6 @@ const reducer = (entries:Array<Entry>=[], action: EntryActions) => {
                 action.entry : x).sort(_dateSort)
         case REMOVE:
             return entries.filter(x=>(x.id!==action.entryId))
-        // case IMAGE_ADD:
-        //     return entries.map(entry => (entry.id === action.entryId) ? {...entry, image: action.image} : entry)
         default:
             console.log("Unknown action!")
             return entries;

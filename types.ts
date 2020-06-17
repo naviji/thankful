@@ -7,7 +7,7 @@ import { RouteProp } from '@react-navigation/native';
 export interface Entry {
     id: number,
     date: Date,
-    image?: Array<string>,
+    image: Array<string>,
     content: string
 }
 
@@ -17,9 +17,10 @@ export type RootStackParamList = {
   Wait:undefined;
 };
 
-type WaitNavigationProps = StackNavigationProp<RootStackParamList, 'Wait'>
+type WaitNavigationProp = StackNavigationProp<RootStackParamList, 'Wait'>
+
 export type WaitNavProps={
-  navigation:WaitNavigationProps
+  navigation:WaitNavigationProp
 };
 
 type EditorScreenNavigationProp = StackNavigationProp<
