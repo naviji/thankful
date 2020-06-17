@@ -1,48 +1,24 @@
 import React, { useState } from "react";
-import Icons from 'react-native-vector-icons/MaterialIcons';
-import { Icon, Text } from "react-native-elements";
-import { ToggleButton, Switch } from 'react-native-paper';
-import {BlurView} from 'expo-blur';
-import * as Font from 'expo-font';
+import { Text } from "react-native-elements";
 import JournalEntry from '../screens/JournalEntry'
+import BottomTab from '../screens/BottomTab';
+import SettingsScreen from '../screens/SettingsScreen';
 import { useFonts } from '@use-expo/font';
 import * as LocalAuthentication from 'expo-local-authentication';
-
 import {LinearGradient} from 'expo-linear-gradient';
-import {
-  ScrollView,
-  FlatList,
-  Dimensions,
-  TouchableHighlight,
-  StyleSheet,
-  Image,
-  
-  ImageBackground,
-  TouchableOpacity,
-  View,
-  SafeAreaView,
-  FlatListProps,
-  ListRenderItem,
-  StatusBar,
-  Button,
-  Animated,
-  BackHandler,
-} from "react-native";
+import { Dimensions, TouchableOpacity, View, ListRenderItem, } from "react-native";
 import Carousel from "react-native-snap-carousel";
-
-import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-
-import { loadEntries, createEntry, removeEntry } from "../reducers/entries";
-
+import { loadEntries, createEntry, } from "../reducers/entries";
 import { AppLoading } from 'expo';
 import { Entry, HomeProps, IAppState } from "../types";
 // import { v4 as uuidv4 } from 'uuid';
 
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("paperNote.db");
-const {height, width} = Dimensions.get('window')
 
+
+const {height, width} = Dimensions.get('window')
 const dummyData: Array<Entry> = [
   {
     id: 1,
@@ -87,32 +63,34 @@ const _onSuccess: SQLite.SQLVoidCallback | undefined = () => {
 
 
 
+
+
 export default function Home({ navigation }: HomeProps) {
   const [bgColor, setBgColor] = useState("#fff")
   const [textColor, setTextColor] = useState("#131d27")
   const [iconColor, setIconColor] = useState("#cf3d43")
   const [cardColor, setCardColor] = useState("#f8d69c")
   const [cardTextColor, setCardTextColor] = useState("#fff")
-  const [backTopColor,setBackTopColor ] = useState('#ededed')
-  const [backBottomColor,setBackBottomColor ] = useState('#ededed')
+  // const [backTopColor,setBackTopColor ] = useState('#ededed')
+  // const [backBottomColor,setBackBottomColor ] = useState('#ededed')
   const [cardType,setCardType] = useState("light")
   const [settingToggle, setSettingToggle] = useState(false)
   const [finger, setFinger] = useState(false)
   const [auth, setAuth] = useState(false)
   const [error, setError] = useState(false)
   const [reminder, setReminder] = useState(false)
+  const [date, setDate] = useState(new Date(Date.now()));
+  const [time, setTime] = useState(new Date(Date.now()));
+  const [show, setShow] = useState(false);
+  const [show1, setShow1] = useState(false);
+  const [sync, setSync] = useState(false);
+  const [theme,setTheme] = useState(true)  
   
   let [fontsLoaded] = useFonts({
     'Balsamiq-Bold': require('../assets/fonts/BalsamiqSans-Bold.ttf'),
     'Balsamiq-Regular': require('../assets/fonts/BalsamiqSans-Regular.ttf'),
   });
-
   
-  const [theme,setTheme] = useState(true)  
-
-  // const [entries, setEntires] = useState(data);
-  //   const entries: Array<Entry> = useSelector(state => state.entries);
-  // const windowHeight = useWindowDimensions().height;
   let entries = useSelector((state: IAppState) => state.entries);
   const dispatch = useDispatch();
 
@@ -157,26 +135,20 @@ export default function Home({ navigation }: HomeProps) {
       _onSuccess
     );
     
-    console.log("Here....")
-    if(finger)
-    
-  {LocalAuthentication.authenticateAsync().then(value=>{value.success?setAuth(true):setError(true)})}
+    if(finger){
+      LocalAuthentication.authenticateAsync().then(value=>{value.success?setAuth(true):setError(true)})
+    }
 
-
-  
-      
   }, []);
 
-
-  
   React.useEffect(()=>{
     if(theme){
       setBgColor("#f1f2fa")
       setTextColor("#262c33")
       setCardTextColor("#262c33")
       setCardColor("#fff")
-      setBackBottomColor('#fea09c')
-      setBackTopColor('#fdc7d5')
+      // setBackBottomColor('#fea09c')
+      // setBackTopColor('#fdc7d5')
       setCardType("light")
     }
     else{
@@ -184,8 +156,8 @@ export default function Home({ navigation }: HomeProps) {
       setCardColor("#1a1a1a")
       setCardTextColor("white")
       setTextColor("#ededed")
-      setBackBottomColor('#2d455d')
-      setBackTopColor('#2d455d')
+      // setBackBottomColor('#2d455d')
+      // setBackTopColor('#2d455d')
       setCardType("dark")
 
     }
@@ -201,183 +173,20 @@ export default function Home({ navigation }: HomeProps) {
   //   dispatch(createEntry(entryForToday));
   // }
 
-  const fingerPrintLock=()=>{
+  const onChange = (event, selectedDate) => {
+    console.log(event)
+    if(event.type==="dismissed"){
+    setShow(false)
 
-
-    if(finger){
-      setFinger(!finger)
-      return
     }
-
-    LocalAuthentication.authenticateAsync().then(value=>{value.success?setFinger(!finger):setFinger(finger)})
-
-
-  }
-
-  const _renderItem: ListRenderItem<Entry> = ({ item }) => {
-    return (
-      
-      <View
-        style={{
-
-          flex: 1,
-        }}
-      >
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("Editor", {
-              entryId: item.id, backgroundColor:cardColor, textColor:textColor, iconColor:iconColor
-            })
-          }
-          key={item.id}
-          style={{
-            flex: 1,
-          }}
-        >
-         <JournalEntry entry={item} cardColor={cardColor} textColor={cardTextColor} iconColor={iconColor} cardType={cardType}/>
-        </TouchableOpacity>
-        
-      </View>
-    );
-  };
-
-
-
-  const Settings=()=>{
-    return(
-      <View style={{flex:3,marginRight:25, marginLeft:27, marginBottom:55}}>
-        <View style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
-          <View style={{flexDirection:"row", alignItems:"center"}}>
-            <Icon
-              color={iconColor}
-              name='moon'
-              type='feather'/>
-                <Text style={{fontFamily:"Balsamiq-Bold", color:textColor, marginLeft:10}}>Dark Mode</Text>
-
-          </View>
-          <View style={{justifyContent:"flex-end"}}>
-        <Switch value={!theme}
-        color='#cf3d43'
-          onValueChange={()=>{
-            setTheme(!theme)
-          }}></Switch>
-
-        </View>
-        </View>
-
-
-        <View style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
-          <View style={{flexDirection:"row", alignItems:"center"}}>
-            <Icon
-              color={iconColor}
-              name='bell'
-              type='feather'/>
-                <Text style={{fontFamily:"Balsamiq-Bold", color:textColor, marginLeft:10}}>Daily Reminder Notifications</Text>
-
-          </View>
-            
-          <View style={{justifyContent:"flex-end"}}>
-        <Switch value={reminder}
-        color='#cf3d43'
-          onValueChange={()=>{
-            setReminder(!reminder)
-          }}></Switch>
-
-        </View>
-        </View>
-
-        {reminder &&
-          <TouchableOpacity style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
-          <View style={{flexDirection:"row", alignItems:"center"}}>
-            <Icon
-              color={iconColor}
-              name='clock'
-              type='feather'/>
-                <Text style={{fontFamily:"Balsamiq-Bold", color:textColor, marginLeft:10}}>Adjust Reminder Notifications</Text>
-
-          </View>
-            
-        </TouchableOpacity>}
-        
-        <TouchableOpacity style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
-          <View style={{flexDirection:"row", alignItems:"center"}}>
-            <Icon
-              color={iconColor}
-              name='arrow-up'
-              
-              type='feather'/>
-                <Text style={{fontFamily:"Balsamiq-Bold", color:textColor, marginLeft:10}}>Export Journals</Text>
-
-          </View>
-        </TouchableOpacity>
-
-
-        <TouchableOpacity style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
-          <View style={{flexDirection:"row", alignItems:"center"}}>
-            <Icon
-              color={iconColor}
-              name='arrow-down'
-              type='feather'/>
-                <Text style={{fontFamily:"Balsamiq-Bold", color:textColor, marginLeft:10}}>Import Journals</Text>
-
-          </View>
-            
-          {/* <View style={{justifyContent:"flex-end"}}>
-        <Switch value={!theme}
-        color='#cf3d43'
-          onValueChange={()=>{
-            setTheme(!theme)
-          }}></Switch>
-
-        </View> */}
-        </TouchableOpacity>
-
-        <View style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
-          <View style={{flexDirection:"row", alignItems:"center"}}>
-              <Icon
-                color={iconColor}
-                name='lock'
-                type='feather'/>
-                <Text style={{fontFamily:"Balsamiq-Bold", color:textColor, marginLeft:10}}>Lock with Fingerprint</Text>
-            </View>
-          <View style={{justifyContent:"flex-end"}}>
-        
-        
-        
-            <Switch value={finger}
-  
-          color='#cf3d43'
-            onValueChange={ fingerPrintLock }></Switch>
-
-        </View>
-        </View>
-        
-
-      </View>
-      
-    )
-  }
-
-  const BottomTab=()=>{
-    return(
-      <View style={{ flex: 0, alignItems: 'center', backgroundColor:cardColor, marginHorizontal:10, marginBottom:10, padding:25,borderRadius:15}}>
-          
-
-
- <View style={{
-   width:"100%",
-            justifyContent:"space-between",
-            flex: 0,
-            paddingHorizontal:15,
-            alignItems:"center",
-            flexDirection:"row",}}>
-
-              <View style={{justifyContent:"flex-start"}}>
-
-          <TouchableOpacity onPress={() => { 
-            const newEntry = {
+    else{
+    const currentDate = selectedDate || date;
+    setShow(false)
+    // setDate(currentDate);
+    // console.log(currentDate)
+    const newEntry = {
               id: Math.round(Math.random() * 1000000),
-              date: new Date(),
+              date: new Date(selectedDate),
               content: "",
             };
   
@@ -403,48 +212,57 @@ export default function Home({ navigation }: HomeProps) {
               entryId: newEntry.id, backgroundColor:cardColor, textColor:textColor, iconColor:iconColor
             });
             setSettingToggle(false)
-          }}>
-          <Icon
-          color={iconColor}
-          name='calendar'
-          type='feather'
-        />
+  };
+}
 
-          </TouchableOpacity>
-        </View>
-        <View style={{justifyContent:"center"}}>
 
-        <TouchableOpacity onPress={()=>{ setSettingToggle(false)}}><Icon
-          color={iconColor}
-          name='home'
-          type='feather'
-        /></TouchableOpacity>
+const onTimeSelect = (event, selectedTime) => {
+  console.log(event)
+  if(event.type==="dismissed"){
+  setShow1(false)
+
+  }
+  else{
+  const currentDate = selectedTime || date;
+  setShow1(false)
+  setTime(selectedTime);
+  console.log(selectedTime)
+  
+};
+}
+
+  const fingerPrintLock=()=>{
+    setFinger(!finger)
+  }
+
+  const _renderItem: ListRenderItem<Entry> = ({ item }) => {
+    return (
+      
+      <View
+        style={{
+          flex: 1,
+        }}
+      >
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("Editor", {
+              entryId: item.id, backgroundColor:cardColor, textColor:textColor, iconColor:iconColor
+            })
+          }
+          key={item.id}
+          style={{
+            flex: 1,
+          }}
+        >
+         <JournalEntry entry={item} cardColor={cardColor} textColor={cardTextColor} iconColor={iconColor} cardType={cardType}/>
+        </TouchableOpacity>
         
       </View>
-
-        <View style={{justifyContent:"flex-end"}}>
-
-        <TouchableOpacity
-          onPress={()=>{ setSettingToggle(true)}}>
-        <Icon
-          color={iconColor}
-          name="settings"
-          type='feather'
-        />
-
-        </TouchableOpacity>
-          
-        </View>
-      </View>
-          
-        </View>
-    )
-  }
+    );
+  };
 
   const { width, height } = Dimensions.get("screen");
   
-
-
   if (!fontsLoaded) {
     return <AppLoading />;
   } else {
@@ -486,12 +304,12 @@ export default function Home({ navigation }: HomeProps) {
         /></View>}
 
         {settingToggle &&
-        <Settings></Settings>}
+        <SettingsScreen {...{iconColor, textColor, theme, setTheme, reminder, setReminder,
+                        setShow1, show1, time, onTimeSelect, finger, fingerPrintLock, }}></SettingsScreen>
+        }
 
-        <BottomTab></BottomTab>
-     
-      
-      
+        <BottomTab {...{cardColor, show, date, onChange, iconColor, setSettingToggle, setShow}}></BottomTab>
+        
     </View>
   );
   }
