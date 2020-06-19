@@ -19,7 +19,8 @@ export interface State {
 export type RootStackParamList = {
   Home: undefined;
   Editor: { entryId: number };
-  Wait:undefined;
+  Wait: undefined;
+  Settings: undefined;
 };
 
 type WaitNavigationProp = StackNavigationProp<RootStackParamList, 'Wait'>
@@ -40,17 +41,19 @@ export type EditorProps = {
   route: EditorScreenRouteProp
 };
 
-type HomeScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  'Home'
->;
-
+type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList,'Home'>;
 type HomeScreenRouteProp = RouteProp<RootStackParamList, 'Home'>;
-
 export type HomeProps = {
   navigation: HomeScreenNavigationProp
   route: HomeScreenRouteProp
 };
+
+type SettingScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Settings'>
+type SettingScreenRouteProp = RouteProp<RootStackParamList, 'Settings'>;
+export type SettingProps = {
+  navigation: SettingScreenNavigationProp
+  route: SettingScreenRouteProp
+}
 
 
 

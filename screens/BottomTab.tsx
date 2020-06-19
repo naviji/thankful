@@ -103,7 +103,11 @@ const BottomTab=(props)=>{
         <View style={{justifyContent:"flex-end"}}>
 
         <TouchableOpacity
-          onPress={()=>{ props.setSettingToggle(true)}}>
+          onPress={() =>
+            props.navigation.navigate("Settings")
+          }
+          // onPress={()=>{ props.setSettingToggle(true)}}
+          >
         <Icon
           name="settings"
           type='feather'

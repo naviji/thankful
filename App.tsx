@@ -10,6 +10,7 @@ import reducer from "./reducers/index"
 
 import Home from "./screens/Home";
 import Editor from "./screens/Editor";
+import Settings from "./screens/Settings"
 
 import {RootStackParamList} from './types'
 
@@ -64,6 +65,12 @@ const theme = {
   },
   Icon: {
     color: "#cf3d43"
+  },
+  Text: {
+    color: "#262c33"
+  },
+  Switch: {
+    color: "#cf3d43"
   }
 }
 
@@ -99,6 +106,14 @@ export default function App() {
               component={Editor}
               options={{
                 headerShown: false,
+              }}
+            />
+
+            <Stack.Screen
+              name="Settings"
+              component={Settings}
+              options={{
+                headerShown: false
               }}
             />
           </Stack.Navigator>

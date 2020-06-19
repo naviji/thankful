@@ -5,7 +5,6 @@ import { Switch } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 import { useDispatch, useSelector } from "react-redux";
-import { setTheme } from "../reducers/style";
 import { State } from "../types"
 
 
@@ -47,15 +46,17 @@ const SettingsScreen=(props)=>{
 
   const dispatch = useDispatch();
   const { theme } = useContext(ThemeContext);
+  if (!theme.colors) {
+    throw new Error("No colors in theme");
+  }
 
-  const activeTheme = useSelector((state: State) => state.style.theme)
 
   return(
     
-    <View style={{ flex: 1, paddingTop:50, backgroundColor:theme[activeTheme].colors.background}}>
+    <View style={{ flex: 1, paddingTop:50, backgroundColor:theme.colors.grey0}}>
     <View style={{flex: .4, paddingHorizontal:20, justifyContent:"center", flexDirection:"row"}}>
  
-      <Text style={{fontFamily:"Balsamiq-Bold", fontSize:20, color:theme[activeTheme].colors.text}}>Settings</Text>
+      <Text style={{fontFamily:"Balsamiq-Bold", fontSize:20}}>Settings</Text>
       
         </View>
 
@@ -63,20 +64,20 @@ const SettingsScreen=(props)=>{
       <View style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
         <View style={{flexDirection:"row", alignItems:"center"}}>
           <Icon
-            color={theme[activeTheme].colors.icon}
+            
             name='moon'
             type='feather'/>
-              <Text style={{fontFamily:"Balsamiq-Bold", color:theme[activeTheme].colors.text, marginLeft:10}}>Dark Mode</Text>
+              <Text style={{fontFamily:"Balsamiq-Bold", marginLeft:10}}>Dark Mode</Text>
 
         </View>
         <View style={{justifyContent:"flex-end"}}>
 
 
-      <Switch value={activeTheme === 'dark'}
-      color={theme[activeTheme].colors.icon}
+      <Switch value={false}
+      
         onValueChange={()=>{
-          // props.setActiveTheme(activeTheme === 'dark' ? 'light' : 'dark')
-          dispatch(setTheme(activeTheme === 'dark' ? 'light' : 'dark'))
+          // dispatch(setTheme(activeTheme === 'dark' ? 'light' : 'dark'))
+          console.log("Change theme here!")
         }}></Switch>
 
       </View>
@@ -86,16 +87,16 @@ const SettingsScreen=(props)=>{
       <View style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
         <View style={{flexDirection:"row", alignItems:"center"}}>
           <Icon
-            color={theme[activeTheme].colors.icon}
+            
             name='bell'
             type='feather'/>
-              <Text style={{fontFamily:"Balsamiq-Bold", color:theme[activeTheme].colors.text, marginLeft:10}}>Daily Reminder Notifications</Text>
+              <Text style={{fontFamily:"Balsamiq-Bold", marginLeft:10}}>Daily Reminder Notifications</Text>
 
         </View>
           
         <View style={{justifyContent:"flex-end"}}>
       <Switch value={props.reminder}
-      color={theme[activeTheme].colors.icon}
+      
         onValueChange={()=>{
           props.setReminder(!props.reminder)
         }}></Switch>
@@ -111,11 +112,11 @@ const SettingsScreen=(props)=>{
         style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
         <View style={{flexDirection:"row", alignItems:"center"}}>
           <Icon
-            color={theme[activeTheme].colors.icon}
+            
             name='clock'
             
             type='feather'/>
-              <Text style={{fontFamily:"Balsamiq-Bold", color:theme[activeTheme].colors.text, marginLeft:10}}>Adjust Reminder Notifications</Text>
+              <Text style={{fontFamily:"Balsamiq-Bold", marginLeft:10}}>Adjust Reminder Notifications</Text>
 
         </View>
           
@@ -137,11 +138,11 @@ const SettingsScreen=(props)=>{
       <TouchableOpacity style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
         <View style={{flexDirection:"row", alignItems:"center"}}>
           <Icon
-            color={theme[activeTheme].colors.icon}
+            
             name='arrow-up'
             
             type='feather'/>
-              <Text style={{fontFamily:"Balsamiq-Bold", color:theme[activeTheme].colors.text, marginLeft:10}}>Export Journals</Text>
+              <Text style={{fontFamily:"Balsamiq-Bold", marginLeft:10}}>Export Journals</Text>
 
         </View>
       </TouchableOpacity>
@@ -150,10 +151,10 @@ const SettingsScreen=(props)=>{
       <TouchableOpacity style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
         <View style={{flexDirection:"row", alignItems:"center"}}>
           <Icon
-            color={theme[activeTheme].colors.icon}
+            
             name='arrow-down'
             type='feather'/>
-              <Text style={{fontFamily:"Balsamiq-Bold", color:theme[activeTheme].colors.text, marginLeft:10}}>Import Journals</Text>
+              <Text style={{fontFamily:"Balsamiq-Bold", marginLeft:10}}>Import Journals</Text>
 
         </View>
           
@@ -163,10 +164,10 @@ const SettingsScreen=(props)=>{
       <View style={{flexDirection:"row",justifyContent:"space-between", marginBottom:25, alignItems:"center"}}>
         <View style={{flexDirection:"row", alignItems:"center"}}>
             <Icon
-              color={theme[activeTheme].colors.icon}
+              
               name='lock'
               type='feather'/>
-              <Text style={{fontFamily:"Balsamiq-Bold", color:theme[activeTheme].colors.text, marginLeft:10}}>Lock with Fingerprint</Text>
+              <Text style={{fontFamily:"Balsamiq-Bold", marginLeft:10}}>Lock with Fingerprint</Text>
           </View>
         <View style={{justifyContent:"flex-end"}}>
       
@@ -174,7 +175,7 @@ const SettingsScreen=(props)=>{
       
           <Switch value={props.finger}
 
-        color={theme[activeTheme].colors.icon}
+        
           onValueChange={ props.fingerPrintLock }></Switch>
 
       </View>

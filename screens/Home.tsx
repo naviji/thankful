@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { ThemeContext, Text, FullTheme } from "react-native-elements";
 import JournalEntry from '../screens/JournalEntry'
 import BottomTab from '../screens/BottomTab';
-import SettingsScreen from '../screens/SettingsScreen';
+import SettingsScreen from './Settings';
 import { Dimensions, TouchableOpacity, View, ListRenderItem } from "react-native";
 import Carousel from "react-native-snap-carousel";
 import { useSelector, useDispatch } from "react-redux";
@@ -126,7 +126,7 @@ export default function Home({ navigation }: HomeProps) {
         {/* <SettingsScreen></SettingsScreen> */}
         
 
-        <BottomTab></BottomTab>
+        <BottomTab navigation={navigation}></BottomTab>
         
     </View>
   );
