@@ -95,11 +95,10 @@ export default function Home({ navigation }: HomeProps) {
         
   };
 
-  const { width, height } = Dimensions.get("screen");
+  const { width } = Dimensions.get("screen");
   
   return (
     <View style={{ flex: 1, paddingTop:50, backgroundColor:theme.colors?.grey0}}>
-
    
       <View style={{flex: .4, paddingHorizontal:20, justifyContent:"center", flexDirection:"row"}}>
  
@@ -121,10 +120,7 @@ export default function Home({ navigation }: HomeProps) {
           sliderWidth={width / 1}
           itemWidth={width / 1.1}
           hasParallaxImages={true}
-        /></View>
-
-        {/* <SettingsScreen></SettingsScreen> */}
-        
+        /></View>        
 
         <BottomTab navigation={navigation}></BottomTab>
         

@@ -61,7 +61,7 @@ const theme = {
   colors: {
     primary: "#ffffff",
     secondary: "#cf3d43",
-    grey0: "#f1f2fa",
+    grey0: "steelblue",
   },
   Icon: {
     color: "#cf3d43"

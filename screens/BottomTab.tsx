@@ -1,11 +1,13 @@
-import React, { useContext, useState }from "react";
+import React, { useContext, useState } from "react";
 import { Icon } from "react-native-elements";
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { TouchableOpacity, View } from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { TouchableOpacity, View, Dimensions } from "react-native";
 import { ThemeContext } from "react-native-elements";
 import { useSelector, useDispatch } from "react-redux";
-
-
+import { StackNavigationProp } from "@react-navigation/stack";
+import { HomeScreenNavigationProp } from "../types";
+import {Calendar} from 'react-native-calendars';
+import { black } from "react-native-paper/lib/typescript/src/styles/colors";
 
 // const onChange = (event, selectedDate) => {
 //   console.log(event)
@@ -48,79 +50,85 @@ import { useSelector, useDispatch } from "react-redux";
 //   }
 // }
 
-const BottomTab=(props)=>{
+const BottomTab = (props: { navigation: HomeScreenNavigationProp }) => {
   const { theme } = useContext(ThemeContext);
-  if (!theme.colors) {
-    throw new Error("No colors in theme")
-  }
+  const [showCalendar, setShowCalendar] = useState(false);
 
-  
-  // const [showCalendar, setShowCalendar] = useState(false);
-  
-    // const [date, setDate] = useState(new Date(Date.now()));
-  
-    return(
-      <View style={{ flex: 0, alignItems: 'center', backgroundColor:theme.colors.primary, marginHorizontal:10, marginBottom:10, padding:25,borderRadius:15}}>
-          
- <View style={{
-   width:"100%",
-            justifyContent:"space-between",
-            flex: 0,
-            paddingHorizontal:15,
-            alignItems:"center",
-            flexDirection:"row",}}>
+  // const [date, setDate] = useState(new Date(Date.now()));
+  const { width, height } = Dimensions.get("screen");
 
-              <View style={{justifyContent:"flex-start"}}>
-             {props.showCalendar&&<DateTimePicker
-          testID="dateTimePicker"
-          timeZoneOffsetInMinutes={0}
-          value={new Date(Date.now())}
-          is24Hour={true}
-          display="calendar"
-          style={{}}
-          onChange={props.onChange}
-        />} 
+  return (
+    <View
+      style={{
+        backgroundColor: theme.colors?.primary,
+        marginHorizontal: 10,
+        marginBottom: 10,
+        padding: 25,
+        borderRadius: 15,
+        justifyContent: "space-between",
+        paddingHorizontal: 15,
+        alignItems: "center",
+        flexDirection: "row",
+      }}
+    >
+{/* 
+float:left;
+    display:block;
+    .border-box;
+    background:white;
+    width:300px;
+    border:solid 1px @border-colour;
+    margin-bottom:10px;
+     */}
 
-          <TouchableOpacity onPress={() => {             
-            props.setShowCalendar(true)
-          }}>
-          <Icon
-          name='calendar'
-          type='feather'
-        />
 
+     {showCalendar && 
+      <View style={{
+        position: "absolute",
+        bottom: (height-315)/2,                                             
+        right: (width-300)/2 - 10,
+        width: 300,
+        height: 320,
+        elevation: 5,
+        // borderColor: "black",
+        // borderWidth: 1,
+      }}>
+      <Calendar onDayPress={(day) => {console.log('selected day', day)}}/>
+      </View>
+     
+     
+     }
+    
+        <View>
+          <TouchableOpacity
+            onPress={() => {
+              setShowCalendar(!showCalendar);
+            }}
+          >
+            <Icon name="calendar" type="feather" />
           </TouchableOpacity>
         </View>
-        <View style={{justifyContent:"center"}}>
 
-        <TouchableOpacity onPress={()=>{ props.setSettingToggle(false)}}><Icon
-          name='home'
-          type='feather'
-        /></TouchableOpacity>
-        
-      </View>
-
-        <View style={{justifyContent:"flex-end"}}>
-
-        <TouchableOpacity
-          onPress={() =>
-            props.navigation.navigate("Settings")
-          }
-          // onPress={()=>{ props.setSettingToggle(true)}}
+        <View style={{ justifyContent: "center" }}>
+          <TouchableOpacity
+            onPress={() => {
+              props.setSettingToggle(false);
+            }}
           >
-        <Icon
-          name="settings"
-          type='feather'
-        />
+            <Icon name="home" type="feather" />
+          </TouchableOpacity>
+        </View>
 
-        </TouchableOpacity>
-          
+        <View style={{ justifyContent: "flex-end" }}>
+          <TouchableOpacity
+            onPress={() => props.navigation.navigate("Settings")}
+            // onPress={()=>{ props.setSettingToggle(true)}}
+          >
+            <Icon name="settings" type="feather" />
+          </TouchableOpacity>
         </View>
       </View>
-          
-        </View>
-    )
-  }
+  );
+};
 
-
-  export default BottomTab;
+export default BottomTab;

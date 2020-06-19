@@ -41,7 +41,7 @@ export type EditorProps = {
   route: EditorScreenRouteProp
 };
 
-type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList,'Home'>;
+export type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList,'Home'>;
 type HomeScreenRouteProp = RouteProp<RootStackParamList, 'Home'>;
 export type HomeProps = {
   navigation: HomeScreenNavigationProp
