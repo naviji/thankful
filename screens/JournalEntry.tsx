@@ -1,9 +1,9 @@
 import { FlatList, Image, TouchableOpacity, View, Dimensions } from "react-native";
 import { useFonts } from '@use-expo/font';
-import { Icon, Text } from "react-native-elements";
+import { Icon, Text, ThemeContext } from "react-native-elements";
 import { Entry} from "../types";
 import { useDispatch } from "react-redux";
-import React from "react";
+import React, { useState, useContext } from "react";
 import { AppLoading } from 'expo';
 import { removeEntry } from "../reducers/entries";
 
@@ -33,20 +33,17 @@ const _renderItemFlatList=(obj)=>(
     )
 
 const JournalEntry = (props: any) => {
+  const { theme }  = useContext(ThemeContext);
+  if (!theme.colors) {
+    throw new Error("No colors in theme")
+  }
 
-  
-    let [fontsLoaded] = useFonts({
-      'Balsamiq-Bold': require('../assets/fonts/BalsamiqSans-Bold.ttf'),
-      'Balsamiq-Regular': require('../assets/fonts/BalsamiqSans-Regular.ttf'),
-    });
   
     const entry: Entry = props.entry;
     const dispatch = useDispatch();
     // const { width, height } = Dimensions.get("window");
     
-    if (!fontsLoaded) {
-      return <AppLoading />;
-    } else {
+   
     return (
   
   
@@ -57,15 +54,10 @@ const JournalEntry = (props: any) => {
           
           flex: 1,
           // minHeight: height/1.23, // replace with dimensions
-          backgroundColor: props.cardColor,  //#8249E4
+          backgroundColor: theme.colors.primary, 
           marginTop: 20,
           marginHorizontal: 7,
-          borderRadius: 10,
-          shadowColor:"black",
-          shadowOffset: {height:20, width:20},
-          shadowOpacity:0.9,
-          shadowRadius:20
-  
+          borderRadius: 10
   
         }}
       >
@@ -85,7 +77,7 @@ const JournalEntry = (props: any) => {
               paddingTop:20,
               alignItems:"center",
               flexDirection:"row",}}>
-          <Text style={{ fontSize: 20,  color:props.textColor, fontFamily:"Balsamiq-Bold"}}>
+          <Text style={{ fontSize: 20, fontFamily:"Balsamiq-Bold"}}>
           {isToday(entry.date)
             ? "Today"
             : isYesterday(entry.date)
@@ -111,7 +103,7 @@ const JournalEntry = (props: any) => {
               dispatch(removeEntry(entry.id));
             }}>
             <Icon
-            color={props.iconColor}
+            // color={theme.colors.secondary}
           style={{justifyContent: "flex-end"}}
           name="trash"
           type='simple-line-icon'
@@ -123,7 +115,7 @@ const JournalEntry = (props: any) => {
         </View>
         <View style={{flex:3, paddingHorizontal:20,}}>
         
-        <Text style={{ fontSize: 17, marginTop: 10, color:props.textColor, fontFamily:"Balsamiq-Regular" }}>
+        <Text style={{ fontSize: 17, marginTop: 10, fontFamily:"Balsamiq-Regular" }}>
           {entry.content.length > 20
             ? entry.content.slice(0, 400) + "..."
             : entry.content}
@@ -143,7 +135,7 @@ const JournalEntry = (props: any) => {
         
       </View>
     );
-          }
+          
   };
 
 

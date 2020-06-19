@@ -11,9 +11,14 @@ export interface Entry {
     content: string
 }
 
+export interface State {
+  style: {theme: string},
+  entries: Entry[]
+}
+
 export type RootStackParamList = {
   Home: undefined;
-  Editor: { entryId: number, backgroundColor:string, textColor:string, iconColor:string };
+  Editor: { entryId: number };
   Wait:undefined;
 };
 

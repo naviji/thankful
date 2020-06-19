@@ -1,5 +1,5 @@
-import React, {useState} from "react";
-import { Icon } from "react-native-elements";
+import React, {useState, useContext} from "react";
+import { Icon, ThemeContext, Text } from "react-native-elements";
 import * as ImagePicker from 'expo-image-picker';
 import { useFonts } from '@use-expo/font';
 import * as Permissions from 'expo-permissions';
@@ -10,7 +10,6 @@ import {
   Image,
   Modal,
   FlatList,
-  Text,
   View,
 } from "react-native";
 import { TextInput, TouchableOpacity, ScrollView } from "react-native-gesture-handler";
@@ -19,8 +18,11 @@ import { updateEntry, createEntry, removeEntry } from "../reducers/entries";
 import { EditorProps, IAppState, Entry } from "../types";
 import { AppLoading } from 'expo';
 
+import { State } from "../types"
+
 import * as SQLite from 'expo-sqlite'
 import ImageShowScreen from "./ImageShowScreen";
+
 const db = SQLite.openDatabase("paperNote.db")
 
 const {height, width} = Dimensions.get('window')
@@ -33,6 +35,13 @@ Instead display images with a fixed height and width
 
 export default function Editor({ route, navigation }: EditorProps) {
 
+  const dispatch = useDispatch();
+  const { theme }  = useContext(ThemeContext);
+
+  if (!theme.colors) {
+    throw new Error("No colors in theme");
+  }
+
   let [fontsLoaded] = useFonts({
     'Balsamiq-Bold': require('../assets/fonts/BalsamiqSans-Bold.ttf'),
     'Balsamiq-Regular': require('../assets/fonts/BalsamiqSans-Regular.ttf'),
@@ -41,10 +50,9 @@ export default function Editor({ route, navigation }: EditorProps) {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setselectedImage] = useState(null);
   const  entryId  = route.params.entryId;
-  const dispatch = useDispatch();
-  let bgColor=route.params.backgroundColor
-  let textColor=route.params.textColor
-  let iconColor=route.params.iconColor
+  
+  let bgColor=theme.colors.grey0;
+  let iconColor=theme.colors.secondary;
 
   const _onError: SQLite.SQLTransactionErrorCallback | undefined = (e) => {
     console.warn(e);
@@ -67,7 +75,7 @@ export default function Editor({ route, navigation }: EditorProps) {
   let entries = useSelector((state: IAppState) => {return(state.entries)});
 
   let item: Entry | undefined = entries.find((x) => x.id === entryId);
-  const entry: Entry = item ? item : {id: -1, content: '', date: new Date()}
+  const entry: Entry = item ? item : {id: -1, content: '', date: new Date(), image: []}
   
   const pickImage= async ()=>{
     let result  = await ImagePicker.launchImageLibraryAsync({
@@ -110,7 +118,7 @@ if (!fontsLoaded) {
       </View>
       
 }
-  <Text style={{fontSize: 20, fontFamily:"Balsamiq-Bold", marginHorizontal:20, marginTop:20, color:textColor}}>
+  <Text style={{fontSize: 20, fontFamily:"Balsamiq-Bold", marginHorizontal:20, marginTop:20}}>
           Tell us about your day..
         </Text>
       {entry &&
@@ -135,7 +143,6 @@ if (!fontsLoaded) {
           multiline
           style={{
             flex: 6,
-            color:textColor,
             textAlignVertical: "top",
             fontSize: 17.5,
             fontFamily:"Balsamiq-Regular",
@@ -156,7 +163,7 @@ if (!fontsLoaded) {
         visible={modalVisible}
         transparent={false}
         onRequestClose={()=>{setModalVisible(!modalVisible);}} >
-      <View style={{flex:1, backgroundColor:route.params.backgroundColor}}>
+      <View style={{flex:1, backgroundColor:bgColor}}>
             <View style={{ marginTop: 8, marginHorizontal: 8, justifyContent:"space-between", flexDirection:"row",alignItems:"center"}}>
               <Icon
               raised

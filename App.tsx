@@ -1,5 +1,5 @@
 import React from "react";
-import { ThemeProvider } from "react-native-elements";
+import { ThemeProvider, FullTheme } from "react-native-elements";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -34,26 +34,40 @@ const Stack = createStackNavigator<RootStackParamList>();
   // Also save setting into asyncStorage
 
 
+
+// const theme: Partial<FullTheme> = {
+//   light: {
+//     colors: {
+//       background: "#f1f2fa",
+//       text: "#262c33",
+//       icon: "#cf3d43",
+//       card: "#fff",
+//       cardText: "#262c33",
+//     }
+//   },
+//   dark: {
+//     colors: {
+//       background: "#161616",
+//       text: "#ededed",
+//       icon: "#cf3d43",
+//       card: "#1a1a1a",
+//       cardText: "#fff",
+//     }
+//   }
+// }
+
 const theme = {
-  light: {
-    colors: {
-      background: "#f1f2fa",
-      text: "#262c33",
-      icon: "#cf3d43",
-      card: "#fff",
-      cardText: "#262c33",
-    }
+  colors: {
+    primary: "#ffffff",
+    secondary: "#cf3d43",
+    grey0: "#f1f2fa",
   },
-  dark: {
-    colors: {
-      background: "#161616",
-      text: "#ededed",
-      icon: "#cf3d43",
-      card: "#1a1a1a",
-      cardText: "#fff",
-    }
+  Icon: {
+    color: "#cf3d43"
   }
 }
+
+
 
 
 export default function App() {
@@ -69,7 +83,7 @@ export default function App() {
   return (
     <StoreProvider store={store}>
       <ThemeProvider theme={theme}>
-        <StatusBar backgroundColor={theme.light.colors.icon} barStyle="light-content"  />
+        <StatusBar backgroundColor={theme.colors.secondary} barStyle="light-content"  />
         <NavigationContainer>
           <Stack.Navigator initialRouteName="Home">
             <Stack.Screen
